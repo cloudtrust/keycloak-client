@@ -1,0 +1,12 @@
+addReadTokenRoleOnCreate optional boolean
+alias optional string
+config optional Map
+displayName optional string
+enabled optional boolean
+firstBrokerLoginFlowAlias optional string
+internalId optional string
+linkOnly optional boolean
+postBrokerLoginFlowAlias optional string
+providerId optional string
+storeToken optional boolean
+trustEmail optional boolean

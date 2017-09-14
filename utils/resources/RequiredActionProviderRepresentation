@@ -1,0 +1,6 @@
+alias optional string
+config optional Map
+defaultAction optional boolean
+enabled optional boolean
+name optional string
+providerId optional string

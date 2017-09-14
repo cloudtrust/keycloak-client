@@ -1,0 +1,5 @@
+config optional Map
+federationMapperType optional string
+federationProviderDisplayName optional string
+id optional string
+name optional string

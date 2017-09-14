@@ -1,0 +1,2 @@
+failedRequests optional < string > array
+successRequests optional < string > array

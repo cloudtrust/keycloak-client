@@ -1,0 +1,8 @@
+changedSyncPeriod optional integer(int32)
+config optional Map
+displayName optional string
+fullSyncPeriod optional integer(int32)
+id optional string
+lastSync optional integer(int32)
+priority optional integer(int32)
+providerName optional string

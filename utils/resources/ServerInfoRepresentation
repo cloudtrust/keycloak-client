@@ -1,0 +1,14 @@
+builtinProtocolMappers optional Map
+clientImporters optional Map
+clientInstallations optional Map
+componentTypes optional Map
+enums optional Map
+identityProviders optional Map
+memoryInfo optional MemoryInfoRepresentation
+passwordPolicies optional PasswordPolicyTypeRepresentation
+profileInfo optional ProfileInfoRepresentation
+protocolMapperTypes optional Map
+providers optional Map
+socialProviders optional Map
+systemInfo optional SystemInfoRepresentation
+themes optional Map

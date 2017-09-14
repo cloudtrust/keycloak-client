@@ -1,0 +1,15 @@
+attributes optional Map
+bearerOnly optional boolean
+consentRequired optional boolean
+description optional string
+directAccessGrantsEnabled optional boolean
+frontchannelLogout optional boolean
+fullScopeAllowed optional boolean
+id optional string
+implicitFlowEnabled optional boolean
+name optional string
+protocol optional string
+protocolMappers optional ProtocolMapperRepresentation
+publicClient optional boolean
+serviceAccountsEnabled optional boolean
+standardFlowEnabled optional boolean

@@ -1,0 +1,4 @@
+certificate optional string
+kid optional string
+privateKey optional string
+publicKey optional string

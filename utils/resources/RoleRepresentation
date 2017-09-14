@@ -1,0 +1,8 @@
+clientRole optional boolean
+composite optional boolean
+composites optional RoleRepresentation-Composites
+containerId optional string
+description optional string
+id optional string
+name optional string
+scopeParamRequired optional boolean

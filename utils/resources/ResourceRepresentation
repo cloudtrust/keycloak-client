@@ -1,0 +1,9 @@
+id optional string
+icon_uri optional string
+name optional string
+owner optional ResourceOwnerRepresentation
+policies optional PolicyRepresentation
+scopes optional ScopeRepresentation
+type optional string
+typedScopes optional ScopeRepresentation
+uri optional string

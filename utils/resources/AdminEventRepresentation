@@ -1,0 +1,8 @@
+authDetails optional AuthDetailsRepresentation
+error optional string
+operationType optional string
+realmId optional string
+representation optional string
+resourcePath optional string
+resourceType optional string
+time optional integer(int64)

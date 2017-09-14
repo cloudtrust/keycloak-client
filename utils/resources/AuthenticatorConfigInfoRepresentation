@@ -1,0 +1,4 @@
+helpText optional string
+name optional string
+properties optional ConfigPropertyRepresentation
+providerId optional string

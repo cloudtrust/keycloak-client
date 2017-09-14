@@ -1,0 +1,7 @@
+free optional integer(int64)
+freeFormated optional string
+freePercentage optional integer(int64)
+total optional integer(int64)
+totalFormated optional string
+used optional integer(int64)
+usedFormated optional string

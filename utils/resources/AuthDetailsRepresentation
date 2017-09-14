@@ -1,0 +1,4 @@
+clientId optional string
+ipAddress optional string
+realmId optional string
+userId optional string

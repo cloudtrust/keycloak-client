@@ -1,0 +1,6 @@
+config optional MultivaluedHashMap
+id optional string
+name optional string
+providerId optional string
+subComponents optional MultivaluedHashMap
+subType optional string

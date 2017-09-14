@@ -1,0 +1,8 @@
+access optional Map
+attributes optional Map
+clientRoles optional Map
+id optional string
+name optional string
+path optional string
+realmRoles optional < string > array
+subGroups optional GroupRepresentation

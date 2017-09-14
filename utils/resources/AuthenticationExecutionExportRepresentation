@@ -1,0 +1,8 @@
+authenticator optional string
+authenticatorConfig optional string
+authenticatorFlow optional boolean
+autheticatorFlow optional boolean
+flowAlias optional string
+priority optional integer(int32)
+requirement optional string
+userSetupAllowed optional boolean

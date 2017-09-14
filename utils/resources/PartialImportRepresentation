@@ -1,0 +1,7 @@
+clients optional ClientRepresentation
+groups optional GroupRepresentation
+identityProviders optional IdentityProviderRepresentation
+ifResourceExists optional string
+policy optional enum (SKIP, OVERWRITE, FAIL)
+roles optional RolesRepresentation
+users optional UserRepresentation

@@ -1,0 +1,10 @@
+config optional Map
+decisionStrategy optional enum (AFFIRMATIVE, UNANIMOUS, CONSENSUS)
+description optional string
+id optional string
+logic optional enum (POSITIVE, NEGATIVE)
+name optional string
+policies optional < string > array
+resources optional < string > array
+scopes optional < string > array
+type optional string

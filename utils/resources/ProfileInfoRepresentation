@@ -1,0 +1,2 @@
+disabledFeatures optional < string > array
+name optional string

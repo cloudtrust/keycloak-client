@@ -1,0 +1,7 @@
+clients optional Map
+id optional string
+ipAddress optional string
+lastAccess optional integer(int64)
+start optional integer(int64)
+userId optional string
+username optional string

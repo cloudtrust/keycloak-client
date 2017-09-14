@@ -1,0 +1,9 @@
+authenticator optional string
+authenticatorConfig optional string
+authenticatorFlow optional boolean
+autheticatorFlow optional boolean
+flowId optional string
+id optional string
+parentFlow optional string
+priority optional integer(int32)
+requirement optional string

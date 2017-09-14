@@ -1,0 +1,6 @@
+added optional integer(int32)
+failed optional integer(int32)
+ignored optional boolean
+removed optional integer(int32)
+status optional string
+updated optional integer(int32)

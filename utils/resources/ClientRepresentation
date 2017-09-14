@@ -1,0 +1,37 @@
+access optional Map
+adminUrl optional string
+attributes optional Map
+authorizationServicesEnabled optional boolean
+authorizationSettings optional ResourceServerRepresentation
+baseUrl optional string
+bearerOnly optional boolean
+clientAuthenticatorType optional string
+clientId optional string
+clientTemplate optional string
+consentRequired optional boolean
+defaultRoles optional < string > array
+description optional string
+directAccessGrantsEnabled optional boolean
+enabled optional boolean
+frontchannelLogout optional boolean
+fullScopeAllowed optional boolean
+id optional string
+implicitFlowEnabled optional boolean
+name optional string
+nodeReRegistrationTimeout optional integer(int32)
+notBefore optional integer(int32)
+protocol optional string
+protocolMappers optional ProtocolMapperRepresentation
+publicClient optional boolean
+redirectUris optional < string > array
+registeredNodes optional Map
+registrationAccessToken optional string
+rootUrl optional string
+secret optional string
+serviceAccountsEnabled optional boolean
+standardFlowEnabled optional boolean
+surrogateAuthRequired optional boolean
+useTemplateConfig optional boolean
+useTemplateMappers optional boolean
+useTemplateScope optional boolean
+webOrigins optional < string > array

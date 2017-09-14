@@ -1,0 +1,5 @@
+iconUri optional string
+id optional string
+name optional string
+policies optional PolicyRepresentation
+resources optional ResourceRepresentation
