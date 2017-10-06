@@ -1,6 +1,0 @@
-adminEventsDetailsEnabled optional boolean
-adminEventsEnabled optional boolean
-enabledEventTypes optional < string > array
-eventsEnabled optional boolean
-eventsExpiration optional integer(int64)
-eventsListeners optional < string > array

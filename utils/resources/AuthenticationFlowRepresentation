@@ -1,7 +1,0 @@
-alias optional string
-authenticationExecutions optional AuthenticationExecutionExportRepresentation
-builtIn optional boolean
-description optional string
-id optional string
-providerId optional string
-topLevel optional boolean

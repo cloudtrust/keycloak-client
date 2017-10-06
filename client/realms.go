@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 )
 
-func (c *client) GetRealms() ([]map[string]interface{}, error) {
+func (c *client) GetRealms() ([]RealmRepresentation, error) {
 	var getRealms_Path string = "/auth/admin/realms"
 	var resp *gentleman.Response
 	{
@@ -17,7 +17,7 @@ func (c *client) GetRealms() ([]map[string]interface{}, error) {
 			return nil, errors.Wrap(err, "Get Realms failed.")
 		}
 	}
-	var result []map[string]interface{}
+	var result []RealmRepresentation
 	{
 		var err error
 		err = json.Unmarshal(resp.Bytes(), &result)

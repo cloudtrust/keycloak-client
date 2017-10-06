@@ -1,7 +1,0 @@
-config optional Map
-consentRequired optional boolean
-consentText optional string
-id optional string
-name optional string
-protocol optional string
-protocolMapper optional string

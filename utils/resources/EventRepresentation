@@ -1,9 +1,0 @@
-clientId optional string
-details optional Map
-error optional string
-ipAddress optional string
-realmId optional string
-sessionId optional string
-time optional integer(int64)
-type optional string
-userId optional string

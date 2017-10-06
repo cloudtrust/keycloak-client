@@ -1,3 +1,0 @@
-client optional string
-id optional string
-mappings optional RoleRepresentation

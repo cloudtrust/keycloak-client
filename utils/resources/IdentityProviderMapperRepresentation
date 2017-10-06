@@ -1,5 +1,0 @@
-config optional Map
-id optional string
-identityProviderAlias optional string
-identityProviderMapper optional string
-name optional string

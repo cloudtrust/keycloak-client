@@ -1,7 +1,0 @@
-defaultValue optional Object
-helpText optional string
-label optional string
-name optional string
-options optional < string > array
-secret optional boolean
-type optional string

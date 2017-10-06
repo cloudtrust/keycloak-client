@@ -1,7 +1,0 @@
-certificate optional string
-kid optional string
-providerId optional string
-providerPriority optional integer(int64)
-publicKey optional string
-status optional string
-type optional string

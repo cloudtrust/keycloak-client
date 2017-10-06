@@ -1,8 +1,0 @@
-allowRemoteResourceManagement optional boolean
-clientId optional string
-id optional string
-name optional string
-policies optional PolicyRepresentation
-policyEnforcementMode optional enum (ENFORCING, PERMISSIVE, DISABLED)
-resources optional ResourceRepresentation
-scopes optional ScopeRepresentation

@@ -1,3 +1,0 @@
-alias optional string
-config optional Map
-id optional string

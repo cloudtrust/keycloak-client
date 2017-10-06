@@ -1,4 +1,0 @@
-helpText optional string
-id optional string
-metadata optional Map
-properties optional ConfigPropertyRepresentation

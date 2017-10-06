@@ -1,2 +1,0 @@
-client optional Map
-realm optional < string > array

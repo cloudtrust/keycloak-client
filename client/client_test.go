@@ -5,37 +5,11 @@ import (
 	"time"
 	"github.com/stretchr/testify/require"
 	"fmt"
-	"crypto/cipher"
-	"crypto/aes"
 )
-
-type setivable interface {
-	cipher.BlockMode
-	SetIV([]byte)
-}
-
-
-func Test_Poop(t *testing.T)  {
-	var k []byte = make([]byte, 16)
-	var iv []byte = k
-	b, e := aes.NewCipher(k)
-	if e != nil {
-		fmt.Println(e)
-		return
-	}
-	var c = cipher.NewCBCEncrypter(b, iv)
-	switch cp := c.(type) {
-	case setivable:
-		fmt.Println("Haha!")
-		cp.SetIV(k)
-	case cipher.BlockMode:
-		fmt.Println("Hoho!")
-	}
-}
 
 func initTest(t *testing.T) Client {
 	var config HttpConfig = HttpConfig{
-		Addr: "http://127.0.0.1:8080",
+		Addr: "http://172.17.0.2:8080",
 		Username: "admin",
 		Password: "admin",
 		Timeout: time.Second * 5,
@@ -59,7 +33,7 @@ func TestClient_getToken(t *testing.T) {
 
 func TestClient_GetRealms(t *testing.T) {
 	var client Client = initTest(t)
-	var realms []map[string]interface{}
+	var realms []RealmRepresentation
 	{
 		var err error
 		realms, err = client.GetRealms()

@@ -1,3 +1,0 @@
-enabled optional boolean
-resource optional string
-scopePermissions optional Map

@@ -7,13 +7,14 @@ import (
 	"time"
 	"net/http"
 	"gopkg.in/h2non/gentleman.v2"
+	"gopkg.in/h2non/gentleman.v2/plugin"
 	"gopkg.in/h2non/gentleman.v2/plugins/timeout"
 	//"gopkg.in/h2non/gentleman.v2/plugins/multipart"
 )
 
 
 type Client interface {
-	GetRealms() ([]map[string]interface{}, error)
+	GetRealms() ([]RealmRepresentation, error)
 	GetUsers(realm string) ([]UserRepresentation, error)
 }
 
@@ -43,7 +44,7 @@ func NewHttpClient(config HttpConfig) (Client, error) {
 	}
 
 	if u.Scheme != "http" {
-		var m string = fmt.Sprint("Unsupported protocol %s. Your address must start with http://", u.Scheme)
+		var m string = fmt.Sprintf("Unsupported protocol %s. Your address must start with http://", u.Scheme)
 		return nil, errors.New(m)
 	}
 
@@ -112,11 +113,14 @@ func (c *client) getToken() error {
 	return nil
 }
 
-func (c *client) do(path string) (*gentleman.Response, error) {
+func (c *client) do(path string, plugins ...plugin.Plugin) (*gentleman.Response, error) {
 	var req *gentleman.Request = c.httpClient.Get()
 	{
 		req = req.Path(path)
 		req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", c.accessToken))
+		for _, p := range plugins {
+			req = req.Use(p)
+		}
 	}
 	var resp *gentleman.Response
 	{

@@ -1,7 +1,0 @@
-config optional MultivaluedHashMap
-id optional string
-name optional string
-parentId optional string
-providerId optional string
-providerType optional string
-subType optional string

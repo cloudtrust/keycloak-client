@@ -1,2 +1,0 @@
-count optional integer(int32)
-expiration optional integer(int32)

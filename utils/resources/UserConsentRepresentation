@@ -1,6 +1,0 @@
-clientId optional string
-createdDate optional integer(int64)
-grantedClientRoles optional Map
-grantedProtocolMappers optional Map
-grantedRealmRoles optional < string > array
-lastUpdatedDate optional integer(int64)

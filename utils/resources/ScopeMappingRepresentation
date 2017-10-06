@@ -1,4 +1,0 @@
-client optional string
-clientTemplate optional string
-roles optional < string > array
-self optional string

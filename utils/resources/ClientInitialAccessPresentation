@@ -1,6 +1,0 @@
-count optional integer(int32)
-expiration optional integer(int32)
-id optional string
-remainingCount optional integer(int32)
-timestamp optional integer(int32)
-token optional string
