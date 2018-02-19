@@ -21,7 +21,7 @@ type HttpConfig struct {
 	Timeout  time.Duration
 }
 
-type client struct {
+type Client struct {
 	username     string
 	password     string
 	accessToken  string
@@ -29,7 +29,7 @@ type client struct {
 	httpClient   *gentleman.Client
 }
 
-func New(config HttpConfig) (*client, error) {
+func New(config HttpConfig) (*Client, error) {
 	var u *url.URL
 	{
 		var err error
@@ -59,7 +59,7 @@ func New(config HttpConfig) (*client, error) {
 		}
 	}
 
-	return &client{
+	return &Client{
 		username:     config.Username,
 		password:     config.Password,
 		oidcProvider: oidcProvider,
@@ -67,7 +67,7 @@ func New(config HttpConfig) (*client, error) {
 	}, nil
 }
 
-func (c *client) getToken() error {
+func (c *Client) getToken() error {
 	var req *gentleman.Request
 	{
 		var authPath = "/auth/realms/master/protocol/openid-connect/token"
@@ -110,7 +110,7 @@ func (c *client) getToken() error {
 	return nil
 }
 
-func (c *client) verifyToken() error {
+func (c *Client) verifyToken() error {
 	var v = c.oidcProvider.Verifier(&oidc.Config{SkipClientIDCheck: true})
 
 	var err error
@@ -118,7 +118,7 @@ func (c *client) verifyToken() error {
 	return err
 }
 
-func (c *client) get(data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Get()
 	req = applyPlugins(req, c.accessToken, plugins...)
 
@@ -150,7 +150,7 @@ func (c *client) get(data interface{}, plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *client) post(plugins ...plugin.Plugin) error {
+func (c *Client) post(plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Post()
 	req = applyPlugins(req, c.accessToken, plugins...)
 
@@ -182,7 +182,7 @@ func (c *client) post(plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *client) delete(plugins ...plugin.Plugin) error {
+func (c *Client) delete(plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Delete()
 	req = applyPlugins(req, c.accessToken, plugins...)
 
@@ -214,7 +214,7 @@ func (c *client) delete(plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *client) put(plugins ...plugin.Plugin) error {
+func (c *Client) put(plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Put()
 	req = applyPlugins(req, c.accessToken, plugins...)
 

@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,7 +16,7 @@ func TestGetUsers(t *testing.T) {
 		require.Nil(t, err, "could not get users")
 	}
 	for _, i := range users {
-		fmt.Println(*i.Username)
+		assert.NotZero(t, *i.Username)
 	}
 }
 
@@ -25,7 +24,7 @@ func TestCreateUser(t *testing.T) {
 	var client = initTest(t)
 	var realm = "__internal"
 	var user = UserRepresentation{
-		Username: str("johanr"),
+		Username: str("john"),
 	}
 	var err = client.CreateUser(realm, user)
 	assert.Nil(t, err)
@@ -44,10 +43,10 @@ func TestGetUser(t *testing.T) {
 	var user UserRepresentation
 	{
 		var err error
-		user, err = client.GetUser("__internal", "078f735b-ac07-4b39-88cb-88647c4ff47c")
+		user, err = client.GetUser("__internal", "eb8b75ea-305d-40f6-87e5-ac8e16979c40")
 		require.Nil(t, err, "could not get users")
+		assert.NotZero(t, *user.Username)
 	}
-	fmt.Println(*user.Username)
 }
 
 func TestUpdateUser(t *testing.T) {
@@ -56,12 +55,12 @@ func TestUpdateUser(t *testing.T) {
 	var user = UserRepresentation{
 		Email: str("john.doe@elca.ch"),
 	}
-	var err = client.UpdateUser("__internal", "078f735b-ac07-4b39-88cb-88647c4ff47c", user)
+	var err = client.UpdateUser("__internal", "eb8b75ea-305d-40f6-87e5-ac8e16979c40", user)
 	assert.Nil(t, err)
 }
 func TestDeleteUser(t *testing.T) {
 	var client = initTest(t)
 
-	var err = client.DeleteUser("__internal", "078f735b-ac07-4b39-88cb-88647c4ff47c")
+	var err = client.DeleteUser("__internal", "eb8b75ea-305d-40f6-87e5-ac8e16979c40")
 	assert.Nil(t, err)
 }

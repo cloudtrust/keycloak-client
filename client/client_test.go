@@ -1,21 +1,21 @@
 package client
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func initTest(t *testing.T) *client {
+func initTest(t *testing.T) *Client {
 	var config = HttpConfig{
 		Addr:     "http://172.19.0.3:8080",
 		Username: "admin",
 		Password: "admin",
 		Timeout:  time.Second * 20,
 	}
-	var client *client
+	var client *Client
 	{
 		var err error
 		client, err = New(config)
@@ -28,5 +28,5 @@ func TestGetToken(t *testing.T) {
 	var client = initTest(t)
 	var err = client.getToken()
 	require.Nil(t, err, "could not get token")
-	fmt.Println(client.accessToken)
+	assert.NotZero(t, client.accessToken)
 }

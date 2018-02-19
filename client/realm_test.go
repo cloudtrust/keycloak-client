@@ -39,7 +39,7 @@ func TestUpdateRealm(t *testing.T) {
 	var client = initTest(t)
 
 	var realm = RealmRepresentation{
-		DisplayName: str("Test realm"),
+		DisplayName: str("Test update realm"),
 	}
 	var err = client.UpdateRealm("__internal", realm)
 	assert.Nil(t, err)
