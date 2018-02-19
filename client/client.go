@@ -141,7 +141,7 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 			}
 			return c.get(data, plugins...)
 		case resp.StatusCode >= 400:
-			return handleError(resp)
+			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
 			return json.Unmarshal(resp.Bytes(), data)
 		default:
@@ -173,7 +173,7 @@ func (c *Client) post(plugins ...plugin.Plugin) error {
 			}
 			return c.post(plugins...)
 		case resp.StatusCode >= 400:
-			return handleError(resp)
+			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -205,7 +205,7 @@ func (c *Client) delete(plugins ...plugin.Plugin) error {
 			}
 			return c.delete(plugins...)
 		case resp.StatusCode >= 400:
-			return handleError(resp)
+			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -237,7 +237,7 @@ func (c *Client) put(plugins ...plugin.Plugin) error {
 			}
 			return c.put(plugins...)
 		case resp.StatusCode >= 400:
-			return handleError(resp)
+			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -252,15 +252,6 @@ func applyPlugins(req *gentleman.Request, accessToken string, plugins ...plugin.
 		r = r.Use(p)
 	}
 	return r
-}
-
-func handleError(resp *gentleman.Response) error {
-	var m = map[string]string{}
-	var err = json.Unmarshal(resp.Bytes(), &m)
-	if err != nil {
-		return fmt.Errorf("invalid status code: %v; could not unmarshal response: %v", resp.StatusCode, err)
-	}
-	return fmt.Errorf("error message: %v", m)
 }
 
 func str(s string) *string {

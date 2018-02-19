@@ -38,12 +38,13 @@ func TestCountUsers(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotZero(t, count)
 }
+
 func TestGetUser(t *testing.T) {
 	var client = initTest(t)
 	var user UserRepresentation
 	{
 		var err error
-		user, err = client.GetUser("__internal", "eb8b75ea-305d-40f6-87e5-ac8e16979c40")
+		user, err = client.GetUser("__internal", "e8b96f33-1d14-463d-80db-294c4db249ab")
 		require.Nil(t, err, "could not get users")
 		assert.NotZero(t, *user.Username)
 	}
@@ -55,7 +56,7 @@ func TestUpdateUser(t *testing.T) {
 	var user = UserRepresentation{
 		Email: str("john.doe@elca.ch"),
 	}
-	var err = client.UpdateUser("__internal", "eb8b75ea-305d-40f6-87e5-ac8e16979c40", user)
+	var err = client.UpdateUser("__internal", "e8b96f33-1d14-463d-80db-294c4db249aa", user)
 	assert.Nil(t, err)
 }
 func TestDeleteUser(t *testing.T) {
