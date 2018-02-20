@@ -1,4 +1,4 @@
-package client
+package keycloak
 
 type AdminEventRepresentation struct {
 	AuthDetails    *AuthDetailsRepresentation `json:"authDetails,omitempty"`

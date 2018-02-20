@@ -1,4 +1,4 @@
-package client
+package keycloak
 
 import (
 	"context"
@@ -11,16 +11,19 @@ import (
 	oidc "github.com/coreos/go-oidc"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
+	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/timeout"
 )
 
-type HttpConfig struct {
+// Config is the keycloak client http config.
+type Config struct {
 	Addr     string
 	Username string
 	Password string
 	Timeout  time.Duration
 }
 
+// Client is the keycloak client.
 type Client struct {
 	username     string
 	password     string
@@ -29,7 +32,8 @@ type Client struct {
 	httpClient   *gentleman.Client
 }
 
-func New(config HttpConfig) (*Client, error) {
+// New returns a keycloak client.
+func New(config Config) (*Client, error) {
 	var u *url.URL
 	{
 		var err error
@@ -67,6 +71,7 @@ func New(config HttpConfig) (*Client, error) {
 	}, nil
 }
 
+// getToken get a token from keycloak.
 func (c *Client) getToken() error {
 	var req *gentleman.Request
 	{
@@ -110,6 +115,7 @@ func (c *Client) getToken() error {
 	return nil
 }
 
+// verifyToken token verify a token. It returns an error it is malformed, expired,...
 func (c *Client) verifyToken() error {
 	var v = c.oidcProvider.Verifier(&oidc.Config{SkipClientIDCheck: true})
 
@@ -118,6 +124,7 @@ func (c *Client) verifyToken() error {
 	return err
 }
 
+// get is a HTTP get method.
 func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Get()
 	req = applyPlugins(req, c.accessToken, plugins...)
@@ -246,12 +253,24 @@ func (c *Client) put(plugins ...plugin.Plugin) error {
 	}
 }
 
+// applyPlugins apply all the plugins to the request req.
 func applyPlugins(req *gentleman.Request, accessToken string, plugins ...plugin.Plugin) *gentleman.Request {
 	var r = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 	for _, p := range plugins {
 		r = r.Use(p)
 	}
 	return r
+}
+
+// createQueryPlugins create query parameters with the key values paramKV.
+func createQueryPlugins(paramKV ...string) []plugin.Plugin {
+	var plugins = []plugin.Plugin{}
+	for i := 0; i < len(paramKV); i += 2 {
+		var k = paramKV[i]
+		var v = paramKV[i+1]
+		plugins = append(plugins, query.Set(k, v))
+	}
+	return plugins
 }
 
 func str(s string) *string {
