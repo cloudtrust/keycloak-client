@@ -43,9 +43,9 @@ func New(config Config) (*Client, error) {
 		}
 	}
 
-	if u.Scheme != "http" {
-		return nil, fmt.Errorf("protocol not supported, your address must start with http://, not %v", u.Scheme)
-	}
+	// if u.Scheme != "http" {
+	// 	return nil, fmt.Errorf("protocol not supported, your address must start with http://, not %v", u.Scheme)
+	// }
 
 	var httpClient = gentleman.New()
 	{
