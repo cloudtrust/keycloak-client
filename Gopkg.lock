@@ -20,6 +20,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -30,6 +36,12 @@
   name = "github.com/pquerna/cachecontrol"
   packages = [".","cacheobject"]
   revision = "0dec1b30a0215bb68605dfc568e8855066c9202d"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/stretchr/testify"
@@ -82,6 +94,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5771516553a6ddbd4ae08c137169a7ca8437e019d877ae76413fbb7191e491ee"
+  inputs-digest = "bcd4dc5f3937d83e106e1a9999b3a7f5a9544ba495a3375c920688c9e73afce8"
   solver-name = "gps-cdcl"
   solver-version = 1

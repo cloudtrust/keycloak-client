@@ -9,6 +9,7 @@ import (
 	"time"
 
 	oidc "github.com/coreos/go-oidc"
+	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
 	"gopkg.in/h2non/gentleman.v2/plugins/query"
@@ -39,7 +40,7 @@ func New(config Config) (*Client, error) {
 		var err error
 		u, err = url.Parse(config.Addr)
 		if err != nil {
-			return nil, fmt.Errorf("could not parse URL: %v", err)
+			return nil, errors.Wrap(err, "could not parse URL")
 		}
 	}
 
@@ -59,7 +60,7 @@ func New(config Config) (*Client, error) {
 		var issuer = fmt.Sprintf("%s/auth/realms/master", u.String())
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
-			return nil, fmt.Errorf("could not create oidc provider: %v", err)
+			return nil, errors.Wrap(err, "could not create oidc provider")
 		}
 	}
 
@@ -88,7 +89,7 @@ func (c *Client) getToken() error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return fmt.Errorf("could not get token: %v", err)
+			return errors.Wrap(err, "could not get token")
 		}
 	}
 	defer resp.Close()
@@ -98,7 +99,7 @@ func (c *Client) getToken() error {
 		var err error
 		err = resp.JSON(&unmarshalledBody)
 		if err != nil {
-			return fmt.Errorf("could not unmarshal response: %v", err)
+			return errors.Wrap(err, "could not unmarshal response")
 		}
 	}
 
@@ -134,7 +135,7 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return fmt.Errorf("could not get response: %v", err)
+			return errors.Wrap(err, "could not get response")
 		}
 
 		switch {
@@ -143,7 +144,7 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 			if err = c.verifyToken(); err != nil {
 				var err = c.getToken()
 				if err != nil {
-					return fmt.Errorf("could not get token: %v", err)
+					return errors.Wrap(err, "could not get token: %v")
 				}
 			}
 			return c.get(data, plugins...)
@@ -166,7 +167,7 @@ func (c *Client) post(plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return fmt.Errorf("could not get response: %v", err)
+			return errors.Wrap(err, "could not get response")
 		}
 
 		switch {
@@ -175,7 +176,7 @@ func (c *Client) post(plugins ...plugin.Plugin) error {
 			if err = c.verifyToken(); err != nil {
 				var err = c.getToken()
 				if err != nil {
-					return fmt.Errorf("could not get token: %v", err)
+					return errors.Wrap(err, "could not get token")
 				}
 			}
 			return c.post(plugins...)
@@ -198,7 +199,7 @@ func (c *Client) delete(plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return fmt.Errorf("could not get response: %v", err)
+			return errors.Wrap(err, "could not get response")
 		}
 
 		switch {
@@ -207,7 +208,7 @@ func (c *Client) delete(plugins ...plugin.Plugin) error {
 			if err = c.verifyToken(); err != nil {
 				var err = c.getToken()
 				if err != nil {
-					return fmt.Errorf("could not get token: %v", err)
+					return errors.Wrap(err, "could not get token")
 				}
 			}
 			return c.delete(plugins...)
@@ -230,7 +231,7 @@ func (c *Client) put(plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return fmt.Errorf("could not get response: %v", err)
+			return errors.Wrap(err, "could not get response")
 		}
 
 		switch {
@@ -239,7 +240,7 @@ func (c *Client) put(plugins ...plugin.Plugin) error {
 			if err = c.verifyToken(); err != nil {
 				var err = c.getToken()
 				if err != nil {
-					return fmt.Errorf("could not get token: %v", err)
+					return errors.Wrap(err, "could not get token: %v")
 				}
 			}
 			return c.put(plugins...)
