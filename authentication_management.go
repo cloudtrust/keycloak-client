@@ -1,16 +1,38 @@
 package keycloak
 
-// Get authenticator providers Returns a list of authenticator providers.
-// GET /{realm}/authentication/authenticator-providers
+import "gopkg.in/h2non/gentleman.v2/plugins/url"
 
-// Get client authenticator providers Returns a list of client authenticator providers.
-// GET /{realm}/authentication/client-authenticator-providers
+const (
+	authenticationManagementPath = "/auth/admin/realms/:realm/authentication"
+)
 
-// Get authenticator provider’s configuration description
-// GET /{realm}/authentication/config-description/{providerId}
+// GetAuthenticatorProviders returns a list of authenticator providers.
+func (c *Client) GetAuthenticatorProviders(realmName string) ([]map[string]interface{}, error) {
+	var resp = []map[string]interface{}{}
+	var err = c.get(&resp, url.Path(authenticationManagementPath+"/authenticator-providers"), url.Param("realm", realmName))
+	return resp, err
+}
 
-// Get authenticator configuration
-// GET /{realm}/authentication/config/{id}
+// GetClientAuthenticatorProviders returns a list of client authenticator providers.
+func (c *Client) GetClientAuthenticatorProviders(realmName string) ([]map[string]interface{}, error) {
+	var resp = []map[string]interface{}{}
+	var err = c.get(&resp, url.Path(authenticationManagementPath+"client-authenticator-providers"), url.Param("realm", realmName))
+	return resp, err
+}
+
+// GetAuthenticatorProviderConfig returns the authenticator provider’s configuration description.
+func (c *Client) GetAuthenticatorProviderConfig(realmName, providerID string) (AuthenticatorConfigInfoRepresentation, error) {
+	var resp = AuthenticatorConfigInfoRepresentation{}
+	var err = c.get(&resp, url.Path(authenticationManagementPath+"config-description/:providerID"), url.Param("realm", realmName), url.Param("providerID", providerID))
+	return resp, err
+}
+
+// GetAuthenticatorConfig returns the authenticator configuration.
+func (c *Client) GetAuthenticatorConfig(realmName, configID string) (AuthenticatorConfigRepresentation, error) {
+	var resp = AuthenticatorConfigRepresentation{}
+	var err = c.get(&resp, url.Path(authenticationManagementPath+"config/:id"), url.Param("realm", realmName), url.Param("id", configID))
+	return resp, err
+}
 
 // Update authenticator configuration
 // PUT /{realm}/authentication/config/{id}
