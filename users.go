@@ -47,7 +47,7 @@ func (c *Client) GetUser(realmName, userID string) (UserRepresentation, error) {
 	return resp, err
 }
 
-// UpdateUser update the user.
+// UpdateUser updates the user.
 func (c *Client) UpdateUser(realmName, userID string, user UserRepresentation) error {
 	return c.put(url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(user))
 }
