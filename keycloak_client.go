@@ -2,7 +2,6 @@ package keycloak
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -128,6 +127,7 @@ func (c *Client) verifyToken() error {
 // get is a HTTP get method.
 func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Get()
+
 	req = applyPlugins(req, c.accessToken, plugins...)
 
 	var resp *gentleman.Response
@@ -151,7 +151,15 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
-			return json.Unmarshal(resp.Bytes(), data)
+			switch resp.Header.Get("Content-Type") {
+			case "application/json":
+				return resp.JSON(data)
+			case "application/octet-stream":
+				data = resp.Bytes()
+				return nil
+			default:
+				return fmt.Errorf("unkown http content-type: %v", resp.Header.Get("Content-Type"))
+			}
 		default:
 			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
 		}
@@ -161,7 +169,6 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 func (c *Client) post(plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Post()
 	req = applyPlugins(req, c.accessToken, plugins...)
-
 	var resp *gentleman.Response
 	{
 		var err error
