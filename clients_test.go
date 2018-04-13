@@ -1,28 +1,22 @@
 package keycloak
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func initTest(t *testing.T) *Client {
-	var config = Config{
-		Addr:     "http://127.0.0.1",
-		Username: "admin",
-		Password: "admin",
-		Timeout:  time.Second * 20,
+func TestPlayground(t *testing.T) {
+	var client = initTest(t)
+	var clients, err = client.GetClients("master")
+
+	for _, c := range clients {
+		printStruct(c)
 	}
-	var client *Client
-	{
-		var err error
-		client, err = New(config)
-		require.Nil(t, err, "could not create client")
-	}
-	return client
+
+	assert.Nil(t, err)
 }
 
 func TestCreateRealm(t *testing.T) {
@@ -46,4 +40,14 @@ func TestGetSecret(t *testing.T) {
 	var c, err = client.GetSecret("318ab6db-c056-4d2f-b4f6-c0b585ee45b3", "master")
 	fmt.Println(*(c.Value))
 	assert.Nil(t, err)
+}
+
+func printStruct(data interface{}) {
+	var s, err = json.Marshal(data)
+	if err != nil {
+		fmt.Println("could not marshal json")
+		return
+	}
+	fmt.Println(string(s))
+	fmt.Println()
 }

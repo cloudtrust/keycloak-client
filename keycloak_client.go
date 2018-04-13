@@ -166,7 +166,7 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *Client) post(plugins ...plugin.Plugin) error {
+func (c *Client) post(data interface{}, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Post()
 	req = applyPlugins(req, c.accessToken, plugins...)
 	var resp *gentleman.Response
@@ -186,11 +186,19 @@ func (c *Client) post(plugins ...plugin.Plugin) error {
 					return errors.Wrap(err, "could not get token")
 				}
 			}
-			return c.post(plugins...)
+			return c.post(data, plugins...)
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
-			return nil
+			switch resp.Header.Get("Content-Type") {
+			case "application/json":
+				return resp.JSON(data)
+			case "application/octet-stream":
+				data = resp.Bytes()
+				return nil
+			default:
+				return fmt.Errorf("unkown http content-type: %v", resp.Header.Get("Content-Type"))
+			}
 		default:
 			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
 		}

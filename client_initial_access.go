@@ -12,8 +12,8 @@ const (
 // CreateClientInitialAccess creates a new initial access token.
 func (c *Client) CreateClientInitialAccess(realmName string, access ClientInitialAccessCreatePresentation) (ClientInitialAccessPresentation, error) {
 	var resp = ClientInitialAccessPresentation{}
-	var err = c.post(url.Path(clientInitialAccessPath), url.Param("realm", realmName), body.JSON(access))
-	return respasf, err
+	var err = c.post(&resp, url.Path(clientInitialAccessPath), url.Param("realm", realmName), body.JSON(access))
+	return resp, err
 }
 
 // GetClientInitialAccess returns a list of clients initial access.

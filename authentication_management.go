@@ -49,7 +49,7 @@ func (c *Client) DeleteAuthenticatorConfig(realmName, configID string) error {
 
 // CreateAuthenticationExecution add new authentication execution
 func (c *Client) CreateAuthenticationExecution(realmName string, authExec AuthenticationExecutionRepresentation) error {
-	return c.post(url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
+	return c.post(nil, url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
 }
 
 // DeleteAuthenticationExecution deletes the execution.
@@ -59,22 +59,22 @@ func (c *Client) DeleteAuthenticationExecution(realmName, executionID string) er
 
 // UpdateAuthenticationExecution update execution with new configuration.
 func (c *Client) UpdateAuthenticationExecution(realmName, executionID string, authConfig AuthenticatorConfigRepresentation) error {
-	return c.post(url.Path(authenticationManagementPath+"/executions/:id/config"), url.Param("realm", realmName), url.Param("id", executionID), body.JSON(authConfig))
+	return c.post(nil, url.Path(authenticationManagementPath+"/executions/:id/config"), url.Param("realm", realmName), url.Param("id", executionID), body.JSON(authConfig))
 }
 
 // LowerExecutionPriority lowers the execution’s priority.
 func (c *Client) LowerExecutionPriority(realmName, executionID string) error {
-	return c.post(url.Path(authenticationManagementPath+"/executions/:id/lower-priority"), url.Param("realm", realmName), url.Param("id", executionID))
+	return c.post(nil, url.Path(authenticationManagementPath+"/executions/:id/lower-priority"), url.Param("realm", realmName), url.Param("id", executionID))
 }
 
 // RaiseExecutionPriority raise the execution’s priority.
 func (c *Client) RaiseExecutionPriority(realmName, executionID string) error {
-	return c.post(url.Path(authenticationManagementPath+"/executions/:id/raise-priority"), url.Param("realm", realmName), url.Param("id", executionID))
+	return c.post(nil, url.Path(authenticationManagementPath+"/executions/:id/raise-priority"), url.Param("realm", realmName), url.Param("id", executionID))
 }
 
 // CreateAuthenticationFlow creates a new authentication flow.
 func (c *Client) CreateAuthenticationFlow(realmName string, authFlow AuthenticationFlowRepresentation) error {
-	return c.post(url.Path(authenticationManagementPath+"/flows"), url.Param("realm", realmName), body.JSON(authFlow))
+	return c.post(nil, url.Path(authenticationManagementPath+"/flows"), url.Param("realm", realmName), body.JSON(authFlow))
 }
 
 // GetAuthenticationFlows returns a list of authentication flows.
@@ -89,7 +89,7 @@ func (c *Client) GetAuthenticationFlows(realmName string) ([]AuthenticationFlowR
 // 'newName' is the new name of the authentication flow.
 func (c *Client) CopyExistingAuthenticationFlow(realmName, flowAlias, newName string) error {
 	var m = map[string]string{"newName": newName}
-	return c.post(url.Path(authenticationManagementPath+"/flows/:flowAlias/copy"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
+	return c.post(nil, url.Path(authenticationManagementPath+"/flows/:flowAlias/copy"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
 }
 
 // GetAuthenticationExecutionForFlow returns the authentication executions for a flow.
