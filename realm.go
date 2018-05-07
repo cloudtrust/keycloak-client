@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	realmRootPath = "/auth/admin/realms"
-	realmPath     = realmRootPath + "/:realm"
+	realmRootPath   = "/auth/admin/realms"
+	realmPath       = realmRootPath + "/:realm"
+	exportRealmPath = "/auth/realms/:realm/export/realm"
 )
 
 // GetRealms get the top level represention of all the realms. Nested information like users are
@@ -40,4 +41,11 @@ func (c *Client) UpdateRealm(realmName string, realm RealmRepresentation) error 
 // DeleteRealm deletes the realm.
 func (c *Client) DeleteRealm(realmName string) error {
 	return c.delete(url.Path(realmPath), url.Param("realm", realmName))
+}
+
+// ExportRealm recovers the full realm.
+func (c *Client) ExportRealm(realmName string) (RealmRepresentation, error) {
+	var resp = RealmRepresentation{}
+	var err = c.get(&resp, url.Path(exportRealmPath), url.Param("realm", realmName))
+	return resp, err
 }
