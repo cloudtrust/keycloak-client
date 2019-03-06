@@ -10,18 +10,18 @@ const (
 )
 
 // CreateClientsRoleMapping add client-level roles to the user role mapping.
-func (c *Client) CreateClientsRoleMapping(realmName, groupID, clientID string, roles []RoleRepresentation) error {
-	return c.post(nil, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("client", clientID), body.JSON(roles))
+func (c *Client) CreateClientsRoleMapping(accessToken string, realmName, groupID, clientID string, roles []RoleRepresentation) error {
+	return c.post(accessToken, nil, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("client", clientID), body.JSON(roles))
 }
 
 // GetClientsRoleMapping gets client-level role mappings for the user, and the app.
-func (c *Client) GetClientsRoleMapping(realmName, groupID, clientID string) ([]RoleRepresentation, error) {
+func (c *Client) GetClientsRoleMapping(accessToken string, realmName, groupID, clientID string) ([]RoleRepresentation, error) {
 	var resp = []RoleRepresentation{}
-	var err = c.get(&resp, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("client", clientID))
+	var err = c.get(accessToken, &resp, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("client", clientID))
 	return resp, err
 }
 
 // DeleteClientsRoleMapping deletes client-level roles from user role mapping.
-func (c *Client) DeleteClientsRoleMapping(realmName, groupID, clientID string) error {
-	return c.delete(url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("client", clientID))
+func (c *Client) DeleteClientsRoleMapping(accessToken string, realmName, groupID, clientID string) error {
+	return c.delete(accessToken, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("client", clientID))
 }

@@ -10,20 +10,20 @@ const (
 )
 
 // CreateClientInitialAccess creates a new initial access token.
-func (c *Client) CreateClientInitialAccess(realmName string, access ClientInitialAccessCreatePresentation) (ClientInitialAccessPresentation, error) {
+func (c *Client) CreateClientInitialAccess(accessToken string, realmName string, access ClientInitialAccessCreatePresentation) (ClientInitialAccessPresentation, error) {
 	var resp = ClientInitialAccessPresentation{}
-	var err = c.post(&resp, url.Path(clientInitialAccessPath), url.Param("realm", realmName), body.JSON(access))
+	var err = c.post(accessToken, &resp, url.Path(clientInitialAccessPath), url.Param("realm", realmName), body.JSON(access))
 	return resp, err
 }
 
 // GetClientInitialAccess returns a list of clients initial access.
-func (c *Client) GetClientInitialAccess(realmName string) ([]ClientInitialAccessPresentation, error) {
+func (c *Client) GetClientInitialAccess(accessToken string, realmName string) ([]ClientInitialAccessPresentation, error) {
 	var resp = []ClientInitialAccessPresentation{}
-	var err = c.get(&resp, url.Path(clientInitialAccessPath), url.Param("realm", realmName))
+	var err = c.get(accessToken, &resp, url.Path(clientInitialAccessPath), url.Param("realm", realmName))
 	return resp, err
 }
 
 // DeleteClientInitialAccess deletes the client initial access.
-func (c *Client) DeleteClientInitialAccess(realmName, accessID string) error {
-	return c.delete(url.Path(clientInitialAccessPath+"/:id"), url.Param("realm", realmName), url.Param("id", accessID))
+func (c *Client) DeleteClientInitialAccess(accessToken string, realmName, accessID string) error {
+	return c.delete(accessToken, url.Path(clientInitialAccessPath+"/:id"), url.Param("realm", realmName), url.Param("id", accessID))
 }

@@ -22,14 +22,20 @@ func main() {
 		log.Fatalf("could not create keycloak client: %v", err)
 	}
 
+	// Get access token
+	accessToken, err := client.GetToken("master", "admin", "admin")
+	if err != nil {
+		log.Fatalf("could not get access token: %v", err)
+	}
+
 	// Delete test realm
-	client.DeleteRealm(tstRealm)
+	client.DeleteRealm(accessToken, tstRealm)
 
 	// Check existing realms
 	var initialRealms []keycloak.RealmRepresentation
 	{
 		var err error
-		initialRealms, err = client.GetRealms()
+		initialRealms, err = client.GetRealms(accessToken)
 		if err != nil {
 			log.Fatalf("could not get realms: %v", err)
 		}
@@ -43,7 +49,7 @@ func main() {
 	// Create test realm.
 	{
 		var realm = tstRealm
-		var err = client.CreateRealm(keycloak.RealmRepresentation{
+		var err = client.CreateRealm(accessToken, keycloak.RealmRepresentation{
 			Realm: &realm,
 		})
 		if err != nil {
@@ -54,7 +60,7 @@ func main() {
 
 	// Check getRealm.
 	{
-		var realmR, err = client.GetRealm(tstRealm)
+		var realmR, err = client.GetRealm(accessToken, tstRealm)
 		if err != nil {
 			log.Fatalf("could not get test realm: %v", err)
 		}
@@ -70,7 +76,7 @@ func main() {
 	// Update Realm
 	{
 		var displayName = "updated realm"
-		var err = client.UpdateRealm(tstRealm, keycloak.RealmRepresentation{
+		var err = client.UpdateRealm(accessToken, tstRealm, keycloak.RealmRepresentation{
 			DisplayName: &displayName,
 		})
 		if err != nil {
@@ -78,7 +84,7 @@ func main() {
 		}
 		// Check update
 		{
-			var realmR, err = client.GetRealm(tstRealm)
+			var realmR, err = client.GetRealm(accessToken, tstRealm)
 			if err != nil {
 				log.Fatalf("could not get test realm: %v", err)
 			}
@@ -91,7 +97,7 @@ func main() {
 
 	// Count users.
 	{
-		var nbrUser, err = client.CountUsers(tstRealm)
+		var nbrUser, err = client.CountUsers(accessToken, tstRealm)
 		if err != nil {
 			log.Fatalf("could not count users: %v", err)
 		}
@@ -105,7 +111,7 @@ func main() {
 		for _, u := range tstUsers {
 			var username = strings.ToLower(u.firstname + "." + u.lastname)
 			var email = username + "@cloudtrust.ch"
-			var err = client.CreateUser(tstRealm, keycloak.UserRepresentation{
+			var err = client.CreateUser(accessToken, tstRealm, keycloak.UserRepresentation{
 				Username:  &username,
 				FirstName: &u.firstname,
 				LastName:  &u.lastname,
@@ -117,7 +123,7 @@ func main() {
 		}
 		// Check that all users where created.
 		{
-			var nbrUser, err = client.CountUsers(tstRealm)
+			var nbrUser, err = client.CountUsers(accessToken, tstRealm)
 			if err != nil {
 				log.Fatalf("could not count users: %v", err)
 			}
@@ -132,7 +138,7 @@ func main() {
 	{
 		{
 			// No parameters.
-			var users, err = client.GetUsers(tstRealm)
+			var users, err = client.GetUsers(accessToken, tstRealm)
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -142,7 +148,7 @@ func main() {
 		}
 		{
 			// email.
-			var users, err = client.GetUsers(tstRealm, "email", "john.doe@cloudtrust.ch")
+			var users, err = client.GetUsers(accessToken, tstRealm, "email", "john.doe@cloudtrust.ch")
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -152,7 +158,7 @@ func main() {
 		}
 		{
 			// firstname.
-			var users, err = client.GetUsers(tstRealm, "firstName", "John")
+			var users, err = client.GetUsers(accessToken, tstRealm, "firstName", "John")
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -163,7 +169,7 @@ func main() {
 		}
 		{
 			// lastname.
-			var users, err = client.GetUsers(tstRealm, "lastName", "Wells")
+			var users, err = client.GetUsers(accessToken, tstRealm, "lastName", "Wells")
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -173,7 +179,7 @@ func main() {
 		}
 		{
 			// username.
-			var users, err = client.GetUsers(tstRealm, "username", "lucia.nelson")
+			var users, err = client.GetUsers(accessToken, tstRealm, "username", "lucia.nelson")
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -183,7 +189,7 @@ func main() {
 		}
 		{
 			// first.
-			var users, err = client.GetUsers(tstRealm, "max", "7")
+			var users, err = client.GetUsers(accessToken, tstRealm, "max", "7")
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -193,7 +199,7 @@ func main() {
 		}
 		{
 			// search.
-			var users, err = client.GetUsers(tstRealm, "search", "le")
+			var users, err = client.GetUsers(accessToken, tstRealm, "search", "le")
 			if err != nil {
 				log.Fatalf("could not get users: %v", err)
 			}
@@ -209,7 +215,7 @@ func main() {
 		// Get user ID.
 		var userID string
 		{
-			var users, err = client.GetUsers(tstRealm, "search", "Maria")
+			var users, err = client.GetUsers(accessToken, tstRealm, "search", "Maria")
 			if err != nil {
 				log.Fatalf("could not get Maria: %v", err)
 			}
@@ -226,7 +232,7 @@ func main() {
 		var updatedLastname = "updated"
 		{
 
-			var err = client.UpdateUser(tstRealm, userID, keycloak.UserRepresentation{
+			var err = client.UpdateUser(accessToken, tstRealm, userID, keycloak.UserRepresentation{
 				FirstName: &username,
 				LastName:  &updatedLastname,
 			})
@@ -236,7 +242,7 @@ func main() {
 		}
 		// Check that user was updated.
 		{
-			var users, err = client.GetUsers(tstRealm, "search", "Maria")
+			var users, err = client.GetUsers(accessToken, tstRealm, "search", "Maria")
 			if err != nil {
 				log.Fatalf("could not get Maria: %v", err)
 			}
@@ -255,7 +261,7 @@ func main() {
 		// Get user ID.
 		var userID string
 		{
-			var users, err = client.GetUsers(tstRealm, "search", "Toni")
+			var users, err = client.GetUsers(accessToken, tstRealm, "search", "Toni")
 			if err != nil {
 				log.Fatalf("could not get Toni: %v", err)
 			}
@@ -269,14 +275,14 @@ func main() {
 		}
 		// Delete user.
 		{
-			var err = client.DeleteUser(tstRealm, userID)
+			var err = client.DeleteUser(accessToken, tstRealm, userID)
 			if err != nil {
 				log.Fatalf("could not delete user: %v", err)
 			}
 		}
 		// Check that user was deleted.
 		{
-			var nbrUser, err = client.CountUsers(tstRealm)
+			var nbrUser, err = client.CountUsers(accessToken, tstRealm)
 			if err != nil {
 				log.Fatalf("could not count users: %v", err)
 			}
@@ -289,13 +295,13 @@ func main() {
 
 	// Delete test realm.
 	{
-		var err = client.DeleteRealm(tstRealm)
+		var err = client.DeleteRealm(accessToken, tstRealm)
 		if err != nil {
 			log.Fatalf("could not delete test realm: %v", err)
 		}
 		// Check that the realm was deleted.
 		{
-			var realms, err = client.GetRealms()
+			var realms, err = client.GetRealms(accessToken)
 			if err != nil {
 				log.Fatalf("could not get realms: %v", err)
 			}
@@ -331,15 +337,11 @@ func (c *Client) DeleteUser(realmName, userID string) error {
 */
 
 func getKeycloakConfig() *keycloak.Config {
-	var adr = pflag.String("url", "localhost:8080", "keycloak address")
-	var username = pflag.String("username", "admin", "keycloak username")
-	var password = pflag.String("password", "admin", "keycloak password")
+	var adr = pflag.String("url", "http://localhost:8080", "keycloak address")
 	pflag.Parse()
 
 	return &keycloak.Config{
 		Addr:     *adr,
-		Username: *username,
-		Password: *password,
 		Timeout:  10 * time.Second,
 	}
 }

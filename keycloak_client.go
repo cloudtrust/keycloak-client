@@ -17,18 +17,13 @@ import (
 
 // Config is the keycloak client http config.
 type Config struct {
-	Addr     string
-	Username string
-	Password string
-	Timeout  time.Duration
+	Addr    string
+	Timeout time.Duration
 }
 
 // Client is the keycloak client.
 type Client struct {
-	username     string
-	password     string
-	accessToken  string
-	oidcProvider *oidc.Provider
+	url          *url.URL
 	httpClient   *gentleman.Client
 }
 
@@ -43,44 +38,28 @@ func New(config Config) (*Client, error) {
 		}
 	}
 
-	// if u.Scheme != "http" {
-	// 	return nil, fmt.Errorf("protocol not supported, your address must start with http://, not %v", u.Scheme)
-	// }
-
 	var httpClient = gentleman.New()
 	{
 		httpClient = httpClient.URL(u.String())
 		httpClient = httpClient.Use(timeout.Request(config.Timeout))
 	}
 
-	var oidcProvider *oidc.Provider
-	{
-		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/master", u.String())
-		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
-		if err != nil {
-			return nil, errors.Wrap(err, "could not create oidc provider")
-		}
-	}
-
 	return &Client{
-		username:     config.Username,
-		password:     config.Password,
-		oidcProvider: oidcProvider,
-		httpClient:   httpClient,
+		url:        u,
+		httpClient: httpClient,
 	}, nil
 }
 
-// getToken get a token from keycloak.
-func (c *Client) getToken() error {
+// getToken returns a valid token from keycloak.
+func (c *Client) GetToken(realm string, username string, password string) (string, error) {
 	var req *gentleman.Request
 	{
-		var authPath = "/auth/realms/master/protocol/openid-connect/token"
+		var authPath = fmt.Sprintf("/auth/realms/%s/protocol/openid-connect/token", realm)
 		req = c.httpClient.Post()
 		req = req.SetHeader("Content-Type", "application/x-www-form-urlencoded")
 		req = req.Path(authPath)
 		req = req.Type("urlencoded")
-		req = req.BodyString(fmt.Sprintf("username=%s&password=%s&grant_type=password&client_id=admin-cli", c.username, c.password))
+		req = req.BodyString(fmt.Sprintf("username=%s&password=%s&grant_type=password&client_id=admin-cli", username, password))
 	}
 
 	var resp *gentleman.Response
@@ -88,17 +67,20 @@ func (c *Client) getToken() error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, "could not get token")
+			return "", errors.Wrap(err, "could not get token")
 		}
 	}
 	defer resp.Close()
+
+	titi := string(resp.Bytes())
+	fmt.Printf(titi)
 
 	var unmarshalledBody map[string]interface{}
 	{
 		var err error
 		err = resp.JSON(&unmarshalledBody)
 		if err != nil {
-			return errors.Wrap(err, "could not unmarshal response")
+			return "", errors.Wrap(err, "could not unmarshal response")
 		}
 	}
 
@@ -107,28 +89,37 @@ func (c *Client) getToken() error {
 		var ok bool
 		accessToken, ok = unmarshalledBody["access_token"]
 		if !ok {
-			return fmt.Errorf("could not find access token in response body")
+			return "", fmt.Errorf("could not find access token in response body")
 		}
 	}
 
-	c.accessToken = accessToken.(string)
-	return nil
+	return accessToken.(string), nil
 }
 
 // verifyToken token verify a token. It returns an error it is malformed, expired,...
-func (c *Client) verifyToken() error {
-	var v = c.oidcProvider.Verifier(&oidc.Config{SkipClientIDCheck: true})
+func (c *Client) VerifyToken(realmName string, accessToken string) error {
+	var oidcProvider *oidc.Provider
+	{
+		var err error
+		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.url.String(), realmName)
+		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
+		if err != nil {
+			return errors.Wrap(err, "could not create oidc provider")
+		}
+	}
+
+	var v = oidcProvider.Verifier(&oidc.Config{SkipClientIDCheck: true})
 
 	var err error
-	_, err = v.Verify(context.Background(), c.accessToken)
+	_, err = v.Verify(context.Background(), accessToken)
 	return err
 }
 
 // get is a HTTP get method.
-func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Get()
 
-	req = applyPlugins(req, c.accessToken, plugins...)
+	req = applyPlugins(req, accessToken, plugins...)
 
 	var resp *gentleman.Response
 	{
@@ -140,16 +131,9 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			// If the token is not valid (expired, ...) ask a new one.
-			if err = c.verifyToken(); err != nil {
-				var err = c.getToken()
-				if err != nil {
-					return errors.Wrap(err, "could not get token: %v")
-				}
-			}
-			return c.get(data, plugins...)
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, resp.String())
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
@@ -166,9 +150,9 @@ func (c *Client) get(data interface{}, plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *Client) post(data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Post()
-	req = applyPlugins(req, c.accessToken, plugins...)
+	req = applyPlugins(req, accessToken, plugins...)
 	var resp *gentleman.Response
 	{
 		var err error
@@ -179,14 +163,7 @@ func (c *Client) post(data interface{}, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			// If the token is not valid (expired, ...) ask a new one.
-			if err = c.verifyToken(); err != nil {
-				var err = c.getToken()
-				if err != nil {
-					return errors.Wrap(err, "could not get token")
-				}
-			}
-			return c.post(data, plugins...)
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
@@ -197,7 +174,7 @@ func (c *Client) post(data interface{}, plugins ...plugin.Plugin) error {
 				data = resp.Bytes()
 				return nil
 			default:
-				return fmt.Errorf("unkown http content-type: %v", resp.Header.Get("Content-Type"))
+				return nil
 			}
 		default:
 			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
@@ -205,9 +182,9 @@ func (c *Client) post(data interface{}, plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *Client) delete(plugins ...plugin.Plugin) error {
+func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Delete()
-	req = applyPlugins(req, c.accessToken, plugins...)
+	req = applyPlugins(req, accessToken, plugins...)
 
 	var resp *gentleman.Response
 	{
@@ -219,14 +196,7 @@ func (c *Client) delete(plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			// If the token is not valid (expired, ...) ask a new one.
-			if err = c.verifyToken(); err != nil {
-				var err = c.getToken()
-				if err != nil {
-					return errors.Wrap(err, "could not get token")
-				}
-			}
-			return c.delete(plugins...)
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
@@ -237,9 +207,9 @@ func (c *Client) delete(plugins ...plugin.Plugin) error {
 	}
 }
 
-func (c *Client) put(plugins ...plugin.Plugin) error {
+func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Put()
-	req = applyPlugins(req, c.accessToken, plugins...)
+	req = applyPlugins(req, accessToken, plugins...)
 
 	var resp *gentleman.Response
 	{
@@ -251,14 +221,7 @@ func (c *Client) put(plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			// If the token is not valid (expired, ...) ask a new one.
-			if err = c.verifyToken(); err != nil {
-				var err = c.getToken()
-				if err != nil {
-					return errors.Wrap(err, "could not get token: %v")
-				}
-			}
-			return c.put(plugins...)
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
