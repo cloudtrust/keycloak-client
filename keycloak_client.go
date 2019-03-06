@@ -72,9 +72,6 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 	}
 	defer resp.Close()
 
-	titi := string(resp.Bytes())
-	fmt.Printf(titi)
-
 	var unmarshalledBody map[string]interface{}
 	{
 		var err error
