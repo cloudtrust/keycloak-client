@@ -131,9 +131,9 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, resp.String())
+			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
@@ -163,7 +163,7 @@ func (c *Client) post(accessToken string, data interface{}, location *string, pl
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
@@ -199,7 +199,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
@@ -224,7 +224,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:

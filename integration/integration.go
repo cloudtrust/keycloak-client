@@ -49,7 +49,8 @@ func main() {
 	// Create test realm.
 	{
 		var realm = tstRealm
-		var err = client.CreateRealm(accessToken, keycloak.RealmRepresentation{
+		var err error
+		_, err = client.CreateRealm(accessToken, keycloak.RealmRepresentation{
 			Realm: &realm,
 		})
 		if err != nil {
@@ -111,7 +112,8 @@ func main() {
 		for _, u := range tstUsers {
 			var username = strings.ToLower(u.firstname + "." + u.lastname)
 			var email = username + "@cloudtrust.ch"
-			var err = client.CreateUser(accessToken, tstRealm, keycloak.UserRepresentation{
+			var err error
+			_, err = client.CreateUser(accessToken, tstRealm, keycloak.UserRepresentation{
 				Username:  &username,
 				FirstName: &u.firstname,
 				LastName:  &u.lastname,
@@ -341,8 +343,8 @@ func getKeycloakConfig() *keycloak.Config {
 	pflag.Parse()
 
 	return &keycloak.Config{
-		Addr:     *adr,
-		Timeout:  10 * time.Second,
+		Addr:    *adr,
+		Timeout: 10 * time.Second,
 	}
 }
 

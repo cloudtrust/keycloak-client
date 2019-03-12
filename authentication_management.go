@@ -49,8 +49,8 @@ func (c *Client) DeleteAuthenticatorConfig(accessToken string, realmName, config
 
 // CreateAuthenticationExecution add new authentication execution
 func (c *Client) CreateAuthenticationExecution(accessToken string, realmName string, authExec AuthenticationExecutionRepresentation) (string, error) {
-	var location *string
-	return *location, c.post(accessToken, nil, location, url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
+	var location string
+	return location, c.post(accessToken, nil, &location, url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
 }
 
 // DeleteAuthenticationExecution deletes the execution.
@@ -109,16 +109,16 @@ func (c *Client) UpdateAuthenticationExecutionForFlow(accessToken string, realmN
 // 'flowAlias' is the alias of the parent flow.
 func (c *Client) CreateAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias, provider string) (string, error) {
 	var m = map[string]string{"provider": provider}
-	var location *string
-	return *location, c.post(accessToken, nil, location, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/execution"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
+	var location string
+	return location, c.post(accessToken, nil, &location, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/execution"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
 }
 
 // CreateFlowWithExecutionForExistingFlow add a new flow with a new execution to an existing flow.
 // 'flowAlias' is the alias of the parent authentication flow.
 func (c *Client) CreateFlowWithExecutionForExistingFlow(accessToken string, realmName, flowAlias, alias, flowType, provider, description string) (string, error) {
 	var m = map[string]string{"alias": alias, "type": flowType, "provider": provider, "description": description}
-	var location *string
-	return *location, c.post(accessToken, nil, location, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/flow"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
+	var location string
+	return location, c.post(accessToken, nil, &location, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/flow"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
 }
 
 // GetAuthenticationFlow gets the authentication flow for id.
