@@ -13,7 +13,7 @@ const (
 
 // GetRealms get the top level represention of all the realms. Nested information like users are
 // not included.
-func (c *Client) GetRealms(accessToken string) ([]RealmRepresentation, error){
+func (c *Client) GetRealms(accessToken string) ([]RealmRepresentation, error) {
 	var resp = []RealmRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(realmRootPath))
 	return resp, err
@@ -21,8 +21,7 @@ func (c *Client) GetRealms(accessToken string) ([]RealmRepresentation, error){
 
 // CreateRealm creates the realm from its RealmRepresentation.
 func (c *Client) CreateRealm(accessToken string, realm RealmRepresentation) (string, error) {
-	var location string
-	return location, c.post(accessToken, nil, &location, url.Path(realmRootPath), body.JSON(realm))
+	return c.post(accessToken, nil, url.Path(realmRootPath), body.JSON(realm))
 }
 
 // GetRealm get the top level represention of the realm. Nested information like users are

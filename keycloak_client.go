@@ -23,8 +23,8 @@ type Config struct {
 
 // Client is the keycloak client.
 type Client struct {
-	url          *url.URL
-	httpClient   *gentleman.Client
+	url        *url.URL
+	httpClient *gentleman.Client
 }
 
 // New returns a keycloak client.
@@ -150,7 +150,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 	}
 }
 
-func (c *Client) post(accessToken string, data interface{}, location *string, plugins ...plugin.Plugin) error {
+func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) (string, error) {
 	var req = c.httpClient.Post()
 	req = applyPlugins(req, accessToken, plugins...)
 	var resp *gentleman.Response
@@ -158,29 +158,28 @@ func (c *Client) post(accessToken string, data interface{}, location *string, pl
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, "could not get response")
+			return "", errors.Wrap(err, "could not get response")
 		}
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return "", fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return "", fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
-			var l = resp.Header.Get("Location")
-			location = &l
+			var location = resp.Header.Get("Location")
 
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
-				return resp.JSON(data)
+				return location, resp.JSON(data)
 			case "application/octet-stream":
 				data = resp.Bytes()
-				return nil
+				return location, nil
 			default:
-				return nil
+				return location, nil
 			}
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return "", fmt.Errorf("unknown response status code: %v", resp.StatusCode)
 		}
 	}
 }
