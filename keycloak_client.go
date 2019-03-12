@@ -90,6 +90,9 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		}
 	}
 
+	fmt.Printf("%s", accessToken.(string))
+	fmt.Println()
+
 	return accessToken.(string), nil
 }
 
@@ -147,7 +150,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 	}
 }
 
-func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) post(accessToken string, data interface{}, location *string, plugins ...plugin.Plugin) error {
 	var req = c.httpClient.Post()
 	req = applyPlugins(req, accessToken, plugins...)
 	var resp *gentleman.Response
@@ -164,6 +167,9 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 		case resp.StatusCode >= 400:
 			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
 		case resp.StatusCode >= 200:
+			var l = resp.Header.Get("Location")
+			location = &l
+
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
 				return resp.JSON(data)

@@ -48,8 +48,9 @@ func (c *Client) DeleteAuthenticatorConfig(accessToken string, realmName, config
 }
 
 // CreateAuthenticationExecution add new authentication execution
-func (c *Client) CreateAuthenticationExecution(accessToken string, realmName string, authExec AuthenticationExecutionRepresentation) error {
-	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
+func (c *Client) CreateAuthenticationExecution(accessToken string, realmName string, authExec AuthenticationExecutionRepresentation) (string, error) {
+	var location *string
+	return *location, c.post(accessToken, nil, location, url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
 }
 
 // DeleteAuthenticationExecution deletes the execution.
@@ -59,22 +60,22 @@ func (c *Client) DeleteAuthenticationExecution(accessToken string, realmName, ex
 
 // UpdateAuthenticationExecution update execution with new configuration.
 func (c *Client) UpdateAuthenticationExecution(accessToken string, realmName, executionID string, authConfig AuthenticatorConfigRepresentation) error {
-	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/executions/:id/config"), url.Param("realm", realmName), url.Param("id", executionID), body.JSON(authConfig))
+	return c.post(accessToken, nil, nil, url.Path(authenticationManagementPath+"/executions/:id/config"), url.Param("realm", realmName), url.Param("id", executionID), body.JSON(authConfig))
 }
 
 // LowerExecutionPriority lowers the execution’s priority.
 func (c *Client) LowerExecutionPriority(accessToken string, realmName, executionID string) error {
-	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/executions/:id/lower-priority"), url.Param("realm", realmName), url.Param("id", executionID))
+	return c.post(accessToken, nil, nil, url.Path(authenticationManagementPath+"/executions/:id/lower-priority"), url.Param("realm", realmName), url.Param("id", executionID))
 }
 
 // RaiseExecutionPriority raise the execution’s priority.
 func (c *Client) RaiseExecutionPriority(accessToken string, realmName, executionID string) error {
-	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/executions/:id/raise-priority"), url.Param("realm", realmName), url.Param("id", executionID))
+	return c.post(accessToken, nil, nil, url.Path(authenticationManagementPath+"/executions/:id/raise-priority"), url.Param("realm", realmName), url.Param("id", executionID))
 }
 
 // CreateAuthenticationFlow creates a new authentication flow.
 func (c *Client) CreateAuthenticationFlow(accessToken string, realmName string, authFlow AuthenticationFlowRepresentation) error {
-	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/flows"), url.Param("realm", realmName), body.JSON(authFlow))
+	return c.post(accessToken, nil, nil, url.Path(authenticationManagementPath+"/flows"), url.Param("realm", realmName), body.JSON(authFlow))
 }
 
 // GetAuthenticationFlows returns a list of authentication flows.
@@ -89,7 +90,7 @@ func (c *Client) GetAuthenticationFlows(accessToken string, realmName string) ([
 // 'newName' is the new name of the authentication flow.
 func (c *Client) CopyExistingAuthenticationFlow(accessToken string, realmName, flowAlias, newName string) error {
 	var m = map[string]string{"newName": newName}
-	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/flows/:flowAlias/copy"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
+	return c.post(accessToken, nil, nil, url.Path(authenticationManagementPath+"/flows/:flowAlias/copy"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
 }
 
 // GetAuthenticationExecutionForFlow returns the authentication executions for a flow.
@@ -106,16 +107,18 @@ func (c *Client) UpdateAuthenticationExecutionForFlow(accessToken string, realmN
 
 // CreateAuthenticationExecutionForFlow add a new authentication execution to a flow.
 // 'flowAlias' is the alias of the parent flow.
-func (c *Client) CreateAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias, provider string) error {
+func (c *Client) CreateAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias, provider string) (string, error) {
 	var m = map[string]string{"provider": provider}
-	return c.post(accessToken, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/execution"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
+	var location *string
+	return *location, c.post(accessToken, nil, location, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/execution"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
 }
 
 // CreateFlowWithExecutionForExistingFlow add a new flow with a new execution to an existing flow.
 // 'flowAlias' is the alias of the parent authentication flow.
-func (c *Client) CreateFlowWithExecutionForExistingFlow(accessToken string, realmName, flowAlias, alias, flowType, provider, description string) error {
+func (c *Client) CreateFlowWithExecutionForExistingFlow(accessToken string, realmName, flowAlias, alias, flowType, provider, description string) (string, error) {
 	var m = map[string]string{"alias": alias, "type": flowType, "provider": provider, "description": description}
-	return c.post(accessToken, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/flow"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
+	var location *string
+	return *location, c.post(accessToken, nil, location, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions/flow"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(m))
 }
 
 // GetAuthenticationFlow gets the authentication flow for id.
@@ -154,7 +157,7 @@ func (c *Client) GetConfigDescriptionForClients(accessToken string, realmName st
 // RegisterRequiredAction register a new required action.
 func (c *Client) RegisterRequiredAction(accessToken string, realmName, providerID, name string) error {
 	var m = map[string]string{"providerId": providerID, "name": name}
-	return c.post(accessToken, url.Path(authenticationManagementPath+"/register-required-action"), url.Param("realm", realmName), body.JSON(m))
+	return c.post(accessToken, nil, nil, url.Path(authenticationManagementPath+"/register-required-action"), url.Param("realm", realmName), body.JSON(m))
 }
 
 // GetRequiredActions returns a list of required actions.

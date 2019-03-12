@@ -29,8 +29,9 @@ func (c *Client) GetUsers(accessToken string, realmName string, paramKV ...strin
 }
 
 // CreateUser creates the user from its UserRepresentation. The username must be unique.
-func (c *Client) CreateUser(accessToken string, realmName string, user UserRepresentation) error {
-	return c.post(accessToken, nil, url.Path(userPath), url.Param("realm", realmName), body.JSON(user))
+func (c *Client) CreateUser(accessToken string, realmName string, user UserRepresentation) (string, error) {
+	var location *string
+	return *location, c.post(accessToken, nil, location, url.Path(userPath), url.Param("realm", realmName), body.JSON(user))
 }
 
 // CountUsers returns the number of users in the realm.
