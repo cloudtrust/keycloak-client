@@ -11,6 +11,8 @@ const (
 	userPath      = "/auth/admin/realms/:realm/users"
 	userCountPath = userPath + "/count"
 	userIDPath    = userPath + "/:id"
+	resetPasswordPath = userIDPath + "/reset-password"
+	sendVerifyEmailPath = userIDPath + "/send-verify-email"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -55,4 +57,20 @@ func (c *Client) UpdateUser(accessToken string, realmName, userID string, user U
 // DeleteUser deletes the user.
 func (c *Client) DeleteUser(accessToken string, realmName, userID string) error {
 	return c.delete(accessToken, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
+}
+
+// ResetPassword resets password of the user.
+func (c *Client) ResetPassword(accessToken string, realmName, userID string, cred CredentialRepresentation) error {
+	return c.put(accessToken, url.Path(resetPasswordPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(cred))
+}
+
+// SendVerifyEmail sends an email-verification email to the user An email contains a link the user can click to verify their email address.
+func (c *Client) SendVerifyEmail(accessToken string, realmName string, userID string, paramKV ...string) error {
+	if len(paramKV)%2 != 0 {
+		return fmt.Errorf("the number of key/val parameters should be even")
+	}
+
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendVerifyEmailPath), url.Param("realm", realmName), url.Param("id", userID))
+
+	return c.put(accessToken, plugins...)
 }
