@@ -20,7 +20,7 @@ func (c *Client) GetClientRoles(accessToken string, realmName, idClient string) 
 
 // CreateClientRole creates a new role for the realm or client
 func (c *Client) CreateClientRole(accessToken string, realmName, clientID string, role RoleRepresentation) (string, error) {
-	return c.post(accessToken, nil, url.Path(clientRolePath), url.Param("realm", realmName), url.Param("client", clientID), body.JSON(role))
+	return c.post(accessToken, nil, url.Path(clientRolePath), url.Param("realm", realmName), url.Param("id", clientID), body.JSON(role))
 }
 
 // GetRoles gets all roles for the realm or client
