@@ -30,6 +30,6 @@ func (c *Client) DeleteClientRolesFromUserRoleMapping(accessToken string, realmN
 
 func (c *Client) GetRealmLevelRoleMappings(accessToken string, realmName, userID string) ([]RoleRepresentation, error) {
 	var resp = []RoleRepresentation{}
-	var err = c.get(accessToken, url.Path(realmRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID))
+	var err = c.get(accessToken, &resp, url.Path(realmRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
