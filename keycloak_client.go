@@ -13,6 +13,8 @@ import (
 	"gopkg.in/h2non/gentleman.v2/plugin"
 	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/timeout"
+
+	jwt "github.com/gbrlsnchs/jwt"
 )
 
 // Config is the keycloak client http config.
@@ -129,9 +131,14 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 
 // get is a HTTP get method.
 func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
+	var err error
 	var req = c.httpClient.Get()
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
 
-	req = applyPlugins(req, accessToken, plugins...)
+	if err != nil {
+		return err
+	}
 
 	var resp *gentleman.Response
 	{
@@ -163,8 +170,15 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 }
 
 func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) (string, error) {
+	var err error
 	var req = c.httpClient.Post()
-	req = applyPlugins(req, accessToken, plugins...)
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
+
+	if err != nil {
+		return "", err
+	}
+
 	var resp *gentleman.Response
 	{
 		var err error
@@ -197,8 +211,14 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 }
 
 func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
+	var err error
 	var req = c.httpClient.Delete()
-	req = applyPlugins(req, accessToken, plugins...)
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
+
+	if err != nil {
+		return err
+	}
 
 	var resp *gentleman.Response
 	{
@@ -222,8 +242,14 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 }
 
 func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
+	var err error
 	var req = c.httpClient.Put()
-	req = applyPlugins(req, accessToken, plugins...)
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
+
+	if err != nil {
+		return err
+	}
 
 	var resp *gentleman.Response
 	{
@@ -246,13 +272,59 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 	}
 }
 
-// applyPlugins apply all the plugins to the request req.
-func applyPlugins(req *gentleman.Request, accessToken string, plugins ...plugin.Plugin) *gentleman.Request {
+func setAuthorisationAndHostHeaders(req *gentleman.Request, accessToken string) (*gentleman.Request, error) {
+	host, err := extractHostFromToken(accessToken)
+
+	if err != nil {
+		return req, err
+	}
+
 	var r = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
+	return r.SetHeader("Host", host), nil
+}
+
+// applyPlugins apply all the plugins to the request req.
+func applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) *gentleman.Request {
+	var r = req
 	for _, p := range plugins {
 		r = r.Use(p)
 	}
 	return r
+}
+
+func extractHostFromToken(token string) (string, error) {
+	issuer, err := extractIssuerFromToken(token)
+
+	if err != nil {
+		return "", err
+	}
+
+	var u *url.URL
+	{
+		var err error
+		u, err = url.Parse(issuer)
+		if err != nil {
+			return "", errors.Wrap(err, "could not parse Token issuer URL")
+		}
+	}
+
+	return u.Host, nil
+}
+
+func extractIssuerFromToken(token string) (string, error) {
+	payload, _, err := jwt.Parse(token)
+
+	if err != nil {
+		return "", fmt.Errorf("Error while parsing token")
+	}
+
+	var jot jwt.JWT
+
+	if err = jwt.Unmarshal(payload, &jot); err != nil {
+		return "", fmt.Errorf("Error while unmarshalling token")
+	}
+
+	return jot.Issuer, nil
 }
 
 // createQueryPlugins create query parameters with the key values paramKV.

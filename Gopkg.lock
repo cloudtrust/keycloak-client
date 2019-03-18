@@ -10,12 +10,12 @@
   revision = "065b426bd41667456c1a924468f507673629c46b"
 
 [[projects]]
-  digest = "1:56c130d885a4aacae1dd9c7b71cfe39912c7ebc1ff7d2b46083c8812996dc43b"
-  name = "github.com/davecgh/go-spew"
-  packages = ["spew"]
+  digest = "1:0c07a9cb3d3c845439a4fcaae6c8bdd0e7727cbbd3acf1e032e5d4a2dc132306"
+  name = "github.com/gbrlsnchs/jwt"
+  packages = ["."]
   pruneopts = ""
-  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
-  version = "v1.1.0"
+  revision = "808efa0714baff8c25cc65ef8681966740beb9f9"
+  version = "v2.0.0"
 
 [[projects]]
   digest = "1:bcb38c8fc9b21bb8682ce2d605a7d4aeb618abc7f827e3ac0b27c0371fdb23fb"
@@ -32,14 +32,6 @@
   pruneopts = ""
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
-
-[[projects]]
-  digest = "1:256484dbbcd271f9ecebc6795b2df8cad4c458dd0f5fd82a8c2fa0c29f233411"
-  name = "github.com/pmezard/go-difflib"
-  packages = ["difflib"]
-  pruneopts = ""
-  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
-  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -59,17 +51,6 @@
   pruneopts = ""
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
-
-[[projects]]
-  digest = "1:a30066593578732a356dc7e5d7f78d69184ca65aeeff5939241a3ab10559bb06"
-  name = "github.com/stretchr/testify"
-  packages = [
-    "assert",
-    "require",
-  ]
-  pruneopts = ""
-  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
-  version = "v1.2.1"
 
 [[projects]]
   branch = "master"
@@ -185,11 +166,9 @@
   analyzer-version = 1
   input-imports = [
     "github.com/coreos/go-oidc",
-    "github.com/davecgh/go-spew/spew",
+    "github.com/gbrlsnchs/jwt",
     "github.com/pkg/errors",
     "github.com/spf13/pflag",
-    "github.com/stretchr/testify/assert",
-    "github.com/stretchr/testify/require",
     "gopkg.in/h2non/gentleman.v2",
     "gopkg.in/h2non/gentleman.v2/plugin",
     "gopkg.in/h2non/gentleman.v2/plugins/body",
