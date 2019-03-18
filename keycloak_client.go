@@ -17,36 +17,48 @@ import (
 
 // Config is the keycloak client http config.
 type Config struct {
-	Addr    string
-	Timeout time.Duration
+	AddrTokenProvider string
+	AddrAPI           string
+	Timeout           time.Duration
 }
 
 // Client is the keycloak client.
 type Client struct {
-	url        *url.URL
-	httpClient *gentleman.Client
+	tokenProviderUrl *url.URL
+	apiUrl           *url.URL
+	httpClient       *gentleman.Client
 }
 
 // New returns a keycloak client.
 func New(config Config) (*Client, error) {
-	var u *url.URL
+	var uToken *url.URL
 	{
 		var err error
-		u, err = url.Parse(config.Addr)
+		uToken, err = url.Parse(config.AddrTokenProvider)
 		if err != nil {
-			return nil, errors.Wrap(err, "could not parse URL")
+			return nil, errors.Wrap(err, "could not parse Token Provider URL")
+		}
+	}
+
+	var uAPI *url.URL
+	{
+		var err error
+		uAPI, err = url.Parse(config.AddrAPI)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not parse API URL")
 		}
 	}
 
 	var httpClient = gentleman.New()
 	{
-		httpClient = httpClient.URL(u.String())
+		httpClient = httpClient.URL(uAPI.String())
 		httpClient = httpClient.Use(timeout.Request(config.Timeout))
 	}
 
 	return &Client{
-		url:        u,
-		httpClient: httpClient,
+		tokenProviderUrl: uToken,
+		apiUrl:           uAPI,
+		httpClient:       httpClient,
 	}, nil
 }
 
@@ -101,7 +113,7 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	var oidcProvider *oidc.Provider
 	{
 		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.url.String(), realmName)
+		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.tokenProviderUrl.String(), realmName)
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
 			return errors.Wrap(err, "could not create oidc provider")

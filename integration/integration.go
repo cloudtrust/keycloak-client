@@ -15,8 +15,7 @@ const (
 	user     = "version"
 )
 
-
-// This should be oncverted into 
+// This should be oncverted into
 // GetClient(accessToken string, realmName, idClient string) (kc.ClientRepresentation, error)
 // GetClientRoleMappings(accessToken string, realmName, userID, clientID string) ([]kc.RoleRepresentation, error)
 // AddClientRolesToUserRoleMapping(accessToken string, realmName, userID, clientID string, roles []kc.RoleRepresentation) error
@@ -137,7 +136,6 @@ func main() {
 				log.Fatalf("could not create test users: %v", err)
 			}
 
-
 		}
 		// Check that all users where created.
 		{
@@ -169,7 +167,7 @@ func main() {
 				log.Fatalf("could not get user")
 			}
 
-			if !(*(user.Username) != ""){
+			if !(*(user.Username) != "") {
 				log.Fatalf("Username should not be empty")
 			}
 
@@ -236,7 +234,7 @@ func main() {
 				log.Fatalf("there should be 7 users matched by search")
 			}
 		}
-		
+
 		fmt.Println("Test users retrieved.")
 	}
 
@@ -345,16 +343,15 @@ func main() {
 	}
 }
 
-
-
-
 func getKeycloakConfig() *keycloak.Config {
-	var adr = pflag.String("url", "http://localhost:8080", "keycloak address")
+	var apiAddr = pflag.String("urlKc", "http://localhost:8080", "keycloak address")
+	var tokenAddr = pflag.String("url", "http://127.0.0.1:8080", "keycloak address")
 	pflag.Parse()
 
 	return &keycloak.Config{
-		Addr:    *adr,
-		Timeout: 10 * time.Second,
+		AddrTokenProvider: *tokenAddr,
+		AddrAPI:           *apiAddr,
+		Timeout:           10 * time.Second,
 	}
 }
 
