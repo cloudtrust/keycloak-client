@@ -247,7 +247,6 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 	req = applyPlugins(req, plugins...)
 	req, err = setAuthorisationAndHostHeaders(req, accessToken)
 
-
 	if err != nil {
 		return err
 	}
@@ -281,7 +280,10 @@ func setAuthorisationAndHostHeaders(req *gentleman.Request, accessToken string) 
 	}
 
 	var r = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
+	r = r.SetHeader("X-Forwarded-Proto", "https")
+
 	r.Context.Request.Host = host
+
 	return r, nil
 }
 

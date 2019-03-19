@@ -41,6 +41,11 @@ func main() {
 		log.Fatalf("could not get access token: %v", err)
 	}
 
+	err = client.VerifyToken("master", accessToken)
+	if err != nil {
+		log.Fatalf("could not validate access token: %v", err)
+	}
+
 	// Delete test realm
 	client.DeleteRealm(accessToken, tstRealm)
 
@@ -344,8 +349,8 @@ func main() {
 }
 
 func getKeycloakConfig() *keycloak.Config {
-	var apiAddr = pflag.String("urlKc", "http://localhost:8080", "keycloak address")
-	var tokenAddr = pflag.String("url", "http://127.0.0.1:8080", "keycloak address")
+	var apiAddr = pflag.String("urlKc", "https://localhost:8443", "keycloak address")
+	var tokenAddr = pflag.String("url", "https://localhost:8443", "token address")
 	pflag.Parse()
 
 	return &keycloak.Config{
