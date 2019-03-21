@@ -26,9 +26,19 @@ type Config struct {
 
 // Client is the keycloak client.
 type Client struct {
-	tokenProviderUrl *url.URL
-	apiUrl           *url.URL
+	tokenProviderURL *url.URL
+	apiURL           *url.URL
 	httpClient       *gentleman.Client
+}
+
+// HTTPError is returned when an error occured while contacting the keycloak instance.
+type HTTPError struct {
+	HTTPStatus int
+	Message    string
+}
+
+func (e HTTPError) Error() string {
+	return fmt.Sprintf("Error %d: %s", e.HTTPStatus, e.Message)
 }
 
 // New returns a keycloak client.
@@ -58,8 +68,8 @@ func New(config Config) (*Client, error) {
 	}
 
 	return &Client{
-		tokenProviderUrl: uToken,
-		apiUrl:           uAPI,
+		tokenProviderURL: uToken,
+		apiURL:           uAPI,
 		httpClient:       httpClient,
 	}, nil
 }
@@ -115,7 +125,7 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	var oidcProvider *oidc.Provider
 	{
 		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.tokenProviderUrl.String(), realmName)
+		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.tokenProviderURL.String(), realmName)
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
 			return errors.Wrap(err, "could not create oidc provider")
@@ -150,9 +160,15 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
@@ -189,9 +205,15 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return "", fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return "", HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return "", fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return "", HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			var location = resp.Header.Get("Location")
 
@@ -230,13 +252,22 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			return nil
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		}
 	}
 }
@@ -261,13 +292,22 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			return nil
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		}
 	}
 }
@@ -319,13 +359,13 @@ func extractIssuerFromToken(token string) (string, error) {
 	payload, _, err := jwt.Parse(token)
 
 	if err != nil {
-		return "", fmt.Errorf("Error while parsing token")
+		return "", errors.Wrap(err, "could not parse Token")
 	}
 
 	var jot jwt.JWT
 
 	if err = jwt.Unmarshal(payload, &jot); err != nil {
-		return "", fmt.Errorf("Error while unmarshalling token")
+		return "", errors.Wrap(err, "could not unmarshall token")
 	}
 
 	return jot.Issuer, nil

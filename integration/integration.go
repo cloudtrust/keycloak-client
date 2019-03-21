@@ -349,8 +349,8 @@ func main() {
 }
 
 func getKeycloakConfig() *keycloak.Config {
-	var apiAddr = pflag.String("urlKc", "https://localhost:8443", "keycloak address")
-	var tokenAddr = pflag.String("url", "https://localhost:8443", "token address")
+	var apiAddr = pflag.String("urlKc", "http://localhost:8080", "keycloak address")
+	var tokenAddr = pflag.String("url", "http://localhost:8080", "token address")
 	pflag.Parse()
 
 	return &keycloak.Config{
