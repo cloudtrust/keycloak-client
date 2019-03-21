@@ -32,3 +32,8 @@
 [[constraint]]
   name = "gopkg.in/h2non/gentleman.v2"
   version = "2.0.0"
+
+
+[[constraint]]
+  name = "github.com/gbrlsnchs/jwt"
+  version = "2.0.0"

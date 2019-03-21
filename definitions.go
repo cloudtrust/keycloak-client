@@ -626,10 +626,10 @@ type UserFederationProviderRepresentation struct {
 }
 
 type UserRepresentation struct {
-	Access                     *map[string]interface{}            `json:"access,omitempty"`
-	Attributes                 *map[string]interface{}            `json:"attributes,omitempty"`
+	Access                     *map[string]bool                   `json:"access,omitempty"`
+	Attributes                 *map[string][]string               `json:"attributes,omitempty"`
 	ClientConsents             *[]UserConsentRepresentation       `json:"clientConsents,omitempty"`
-	ClientRoles                *map[string]interface{}            `json:"clientRoles,omitempty"`
+	ClientRoles                *map[string][]string               `json:"clientRoles,omitempty"`
 	CreatedTimestamp           *int64                             `json:"createdTimestamp,omitempty"`
 	Credentials                *[]CredentialRepresentation        `json:"credentials,omitempty"`
 	DisableableCredentialTypes *[]string                          `json:"disableableCredentialTypes,omitempty"`

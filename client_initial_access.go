@@ -12,7 +12,7 @@ const (
 // CreateClientInitialAccess creates a new initial access token.
 func (c *Client) CreateClientInitialAccess(accessToken string, realmName string, access ClientInitialAccessCreatePresentation) (ClientInitialAccessPresentation, error) {
 	var resp = ClientInitialAccessPresentation{}
-	var err = c.post(accessToken, &resp, url.Path(clientInitialAccessPath), url.Param("realm", realmName), body.JSON(access))
+	_, err := c.post(accessToken, &resp, nil, url.Path(clientInitialAccessPath), url.Param("realm", realmName), body.JSON(access))
 	return resp, err
 }
 

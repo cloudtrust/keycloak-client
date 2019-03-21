@@ -15,6 +15,19 @@ const (
 	user     = "version"
 )
 
+// This should be oncverted into
+// GetClient(accessToken string, realmName, idClient string) (kc.ClientRepresentation, error)
+// GetClientRoleMappings(accessToken string, realmName, userID, clientID string) ([]kc.RoleRepresentation, error)
+// AddClientRolesToUserRoleMapping(accessToken string, realmName, userID, clientID string, roles []kc.RoleRepresentation) error
+// GetRealmLevelRoleMappings(accessToken string, realmName, userID string) ([]kc.RoleRepresentation, error)
+// ResetPassword(accessToken string, realmName string, userID string) error
+// SendVerifyEmail(accessToken string, realmName string, userID string) error
+
+// GetRoles(accessToken string, realmName string) ([]kc.RoleRepresentation, error)
+// GetRole(accessToken string, realmName string, roleID string) (kc.RoleRepresentation, error)
+// GetClientRoles(accessToken string, realmName, idClient string) ([]kc.RoleRepresentation, error)
+// CreateClientRole(accessToken string, realmName, clientID string, role kc.RoleRepresentation) (string, error)
+
 func main() {
 	var conf = getKeycloakConfig()
 	var client, err = keycloak.New(*conf)
@@ -26,6 +39,11 @@ func main() {
 	accessToken, err := client.GetToken("master", "admin", "admin")
 	if err != nil {
 		log.Fatalf("could not get access token: %v", err)
+	}
+
+	err = client.VerifyToken("master", accessToken)
+	if err != nil {
+		log.Fatalf("could not validate access token: %v", err)
 	}
 
 	// Delete test realm
@@ -49,7 +67,8 @@ func main() {
 	// Create test realm.
 	{
 		var realm = tstRealm
-		var err = client.CreateRealm(accessToken, keycloak.RealmRepresentation{
+		var err error
+		_, err = client.CreateRealm(accessToken, keycloak.RealmRepresentation{
 			Realm: &realm,
 		})
 		if err != nil {
@@ -111,7 +130,8 @@ func main() {
 		for _, u := range tstUsers {
 			var username = strings.ToLower(u.firstname + "." + u.lastname)
 			var email = username + "@cloudtrust.ch"
-			var err = client.CreateUser(accessToken, tstRealm, keycloak.UserRepresentation{
+			var err error
+			_, err = client.CreateUser(accessToken, tstRealm, keycloak.UserRepresentation{
 				Username:  &username,
 				FirstName: &u.firstname,
 				LastName:  &u.lastname,
@@ -120,6 +140,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("could not create test users: %v", err)
 			}
+
 		}
 		// Check that all users where created.
 		{
@@ -145,6 +166,17 @@ func main() {
 			if len(users) != 50 {
 				log.Fatalf("there should be 50 users")
 			}
+
+			user, err := client.GetUser(accessToken, tstRealm, *(users[0].Id))
+			if err != nil {
+				log.Fatalf("could not get user")
+			}
+
+			if !(*(user.Username) != "") {
+				log.Fatalf("Username should not be empty")
+			}
+
+			fmt.Println("Test user retrieved.")
 		}
 		{
 			// email.
@@ -207,6 +239,7 @@ func main() {
 				log.Fatalf("there should be 7 users matched by search")
 			}
 		}
+
 		fmt.Println("Test users retrieved.")
 	}
 
@@ -315,34 +348,15 @@ func main() {
 	}
 }
 
-/*
-// GetUser get the represention of the user.
-func (c *Client) GetUser(realmName, userID string) (UserRepresentation, error) {
-	var resp = UserRepresentation{}
-	var err = c.get(&resp, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
-	return resp, err
-}
-
-// UpdateUser update the user.
-func (c *Client) UpdateUser(realmName, userID string, user UserRepresentation) error {
-	return c.put(url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(user))
-}
-
-// DeleteUser deletes the user.
-func (c *Client) DeleteUser(realmName, userID string) error {
-	return c.delete(url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
-}
-
-
-*/
-
 func getKeycloakConfig() *keycloak.Config {
-	var adr = pflag.String("url", "http://localhost:8080", "keycloak address")
+	var apiAddr = pflag.String("urlKc", "http://localhost:8080", "keycloak address")
+	var tokenAddr = pflag.String("url", "http://localhost:8080", "token address")
 	pflag.Parse()
 
 	return &keycloak.Config{
-		Addr:     *adr,
-		Timeout:  10 * time.Second,
+		AddrTokenProvider: *tokenAddr,
+		AddrAPI:           *apiAddr,
+		Timeout:           10 * time.Second,
 	}
 }
 

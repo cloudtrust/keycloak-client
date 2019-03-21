@@ -13,40 +13,64 @@ import (
 	"gopkg.in/h2non/gentleman.v2/plugin"
 	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/timeout"
+
+	jwt "github.com/gbrlsnchs/jwt"
 )
 
 // Config is the keycloak client http config.
 type Config struct {
-	Addr    string
-	Timeout time.Duration
+	AddrTokenProvider string
+	AddrAPI           string
+	Timeout           time.Duration
 }
 
 // Client is the keycloak client.
 type Client struct {
-	url          *url.URL
-	httpClient   *gentleman.Client
+	tokenProviderURL *url.URL
+	apiURL           *url.URL
+	httpClient       *gentleman.Client
+}
+
+// HTTPError is returned when an error occured while contacting the keycloak instance.
+type HTTPError struct {
+	HTTPStatus int
+	Message    string
+}
+
+func (e HTTPError) Error() string {
+	return fmt.Sprintf("Error %d: %s", e.HTTPStatus, e.Message)
 }
 
 // New returns a keycloak client.
 func New(config Config) (*Client, error) {
-	var u *url.URL
+	var uToken *url.URL
 	{
 		var err error
-		u, err = url.Parse(config.Addr)
+		uToken, err = url.Parse(config.AddrTokenProvider)
 		if err != nil {
-			return nil, errors.Wrap(err, "could not parse URL")
+			return nil, errors.Wrap(err, "could not parse Token Provider URL")
+		}
+	}
+
+	var uAPI *url.URL
+	{
+		var err error
+		uAPI, err = url.Parse(config.AddrAPI)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not parse API URL")
 		}
 	}
 
 	var httpClient = gentleman.New()
 	{
-		httpClient = httpClient.URL(u.String())
+		httpClient = httpClient.URL(uAPI.String())
 		httpClient = httpClient.Use(timeout.Request(config.Timeout))
 	}
 
 	return &Client{
-		url:        u,
-		httpClient: httpClient,
+		tokenProviderURL: uToken,
+		apiURL:           uAPI,
+		httpClient:       httpClient,
 	}, nil
 }
 
@@ -90,6 +114,9 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		}
 	}
 
+	fmt.Printf("%s", accessToken.(string))
+	fmt.Println()
+
 	return accessToken.(string), nil
 }
 
@@ -98,7 +125,7 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	var oidcProvider *oidc.Provider
 	{
 		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.url.String(), realmName)
+		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.tokenProviderURL.String(), realmName)
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
 			return errors.Wrap(err, "could not create oidc provider")
@@ -114,9 +141,14 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 
 // get is a HTTP get method.
 func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
+	var err error
 	var req = c.httpClient.Get()
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
 
-	req = applyPlugins(req, accessToken, plugins...)
+	if err != nil {
+		return err
+	}
 
 	var resp *gentleman.Response
 	{
@@ -128,9 +160,15 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, resp.String())
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
@@ -147,41 +185,62 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 	}
 }
 
-func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) (string, error) {
+	var err error
 	var req = c.httpClient.Post()
-	req = applyPlugins(req, accessToken, plugins...)
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
+
+	if err != nil {
+		return "", err
+	}
+
 	var resp *gentleman.Response
 	{
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, "could not get response")
+			return "", errors.Wrap(err, "could not get response")
 		}
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return "", HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return "", HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
+			var location = resp.Header.Get("Location")
+
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
-				return resp.JSON(data)
+				return location, resp.JSON(data)
 			case "application/octet-stream":
 				data = resp.Bytes()
-				return nil
+				return location, nil
 			default:
-				return nil
+				return location, nil
 			}
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return "", fmt.Errorf("unknown response status code: %v", resp.StatusCode)
 		}
 	}
 }
 
 func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
+	var err error
 	var req = c.httpClient.Delete()
-	req = applyPlugins(req, accessToken, plugins...)
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
+
+	if err != nil {
+		return err
+	}
 
 	var resp *gentleman.Response
 	{
@@ -193,20 +252,35 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			return nil
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		}
 	}
 }
 
 func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
+	var err error
 	var req = c.httpClient.Put()
-	req = applyPlugins(req, accessToken, plugins...)
+	req = applyPlugins(req, plugins...)
+	req, err = setAuthorisationAndHostHeaders(req, accessToken)
+
+	if err != nil {
+		return err
+	}
 
 	var resp *gentleman.Response
 	{
@@ -218,24 +292,83 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return fmt.Errorf("unauthorized request: '%v': %v", resp.RawResponse.Status, resp.String())
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 400:
-			return fmt.Errorf("invalid status code: '%v': %v", resp.RawResponse.Status, string(resp.Bytes()))
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		case resp.StatusCode >= 200:
 			return nil
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return HTTPError{
+				HTTPStatus: resp.StatusCode,
+				Message:    string(resp.Bytes()),
+			}
 		}
 	}
 }
 
-// applyPlugins apply all the plugins to the request req.
-func applyPlugins(req *gentleman.Request, accessToken string, plugins ...plugin.Plugin) *gentleman.Request {
+func setAuthorisationAndHostHeaders(req *gentleman.Request, accessToken string) (*gentleman.Request, error) {
+	host, err := extractHostFromToken(accessToken)
+
+	if err != nil {
+		return req, err
+	}
+
 	var r = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
+	r = r.SetHeader("X-Forwarded-Proto", "https")
+
+	r.Context.Request.Host = host
+
+	return r, nil
+}
+
+// applyPlugins apply all the plugins to the request req.
+func applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) *gentleman.Request {
+	var r = req
 	for _, p := range plugins {
 		r = r.Use(p)
 	}
 	return r
+}
+
+func extractHostFromToken(token string) (string, error) {
+	issuer, err := extractIssuerFromToken(token)
+
+	if err != nil {
+		return "", err
+	}
+
+	var u *url.URL
+	{
+		var err error
+		u, err = url.Parse(issuer)
+		if err != nil {
+			return "", errors.Wrap(err, "could not parse Token issuer URL")
+		}
+	}
+
+	return u.Host, nil
+}
+
+func extractIssuerFromToken(token string) (string, error) {
+	payload, _, err := jwt.Parse(token)
+
+	if err != nil {
+		return "", errors.Wrap(err, "could not parse Token")
+	}
+
+	var jot jwt.JWT
+
+	if err = jwt.Unmarshal(payload, &jot); err != nil {
+		return "", errors.Wrap(err, "could not unmarshall token")
+	}
+
+	return jot.Issuer, nil
 }
 
 // createQueryPlugins create query parameters with the key values paramKV.
