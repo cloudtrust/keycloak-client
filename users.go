@@ -8,11 +8,13 @@ import (
 )
 
 const (
-	userPath      = "/auth/admin/realms/:realm/users"
-	userCountPath = userPath + "/count"
-	userIDPath    = userPath + "/:id"
-	resetPasswordPath = userIDPath + "/reset-password"
-	sendVerifyEmailPath = userIDPath + "/send-verify-email"
+	userPath                     = "/auth/admin/realms/:realm/users"
+	userCountPath                = userPath + "/count"
+	userIDPath                   = userPath + "/:id"
+	resetPasswordPath            = userIDPath + "/reset-password"
+	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
+	getCredentialsForUserPath    = "/auth/realms/:realmReq/api/realms/:realm/users/:id/credentials"
+	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -73,4 +75,16 @@ func (c *Client) SendVerifyEmail(accessToken string, realmName string, userID st
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendVerifyEmailPath), url.Param("realm", realmName), url.Param("id", userID))
 
 	return c.put(accessToken, plugins...)
+}
+
+// GetCredentialsForUser gets the credential list for a user
+func (c *Client) GetCredentialsForUser(accessToken string, realmReq, realmName string, userID string) ([]CredentialRepresentation, error) {
+	var resp = []CredentialRepresentation{}
+	var err = c.get(accessToken, &resp, url.Path(getCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID))
+	return resp, err
+}
+
+// DeleteCredentialsForUser remove credentials for a user
+func (c *Client) DeleteCredentialsForUser(accessToken string, realmReq, realmName string, userID string, credentialID string) error {
+	return c.delete(accessToken, url.Path(deleteCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID), url.Param("credid", userID))
 }
