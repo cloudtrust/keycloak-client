@@ -15,7 +15,7 @@ const (
 	user     = "version"
 )
 
-// This should be oncverted into
+// This should be converted into
 // GetClient(accessToken string, realmName, idClient string) (kc.ClientRepresentation, error)
 // GetClientRoleMappings(accessToken string, realmName, userID, clientID string) ([]kc.RoleRepresentation, error)
 // AddClientRolesToUserRoleMapping(accessToken string, realmName, userID, clientID string, roles []kc.RoleRepresentation) error
@@ -287,6 +287,17 @@ func main() {
 			}
 		}
 		fmt.Println("User updated.")
+		// Check credentials
+		{
+			tstRealmReq := "master"
+			var creds, err = client.GetCredentialsForUser(accessToken, tstRealmReq, tstRealm, userID)
+			if err != nil {
+				log.Fatalf("could not get credentials: %v", err)
+			}
+			if len(creds) != 0 {
+				log.Fatalf("Maria should not have credentials")
+			}
+		}
 	}
 
 	// Delete user.
