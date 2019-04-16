@@ -38,7 +38,7 @@ type HTTPError struct {
 }
 
 func (e HTTPError) Error() string {
-	return fmt.Sprintf("Error %d: %s", e.HTTPStatus, e.Message)
+	return e.Message
 }
 
 // New returns a keycloak client.
@@ -362,7 +362,7 @@ func extractIssuerFromToken(token string) (string, error) {
 		return "", errors.Wrap(err, "could not parse Token")
 	}
 
-	var jot jwt.JWT
+	var jot Token
 
 	if err = jwt.Unmarshal(payload, &jot); err != nil {
 		return "", errors.Wrap(err, "could not unmarshall token")
@@ -385,3 +385,26 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 func str(s string) *string {
 	return &s
 }
+
+
+// Token is JWT token and the custom fields present in OIDC Token provided by Keycloak.
+// We need to define our own structure as the library define aud as a string instead of a string array.
+type Token struct {
+	hdr            *header
+	Issuer         string   `json:"iss,omitempty"`
+	Subject        string   `json:"sub,omitempty"`
+	Audience       []string `json:"aud,omitempty"`
+	ExpirationTime int64    `json:"exp,omitempty"`
+	NotBefore      int64    `json:"nbf,omitempty"`
+	IssuedAt       int64    `json:"iat,omitempty"`
+	ID             string   `json:"jti,omitempty"`
+	Username       string   `json:"preferred_username,omitempty"`
+}
+
+type header struct {
+	Algorithm   string `json:"alg,omitempty"`
+	KeyID       string `json:"kid,omitempty"`
+	Type        string `json:"typ,omitempty"`
+	ContentType string `json:"cty,omitempty"`
+}
+
