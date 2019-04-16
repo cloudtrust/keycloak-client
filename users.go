@@ -13,7 +13,7 @@ const (
 	userIDPath                   = userPath + "/:id"
 	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
-	getCredentialsForUserPath    = "/auth/realms/:realmReq/api/realms/:realm/users/:id/credentials"
+	getCredentialsForUserPath    = "/auth/realms/:realmReq/api/admin/realms/:realm/users/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 )
 
