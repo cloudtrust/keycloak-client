@@ -13,6 +13,7 @@ const (
 	userIDPath                   = userPath + "/:id"
 	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
+	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
 	getCredentialsForUserPath    = "/auth/realms/:realmReq/api/admin/realms/:realm/users/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 )
@@ -73,6 +74,17 @@ func (c *Client) SendVerifyEmail(accessToken string, realmName string, userID st
 	}
 
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendVerifyEmailPath), url.Param("realm", realmName), url.Param("id", userID))
+
+	return c.put(accessToken, plugins...)
+}
+
+// Send a update account email to the user An email contains a link the user can click to perform a set of required actions.
+func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userID string, actions []string, paramKV ...string) error {
+	if len(paramKV)%2 != 0 {
+		return fmt.Errorf("the number of key/val parameters should be even")
+	}
+
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(executeActionsEmailPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(actions))
 
 	return c.put(accessToken, plugins...)
 }
