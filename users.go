@@ -11,6 +11,7 @@ const (
 	userPath                     = "/auth/admin/realms/:realm/users"
 	userCountPath                = userPath + "/count"
 	userIDPath                   = userPath + "/:id"
+	groupsPath                   = userIDPath + "/groups"
 	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
 	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
@@ -49,6 +50,13 @@ func (c *Client) CountUsers(accessToken string, realmName string) (int, error) {
 func (c *Client) GetUser(accessToken string, realmName, userID string) (UserRepresentation, error) {
 	var resp = UserRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
+	return resp, err
+}
+
+// GetGroupsOfUser get the groups of the user.
+func (c *Client) GetGroupsOfUser(accessToken string, realmName, userID string) ([]GroupRepresentation, error) {
+	var resp = []GroupRepresentation{}
+	var err = c.get(accessToken, &resp, url.Path(groupsPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
 
