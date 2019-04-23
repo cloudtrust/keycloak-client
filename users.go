@@ -15,6 +15,8 @@ const (
 	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
 	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
+	smsAPI                       = "/auth/realms/:realm/smsApi"
+	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
 	getCredentialsForUserPath    = "/auth/realms/:realmReq/api/admin/realms/:realm/users/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 )
@@ -95,6 +97,17 @@ func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userI
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(executeActionsEmailPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(actions))
 
 	return c.put(accessToken, plugins...)
+}
+
+// Send a new enrolment code
+func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, userID string) error {
+
+	var paramKV []string
+	paramKV = append(paramKV, "userid", userID)
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendNewEnrolmentCode), url.Param("realm", realmName))
+
+	_, err := c.post(accessToken, nil, plugins...)
+	return err
 }
 
 // GetCredentialsForUser gets the credential list for a user
