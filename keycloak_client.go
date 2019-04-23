@@ -387,13 +387,13 @@ func str(s string) *string {
 }
 
 
-// Token is JWT token and the custom fields present in OIDC Token provided by Keycloak.
-// We need to define our own structure as the library define aud as a string instead of a string array.
+// Token is JWT token.
+// We need to define our own structure as the library define aud as a string but it can also be a string array.
+// To fix this issue, we remove aud as we do not use it here.
 type Token struct {
 	hdr            *header
 	Issuer         string   `json:"iss,omitempty"`
 	Subject        string   `json:"sub,omitempty"`
-	Audience       []string `json:"aud,omitempty"`
 	ExpirationTime int64    `json:"exp,omitempty"`
 	NotBefore      int64    `json:"nbf,omitempty"`
 	IssuedAt       int64    `json:"iat,omitempty"`
