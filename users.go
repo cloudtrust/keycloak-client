@@ -9,6 +9,7 @@ import (
 
 const (
 	userPath                     = "/auth/admin/realms/:realm/users"
+	usersAdminExtensionApiPath   = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
 	userCountPath                = userPath + "/count"
 	userIDPath                   = userPath + "/:id"
 	userGroupsPath               = userIDPath + "/groups"
@@ -17,7 +18,7 @@ const (
 	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
 	smsAPI                       = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
-	getCredentialsForUserPath    = "/auth/realms/:realmReq/api/admin/realms/:realm/users/:id/credentials"
+	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 )
 
