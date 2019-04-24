@@ -26,13 +26,13 @@ const (
 // Parameters: email, first (paging offset, int), firstName, lastName, username,
 // max (maximum result size, default = 100),
 // search (string contained in username, firstname, lastname or email)
-func (c *Client) GetUsers(accessToken string, realmName string, paramKV ...string) ([]UserRepresentation, error) {
+func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName string, paramKV ...string) ([]UserRepresentation, error) {
 	if len(paramKV)%2 != 0 {
 		return nil, fmt.Errorf("the number of key/val parameters should be even")
 	}
 
 	var resp = []UserRepresentation{}
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(userPath), url.Param("realm", realmName))
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionApiPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
 }
