@@ -20,6 +20,7 @@ const (
 	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
 	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
+	accountPasswordPath          = "/auth/realms/master/api/account/realms/:realm/credentials/password"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -121,4 +122,11 @@ func (c *Client) GetCredentialsForUser(accessToken string, realmReq, realmName s
 // DeleteCredentialsForUser remove credentials for a user
 func (c *Client) DeleteCredentialsForUser(accessToken string, realmReq, realmName string, userID string, credentialID string) error {
 	return c.delete(accessToken, url.Path(deleteCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID), url.Param("credid", userID))
+}
+
+// UpdatePassword updates the user's password
+// Parameters: realm, currentPassword, newPassword, confirmPassword
+func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
+	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
+	return c.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
 }
