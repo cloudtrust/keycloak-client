@@ -377,7 +377,7 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 	for i := 0; i < len(paramKV); i += 2 {
 		var k = paramKV[i]
 		var v = paramKV[i+1]
-		plugins = append(plugins, query.Set(k, v))
+		plugins = append(plugins, query.Add(k, v))
 	}
 	return plugins
 }
