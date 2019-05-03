@@ -661,3 +661,7 @@ type UserSessionRepresentation struct {
 	UserId     *string                 `json:"userId,omitempty"`
 	Username   *string                 `json:"username,omitempty"`
 }
+
+type SmsCodeRepresentation struct {
+	Code *string `json:"code,omitempty"`
+}

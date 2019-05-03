@@ -102,13 +102,15 @@ func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userI
 }
 
 // Send a new enrolment code and return it
-func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, userID string) (string, error) {
-
+func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, userID string) (SmsCodeRepresentation, error) {
 	var paramKV []string
 	paramKV = append(paramKV, "userid", userID)
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendNewEnrolmentCode), url.Param("realm", realmName))
+	var resp = SmsCodeRepresentation{}
 
-	return c.post(accessToken, nil, plugins...)
+	_, err := c.post(accessToken, &resp, plugins...)
+
+	return resp, err
 }
 
 // GetCredentialsForUser gets the credential list for a user
