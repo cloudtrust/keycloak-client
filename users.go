@@ -122,7 +122,7 @@ func (c *Client) GetCredentialsForUser(accessToken string, realmReq, realmName s
 
 // DeleteCredentialsForUser remove credentials for a user
 func (c *Client) DeleteCredentialsForUser(accessToken string, realmReq, realmName string, userID string, credentialID string) error {
-	return c.delete(accessToken, url.Path(deleteCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID), url.Param("credid", userID))
+	return c.delete(accessToken, url.Path(deleteCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID), url.Param("credid", credentialID))
 }
 
 // UpdatePassword updates the user's password
