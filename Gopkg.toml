@@ -26,10 +26,6 @@
   version = "0.8.0"
 
 [[constraint]]
-  name = "github.com/stretchr/testify"
-  version = "1.1.4"
-
-[[constraint]]
   name = "gopkg.in/h2non/gentleman.v2"
   version = "2.0.0"
 
