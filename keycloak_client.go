@@ -386,19 +386,18 @@ func str(s string) *string {
 	return &s
 }
 
-
 // Token is JWT token.
 // We need to define our own structure as the library define aud as a string but it can also be a string array.
 // To fix this issue, we remove aud as we do not use it here.
 type Token struct {
 	hdr            *header
-	Issuer         string   `json:"iss,omitempty"`
-	Subject        string   `json:"sub,omitempty"`
-	ExpirationTime int64    `json:"exp,omitempty"`
-	NotBefore      int64    `json:"nbf,omitempty"`
-	IssuedAt       int64    `json:"iat,omitempty"`
-	ID             string   `json:"jti,omitempty"`
-	Username       string   `json:"preferred_username,omitempty"`
+	Issuer         string `json:"iss,omitempty"`
+	Subject        string `json:"sub,omitempty"`
+	ExpirationTime int64  `json:"exp,omitempty"`
+	NotBefore      int64  `json:"nbf,omitempty"`
+	IssuedAt       int64  `json:"iat,omitempty"`
+	ID             string `json:"jti,omitempty"`
+	Username       string `json:"preferred_username,omitempty"`
 }
 
 type header struct {
@@ -407,4 +406,3 @@ type header struct {
 	Type        string `json:"typ,omitempty"`
 	ContentType string `json:"cty,omitempty"`
 }
-
