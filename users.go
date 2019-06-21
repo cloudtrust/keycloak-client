@@ -16,7 +16,7 @@ const (
 	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
 	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
-	sendReminderEmailPath        = "/auth/realms/:realm/onboarding"
+	sendReminderEmailPath        = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                       = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
 	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
