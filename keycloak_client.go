@@ -2,6 +2,7 @@ package keycloak
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -165,6 +166,14 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -210,6 +219,14 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return "", HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
 			return "", HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -257,6 +274,14 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -297,6 +322,14 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -386,19 +419,18 @@ func str(s string) *string {
 	return &s
 }
 
-
 // Token is JWT token.
 // We need to define our own structure as the library define aud as a string but it can also be a string array.
 // To fix this issue, we remove aud as we do not use it here.
 type Token struct {
 	hdr            *header
-	Issuer         string   `json:"iss,omitempty"`
-	Subject        string   `json:"sub,omitempty"`
-	ExpirationTime int64    `json:"exp,omitempty"`
-	NotBefore      int64    `json:"nbf,omitempty"`
-	IssuedAt       int64    `json:"iat,omitempty"`
-	ID             string   `json:"jti,omitempty"`
-	Username       string   `json:"preferred_username,omitempty"`
+	Issuer         string `json:"iss,omitempty"`
+	Subject        string `json:"sub,omitempty"`
+	ExpirationTime int64  `json:"exp,omitempty"`
+	NotBefore      int64  `json:"nbf,omitempty"`
+	IssuedAt       int64  `json:"iat,omitempty"`
+	ID             string `json:"jti,omitempty"`
+	Username       string `json:"preferred_username,omitempty"`
 }
 
 type header struct {
@@ -407,4 +439,3 @@ type header struct {
 	Type        string `json:"typ,omitempty"`
 	ContentType string `json:"cty,omitempty"`
 }
-
