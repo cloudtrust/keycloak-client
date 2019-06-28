@@ -27,12 +27,12 @@ const (
 // Parameters: email, first (paging offset, int), firstName, lastName, username,
 // max (maximum result size, default = 100),
 // search (string contained in username, firstname, lastname or email)
-func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName string, paramKV ...string) ([]UserRepresentation, error) {
+func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName string, paramKV ...string) (UsersPageRepresentation, error) {
+	var resp UsersPageRepresentation
 	if len(paramKV)%2 != 0 {
-		return nil, fmt.Errorf("the number of key/val parameters should be even")
+		return resp, fmt.Errorf("the number of key/val parameters should be even")
 	}
 
-	var resp = []UserRepresentation{}
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionApiPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
@@ -101,7 +101,7 @@ func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userI
 	return c.put(accessToken, plugins...)
 }
 
-// Send a new enrolment code and return it
+// SendNewEnrolmentCode sends a new enrolment code and return it
 func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, userID string) (SmsCodeRepresentation, error) {
 	var paramKV []string
 	paramKV = append(paramKV, "userid", userID)
