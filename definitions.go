@@ -654,7 +654,7 @@ type UserRepresentation struct {
 
 // UsersPageRepresentation is used to manage users paging
 type UsersPageRepresentation struct {
-	Count *int                 `json:"id,omitempty"`
+	Count *int                 `json:"count,omitempty"`
 	Users []UserRepresentation `json:"users,omitempty"`
 }
 
