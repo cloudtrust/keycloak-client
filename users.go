@@ -16,6 +16,7 @@ const (
 	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
 	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
+	sendReminderEmailPath        = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                       = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
 	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
@@ -111,6 +112,19 @@ func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, user
 	_, err := c.post(accessToken, &resp, plugins...)
 
 	return resp, err
+}
+
+// SendReminderEmail sends a reminder email to a user
+func (c *Client) SendReminderEmail(accessToken string, realmName string, userID string, paramKV ...string) error {
+	if len(paramKV)%2 != 0 {
+		return fmt.Errorf("the number of key/val parameters should be even")
+	}
+	var newParamKV = append(paramKV, "userid", userID)
+
+	var plugins = append(createQueryPlugins(newParamKV...), url.Path(sendReminderEmailPath), url.Param("realm", realmName))
+
+	_, err := c.post(accessToken, nil, plugins...)
+	return err
 }
 
 // GetCredentialsForUser gets the credential list for a user
