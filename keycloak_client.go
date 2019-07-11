@@ -225,20 +225,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				// whitelist errors from Keycloak
-				//POST account/credentials/password with error message "invalidPasswordExistingMessage"
-				switch message {
-				case "invalidPasswordExistingMessage":
-					return "", commonhttp.Error{
-						Status:  resp.StatusCode,
-						Message: "keycloak." + message,
-					}
-				default:
-					return "", HTTPError{
-						HTTPStatus: resp.StatusCode,
-						Message:    message,
-					}
-				}
+				return "", whitelistErrors(resp.StatusCode, message)
 			}
 			return "", HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -430,6 +417,24 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 
 func str(s string) *string {
 	return &s
+}
+
+func whitelistErrors(statusCode int, message string) error {
+	// whitelist errors from Keycloak
+
+	switch message {
+	//POST account/credentials/password with error message "invalidPasswordExistingMessage"
+	case "invalidPasswordExistingMessage":
+		return commonhttp.Error{
+			Status:  statusCode,
+			Message: "keycloak." + message,
+		}
+	default:
+		return HTTPError{
+			HTTPStatus: statusCode,
+			Message:    message,
+		}
+	}
 }
 
 // Token is JWT token.
