@@ -172,10 +172,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return whitelistErrors(resp.StatusCode, message)
 			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -277,10 +274,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return whitelistErrors(resp.StatusCode, message)
 			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -325,10 +319,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return whitelistErrors(resp.StatusCode, message)
 			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
