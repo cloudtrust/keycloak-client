@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"time"
 
+	commonhttp "github.com/cloudtrust/common-service/http"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
@@ -224,9 +225,19 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return "", HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
+				// whitelist errors from Keycloak
+				//POST account/credentials/password with error message "invalidPasswordExistingMessage"
+				switch message {
+				case "invalidPasswordExistingMessage":
+					return "", commonhttp.Error{
+						Status:  resp.StatusCode,
+						Message: "keycloak." + message,
+					}
+				default:
+					return "", HTTPError{
+						HTTPStatus: resp.StatusCode,
+						Message:    message,
+					}
 				}
 			}
 			return "", HTTPError{
