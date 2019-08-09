@@ -42,8 +42,9 @@ func (c *AccountClient) DeleteCredential(accessToken string, realmName string, c
 }
 
 // MoveToFirst moves the credential at the top of the list
-func (c *AccountClient) MoveToFirst(accessToken string, realmName string, credentialID string) (string, error) {
-	return c.client.post(accessToken, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID))
+func (c *AccountClient) MoveToFirst(accessToken string, realmName string, credentialID string) error {
+	_, err := c.client.post(accessToken, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID))
+	return err
 }
 
 // MoveAfter moves the credential after the specified one into the list

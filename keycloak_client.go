@@ -151,6 +151,10 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	return err
 }
 
+func (c *Client) AccountClient() *AccountClient {
+	return c.account
+}
+
 // get is a HTTP get method.
 func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
 	var err error
