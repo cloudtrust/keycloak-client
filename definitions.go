@@ -217,6 +217,9 @@ type CredentialRepresentation struct {
 	Value             *string              `json:"value,omitempty"`
 }
 
+type CredentialTypeRepresentation struct {
+}
+
 type EventRepresentation struct {
 	ClientId  *string                 `json:"clientId,omitempty"`
 	Details   *map[string]interface{} `json:"details,omitempty"`

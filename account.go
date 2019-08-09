@@ -1,0 +1,66 @@
+package keycloak
+
+import (
+	"gopkg.in/h2non/gentleman.v2/plugins/body"
+	"gopkg.in/h2non/gentleman.v2/plugins/url"
+)
+
+const (
+	accountPath                 = "/auth/realms/:realm/account"
+	accountExtensionAPIPath     = "/auth/realms/master/api/account/realms/:realm"
+	accountPasswordPath         = accountExtensionAPIPath + "/credentials/password"
+	accountCredentialsPath      = accountPath + "/credentials"
+	accountCredentialsTypesPath = accountCredentialsPath + "/types"
+	accountCredentialIDPath     = "/:credentialID"
+	accountMoveFirstPath        = accountCredentialIDPath + "/moveToFirst"
+	accountMoveAfterPath        = accountCredentialIDPath + "/moveAfter/:previousCredentialID"
+)
+
+// GetCredentials returns the list of credentials of the user
+func (c *AccountClient) GetCredentials(accessToken string, realmName string) ([]CredentialRepresentation, error) {
+	var resp = []CredentialRepresentation{}
+
+	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsPath), url.Param("realm", realmName))
+	return resp, err
+}
+
+// GetCredentialTypes returns list of credentials types available for the user
+func (c *AccountClient) GetCredentialTypes(accessToken string, realmName string) ([]CredentialTypeRepresentation, error) {
+	var resp = []CredentialTypeRepresentation{}
+	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsTypesPath), url.Param("realm", realmName))
+	return resp, err
+}
+
+// GetCredential returns the credential
+func (c *AccountClient) GetCredential(accessToken string, realmName string, credentialID string) (CredentialRepresentation, error) {
+	var resp = CredentialRepresentation{}
+	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID))
+	return resp, err
+}
+
+// UpdateCredential updates the credential
+func (c *AccountClient) UpdateCredential(accessToken string, realmName string, credentialID string, credential CredentialRepresentation) error {
+	return c.client.put(accessToken, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.JSON(credential))
+}
+
+// DeleteCredential deletes the credential
+func (c *AccountClient) DeleteCredential(accessToken string, realmName string, credentialID string) error {
+	return c.client.delete(accessToken, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID))
+}
+
+// MoveToFirst moves the credential at the top of the list
+func (c *AccountClient) MoveToFirst(accessToken string, realmName string, credentialID string) (string, error) {
+	return c.client.post(accessToken, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID))
+}
+
+// MoveAfter moves the credential after the specified one into the list
+func (c *AccountClient) MoveAfter(accessToken string, realmName string, credentialID string, previousCredentialID string) (string, error) {
+	return c.client.post(accessToken, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID))
+}
+
+// UpdatePassword updates the user's password
+// Parameters: realm, currentPassword, newPassword, confirmPassword
+func (c *AccountClient) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
+	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
+	return c.client.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
+}
