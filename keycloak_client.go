@@ -30,6 +30,11 @@ type Client struct {
 	tokenProviderURL *url.URL
 	apiURL           *url.URL
 	httpClient       *gentleman.Client
+	account          *AccountClient
+}
+
+type AccountClient struct {
+	client *Client
 }
 
 // HTTPError is returned when an error occured while contacting the keycloak instance.
@@ -68,11 +73,17 @@ func New(config Config) (*Client, error) {
 		httpClient = httpClient.Use(timeout.Request(config.Timeout))
 	}
 
-	return &Client{
+	var client = &Client{
 		tokenProviderURL: uToken,
 		apiURL:           uAPI,
 		httpClient:       httpClient,
-	}, nil
+	}
+
+	client.account = &AccountClient{
+		client: client,
+	}
+
+	return client, nil
 }
 
 // getToken returns a valid token from keycloak.
@@ -138,6 +149,10 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	var err error
 	_, err = v.Verify(context.Background(), accessToken)
 	return err
+}
+
+func (c *Client) AccountClient() *AccountClient {
+	return c.account
 }
 
 // get is a HTTP get method.
