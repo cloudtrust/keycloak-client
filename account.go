@@ -25,22 +25,15 @@ func (c *AccountClient) GetCredentials(accessToken string, realmName string) ([]
 }
 
 // GetCredentialTypes returns list of credentials types available for the user
-func (c *AccountClient) GetCredentialTypes(accessToken string, realmName string) ([]CredentialTypeRepresentation, error) {
-	var resp = []CredentialTypeRepresentation{}
+func (c *AccountClient) GetCredentialTypes(accessToken string, realmName string) ([]string, error) {
+	var resp = []string{}
 	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsTypesPath), url.Param("realm", realmName))
 	return resp, err
 }
 
-// GetCredential returns the credential
-func (c *AccountClient) GetCredential(accessToken string, realmName string, credentialID string) (CredentialRepresentation, error) {
-	var resp = CredentialRepresentation{}
-	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID))
-	return resp, err
-}
-
-// UpdateCredential updates the credential
-func (c *AccountClient) UpdateCredential(accessToken string, realmName string, credentialID string, credential CredentialRepresentation) error {
-	return c.client.put(accessToken, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.JSON(credential))
+// UpdateLabelCredential updates the label of credential
+func (c *AccountClient) UpdateLabelCredential(accessToken string, realmName string, credentialID string, label string) error {
+	return c.client.put(accessToken, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.String(label))
 }
 
 // DeleteCredential deletes the credential
@@ -54,8 +47,9 @@ func (c *AccountClient) MoveToFirst(accessToken string, realmName string, creden
 }
 
 // MoveAfter moves the credential after the specified one into the list
-func (c *AccountClient) MoveAfter(accessToken string, realmName string, credentialID string, previousCredentialID string) (string, error) {
-	return c.client.post(accessToken, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID))
+func (c *AccountClient) MoveAfter(accessToken string, realmName string, credentialID string, previousCredentialID string) error {
+	_, err := c.client.post(accessToken, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID))
+	return err
 }
 
 // UpdatePassword updates the user's password

@@ -8,7 +8,7 @@ import (
 const (
 	resetPasswordPath    = userIDPath + "/reset-password"
 	credentialsPath      = userIDPath + "/credentials"
-	credentialsTypesPath = "/TODO"
+	credentialsTypesPath = realmPath + "/credentialTypes"
 	credentialIDPath     = "/:credentialID"
 	moveFirstPath        = credentialIDPath + "/moveToFirst"
 	moveAfterPath        = credentialIDPath + "/moveAfter/:previousCredentialID"
@@ -28,16 +28,9 @@ func (c *Client) GetCredentials(accessToken string, realmName string, userID str
 }
 
 // GetCredentialTypes returns list of credentials types available for the realm
-func (c *Client) GetCredentialTypes(accessToken string, realmName string) ([]CredentialTypeRepresentation, error) {
-	var resp = []CredentialTypeRepresentation{}
+func (c *Client) GetCredentialTypes(accessToken string, realmName string) ([]string, error) {
+	var resp = []string{}
 	var err = c.get(accessToken, &resp, url.Path(credentialsTypesPath), url.Param("realm", realmName))
-	return resp, err
-}
-
-// GetCredential returns the credential
-func (c *Client) GetCredential(accessToken string, realmName string, userID string, credentialID string) (CredentialRepresentation, error) {
-	var resp = CredentialRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(credentialIDPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID))
 	return resp, err
 }
 
@@ -52,13 +45,15 @@ func (c *Client) DeleteCredential(accessToken string, realmName string, userID s
 }
 
 // MoveToFirst moves the credential at the top of the list
-func (c *Client) MoveToFirst(accessToken string, realmName string, userID string, credentialID string) (string, error) {
-	return c.post(accessToken, url.Path(moveFirstPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID))
+func (c *Client) MoveToFirst(accessToken string, realmName string, userID string, credentialID string) error {
+	_, err := c.post(accessToken, url.Path(moveFirstPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID))
+	return err
 }
 
 // MoveAfter moves the credential after the specified one into the list
-func (c *Client) MoveAfter(accessToken string, realmName string, userID string, credentialID string, previousCredentialID string) (string, error) {
-	return c.post(accessToken, url.Path(moveAfterPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID))
+func (c *Client) MoveAfter(accessToken string, realmName string, userID string, credentialID string, previousCredentialID string) error {
+	_, err := c.post(accessToken, url.Path(moveAfterPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID))
+	return err
 }
 
 // UpdatePassword updates the user's password
