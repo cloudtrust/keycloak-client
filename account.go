@@ -44,13 +44,13 @@ func (c *AccountClient) DeleteCredential(accessToken string, realmName string, c
 
 // MoveToFirst moves the credential at the top of the list
 func (c *AccountClient) MoveToFirst(accessToken string, realmName string, credentialID string) error {
-	_, err := c.client.post(accessToken, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), headers.Set("Accept", "application/json"))
+	_, err := c.client.post(accessToken, nil, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), headers.Set("Accept", "application/json"))
 	return err
 }
 
 // MoveAfter moves the credential after the specified one into the list
 func (c *AccountClient) MoveAfter(accessToken string, realmName string, credentialID string, previousCredentialID string) error {
-	_, err := c.client.post(accessToken, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID), headers.Set("Accept", "application/json"))
+	_, err := c.client.post(accessToken, nil, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID), headers.Set("Accept", "application/json"))
 	return err
 }
 
@@ -58,5 +58,5 @@ func (c *AccountClient) MoveAfter(accessToken string, realmName string, credenti
 // Parameters: realm, currentPassword, newPassword, confirmPassword
 func (c *AccountClient) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
 	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
-	return c.client.post(accessToken, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
+	return c.client.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
 }
