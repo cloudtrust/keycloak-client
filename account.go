@@ -13,6 +13,7 @@ const (
 	accountCredentialsPath      = accountPath + "/credentials"
 	accountCredentialsTypesPath = accountCredentialsPath + "/types"
 	accountCredentialIDPath     = "/:credentialID"
+	accountCredentialLabelPath  = accountCredentialIDPath + "/label"
 	accountMoveFirstPath        = accountCredentialIDPath + "/moveToFirst"
 	accountMoveAfterPath        = accountCredentialIDPath + "/moveAfter/:previousCredentialID"
 )
