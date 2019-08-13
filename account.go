@@ -12,7 +12,7 @@ const (
 	accountPasswordPath         = accountExtensionAPIPath + "/credentials/password"
 	accountCredentialsPath      = accountPath + "/credentials"
 	accountCredentialsTypesPath = accountCredentialsPath + "/types"
-	accountCredentialIDPath     = "/:credentialID"
+	accountCredentialIDPath     = accountCredentialsPath + "/:credentialID"
 	accountCredentialLabelPath  = accountCredentialIDPath + "/label"
 	accountMoveFirstPath        = accountCredentialIDPath + "/moveToFirst"
 	accountMoveAfterPath        = accountCredentialIDPath + "/moveAfter/:previousCredentialID"
