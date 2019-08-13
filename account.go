@@ -21,36 +21,36 @@ const (
 // GetCredentials returns the list of credentials of the user
 func (c *AccountClient) GetCredentials(accessToken string, realmName string) ([]CredentialRepresentation, error) {
 	var resp = []CredentialRepresentation{}
-	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsPath), url.Param("realm", realmName), headers.Set("Content-Type", "application/json"))
+	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 	return resp, err
 }
 
 // GetCredentialTypes returns list of credentials types available for the user
 func (c *AccountClient) GetCredentialTypes(accessToken string, realmName string) ([]string, error) {
 	var resp = []string{}
-	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsTypesPath), url.Param("realm", realmName), headers.Set("Content-Type", "application/json"))
+	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsTypesPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 	return resp, err
 }
 
 // UpdateLabelCredential updates the label of credential
 func (c *AccountClient) UpdateLabelCredential(accessToken string, realmName string, credentialID string, label string) error {
-	return c.client.put(accessToken, url.Path(accountCredentialLabelPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.String(label), headers.Set("Content-Type", "text/plain"))
+	return c.client.put(accessToken, url.Path(accountCredentialLabelPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.String(label), headers.Set("Accept", "application/json"), headers.Set("Content-Type", "text/plain"))
 }
 
 // DeleteCredential deletes the credential
 func (c *AccountClient) DeleteCredential(accessToken string, realmName string, credentialID string) error {
-	return c.client.delete(accessToken, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), headers.Set("Content-Type", "application/json"))
+	return c.client.delete(accessToken, url.Path(accountCredentialIDPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), headers.Set("Accept", "application/json"))
 }
 
 // MoveToFirst moves the credential at the top of the list
 func (c *AccountClient) MoveToFirst(accessToken string, realmName string, credentialID string) error {
-	_, err := c.client.post(accessToken, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), headers.Set("Content-Type", "application/json"))
+	_, err := c.client.post(accessToken, url.Path(accountMoveFirstPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), headers.Set("Accept", "application/json"))
 	return err
 }
 
 // MoveAfter moves the credential after the specified one into the list
 func (c *AccountClient) MoveAfter(accessToken string, realmName string, credentialID string, previousCredentialID string) error {
-	_, err := c.client.post(accessToken, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID), headers.Set("Content-Type", "application/json"))
+	_, err := c.client.post(accessToken, url.Path(accountMoveAfterPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), url.Param("previousCredentialID", previousCredentialID), headers.Set("Accept", "application/json"))
 	return err
 }
 
