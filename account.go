@@ -58,5 +58,5 @@ func (c *AccountClient) MoveAfter(accessToken string, realmName string, credenti
 // Parameters: realm, currentPassword, newPassword, confirmPassword
 func (c *AccountClient) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
 	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
-	return c.client.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
+	return c.client.post(accessToken, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
 }
