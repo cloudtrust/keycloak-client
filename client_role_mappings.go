@@ -10,7 +10,7 @@ const (
 	realmRoleMappingPath  = "/auth/admin/realms/:realm/users/:id/role-mappings/realm"
 )
 
-// AddClientRoleMapping add client-level roles to the user role mapping.
+// AddClientRolesToUserRoleMapping add client-level roles to the user role mapping.
 func (c *Client) AddClientRolesToUserRoleMapping(accessToken string, realmName, userID, clientID string, roles []RoleRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("client", clientID), body.JSON(roles))
 	return err
@@ -28,6 +28,7 @@ func (c *Client) DeleteClientRolesFromUserRoleMapping(accessToken string, realmN
 	return c.delete(accessToken, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("client", clientID))
 }
 
+// GetRealmLevelRoleMappings gets realm level role mappings
 func (c *Client) GetRealmLevelRoleMappings(accessToken string, realmName, userID string) ([]RoleRepresentation, error) {
 	var resp = []RoleRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(realmRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID))
