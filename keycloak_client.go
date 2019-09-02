@@ -1,14 +1,12 @@
 package keycloak
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
-	oidc "github.com/coreos/go-oidc"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
@@ -23,13 +21,15 @@ type Config struct {
 	AddrTokenProvider string
 	AddrAPI           string
 	Timeout           time.Duration
+	CacheTTL          time.Duration
+	ErrorTolerance    time.Duration
 }
 
 // Client is the keycloak client.
 type Client struct {
-	tokenProviderURL *url.URL
 	apiURL           *url.URL
 	httpClient       *gentleman.Client
+	verifierProvider OidcVerifierProvider
 }
 
 // HTTPError is returned when an error occured while contacting the keycloak instance.
@@ -68,14 +68,26 @@ func New(config Config) (*Client, error) {
 		httpClient = httpClient.Use(timeout.Request(config.Timeout))
 	}
 
-	return &Client{
-		tokenProviderURL: uToken,
+	// Use default values when clients are not initializing these values
+	cacheTTL := config.CacheTTL
+	if cacheTTL == 0 {
+		cacheTTL = 15 * time.Minute
+	}
+	errTolerance := config.ErrorTolerance
+	if errTolerance == 0 {
+		errTolerance = time.Minute
+	}
+
+	var client = &Client{
 		apiURL:           uAPI,
 		httpClient:       httpClient,
-	}, nil
+		verifierProvider: NewVerifierCache(uToken, cacheTTL, errTolerance),
+	}
+
+	return client, nil
 }
 
-// getToken returns a valid token from keycloak.
+// GetToken returns a valid token from keycloak.
 func (c *Client) GetToken(realm string, username string, password string) (string, error) {
 	var req *gentleman.Request
 	{
@@ -121,22 +133,12 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 	return accessToken.(string), nil
 }
 
-// verifyToken token verify a token. It returns an error it is malformed, expired,...
+// VerifyToken verifies a token. It returns an error it is malformed, expired,...
 func (c *Client) VerifyToken(realmName string, accessToken string) error {
-	var oidcProvider *oidc.Provider
-	{
-		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/%s", c.tokenProviderURL.String(), realmName)
-		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
-		if err != nil {
-			return errors.Wrap(err, "could not create oidc provider")
-		}
+	verifier, err := c.verifierProvider.GetOidcVerifier(realmName)
+	if err != nil {
+		err = verifier.Verify(accessToken)
 	}
-
-	var v = oidcProvider.Verifier(&oidc.Config{SkipClientIDCheck: true})
-
-	var err error
-	_, err = v.Verify(context.Background(), accessToken)
 	return err
 }
 
