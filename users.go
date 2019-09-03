@@ -1,7 +1,7 @@
 package keycloak
 
 import (
-	"fmt"
+	"errors"
 
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/headers"
@@ -32,7 +32,7 @@ const (
 func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName string, paramKV ...string) (UsersPageRepresentation, error) {
 	var resp UsersPageRepresentation
 	if len(paramKV)%2 != 0 {
-		return resp, fmt.Errorf("the number of key/val parameters should be even")
+		return resp, errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
@@ -79,7 +79,7 @@ func (c *Client) DeleteUser(accessToken string, realmName, userID string) error 
 // SendVerifyEmail sends an email-verification email to the user An email contains a link the user can click to verify their email address.
 func (c *Client) SendVerifyEmail(accessToken string, realmName string, userID string, paramKV ...string) error {
 	if len(paramKV)%2 != 0 {
-		return fmt.Errorf("the number of key/val parameters should be even")
+		return errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendVerifyEmailPath), url.Param("realm", realmName), url.Param("id", userID))
@@ -90,7 +90,7 @@ func (c *Client) SendVerifyEmail(accessToken string, realmName string, userID st
 // ExecuteActionsEmail sends an update account email to the user. An email contains a link the user can click to perform a set of required actions.
 func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userID string, actions []string, paramKV ...string) error {
 	if len(paramKV)%2 != 0 {
-		return fmt.Errorf("the number of key/val parameters should be even")
+		return errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(executeActionsEmailPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(actions))
@@ -113,7 +113,7 @@ func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, user
 // SendReminderEmail sends a reminder email to a user
 func (c *Client) SendReminderEmail(accessToken string, realmName string, userID string, paramKV ...string) error {
 	if len(paramKV)%2 != 0 {
-		return fmt.Errorf("the number of key/val parameters should be even")
+		return errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 	var newParamKV = append(paramKV, "userid", userID)
 
