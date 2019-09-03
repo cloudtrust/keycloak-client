@@ -147,6 +147,13 @@ func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword
 	return c.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
 }
 
+// GetAccount updates the user's informations
+func (c *Client) GetAccount(accessToken string, realm string) (UserRepresentation, error) {
+	var resp = UserRepresentation{}
+	var err = c.get(accessToken, &resp, url.Path(accountPath), url.Param("realm", realm))
+	return resp, err
+}
+
 // UpdateAccount updates the user's informations
 func (c *Client) UpdateAccount(accessToken string, realm string, user UserRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(accountPath), url.Param("realm", realm), body.JSON(user))
