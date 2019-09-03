@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
+	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
@@ -150,7 +151,7 @@ func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword
 // GetAccount updates the user's informations
 func (c *Client) GetAccount(accessToken string, realm string) (UserRepresentation, error) {
 	var resp = UserRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(accountPath), url.Param("realm", realm))
+	var err = c.get(accessToken, &resp, url.Path(accountPath), url.Param("realm", realm), headers.Set("Accept", "application/json"))
 	return resp, err
 }
 
