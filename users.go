@@ -22,6 +22,7 @@ const (
 	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 	accountPasswordPath          = "/auth/realms/master/api/account/realms/:realm/credentials/password"
+	accountPath                  = "/auth/realms/master/api/account/realms/:realm/"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -144,4 +145,10 @@ func (c *Client) DeleteCredentialsForUser(accessToken string, realmReq, realmNam
 func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
 	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
 	return c.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
+}
+
+// UpdateAccount updates the user's informations
+func (c *Client) UpdateAccount(accessToken string, realm string, user UserRepresentation) error {
+	_, err := c.post(accessToken, nil, url.Path(accountPath), url.Param("realm", realm), body.JSON(user))
+	return err
 }
