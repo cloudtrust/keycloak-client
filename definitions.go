@@ -201,13 +201,20 @@ type ConfigPropertyRepresentation struct {
 }
 
 type CredentialRepresentation struct {
-	Id             *string `json:"id,omitempty"`
-	Type           *string `json:"type,omitempty"`
-	UserLabel      *string `json:"userLabel,omitempty"`
-	CreatedDate    *int64  `json:"createdDate,omitempty"`
-	CredentialData *string `json:"credentialData,omitempty"`
-	Value          *string `json:"value,omitempty"`
-	Temporary      *bool   `json:"temporary,omitempty"`
+	Id                *string              `json:"id,omitempty"`
+	Algorithm         *string              `json:"algorithm,omitempty"`
+	Config            *map[string][]string `json:"config,omitempty"`
+	Counter           *int32               `json:"counter,omitempty"`
+	CreatedDate       *int64               `json:"createdDate,omitempty"`
+	Device            *string              `json:"device,omitempty"`
+	Digits            *int32               `json:"digits,omitempty"`
+	HashIterations    *int32               `json:"hashIterations,omitempty"`
+	HashedSaltedValue *string              `json:"hashedSaltedValue,omitempty"`
+	Period            *int32               `json:"period,omitempty"`
+	Salt              *string              `json:"salt,omitempty"`
+	Temporary         *bool                `json:"temporary,omitempty"`
+	Type              *string              `json:"type,omitempty"`
+	Value             *string              `json:"value,omitempty"`
 }
 
 type EventRepresentation struct {

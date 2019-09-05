@@ -10,16 +10,17 @@ import (
 
 const (
 	userPath                     = "/auth/admin/realms/:realm/users"
-	usersAdminExtensionAPIPath   = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
+	usersAdminExtensionApiPath   = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
 	userCountPath                = userPath + "/count"
 	userIDPath                   = userPath + "/:id"
 	userGroupsPath               = userIDPath + "/groups"
+	resetPasswordPath            = userIDPath + "/reset-password"
 	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
 	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
 	sendReminderEmailPath        = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                       = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
-	getCredentialsForUserPath    = usersAdminExtensionAPIPath + "/:id/credentials"
+	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
 	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
 	accountPasswordPath          = "/auth/realms/master/api/account/realms/:realm/credentials/password"
 	accountPath                  = "/auth/realms/master/api/account/realms/:realm/"
@@ -35,14 +36,14 @@ func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName stri
 		return resp, errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionApiPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
 }
 
 // CreateUser creates the user from its UserRepresentation. The username must be unique.
 func (c *Client) CreateUser(accessToken string, reqRealmName, targetRealmName string, user UserRepresentation) (string, error) {
-	return c.post(accessToken, nil, url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
+	return c.post(accessToken, nil, url.Path(usersAdminExtensionApiPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
 }
 
 // CountUsers returns the number of users in the realm.
@@ -74,6 +75,11 @@ func (c *Client) UpdateUser(accessToken string, realmName, userID string, user U
 // DeleteUser deletes the user.
 func (c *Client) DeleteUser(accessToken string, realmName, userID string) error {
 	return c.delete(accessToken, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
+}
+
+// ResetPassword resets password of the user.
+func (c *Client) ResetPassword(accessToken string, realmName, userID string, cred CredentialRepresentation) error {
+	return c.put(accessToken, url.Path(resetPasswordPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(cred))
 }
 
 // SendVerifyEmail sends an email-verification email to the user An email contains a link the user can click to verify their email address.

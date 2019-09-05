@@ -134,17 +134,13 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 	return accessToken.(string), nil
 }
 
-// VerifyToken token verify a token. It returns an error it is malformed, expired,...
+// VerifyToken verifies a token. It returns an error it is malformed, expired,...
 func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	verifier, err := c.verifierProvider.GetOidcVerifier(realmName)
 	if err != nil {
 		err = verifier.Verify(accessToken)
 	}
 	return err
-}
-
-func (c *Client) AccountClient() *AccountClient {
-	return c.account
 }
 
 // get is a HTTP get method.
