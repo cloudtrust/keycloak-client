@@ -160,3 +160,8 @@ func (c *Client) UpdateAccount(accessToken string, realm string, user UserRepres
 	_, err := c.post(accessToken, nil, url.Path(accountPath), url.Param("realm", realm), body.JSON(user))
 	return err
 }
+
+// DeleteAccount delete current user
+func (c *Client) DeleteAccount(accessToken string, realmName string) error {
+	return c.delete(accessToken, url.Path(accountPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
+}
