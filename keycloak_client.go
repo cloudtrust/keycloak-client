@@ -1,7 +1,14 @@
 package keycloak
 
 import (
+<<<<<<< .merge_file_a40692
 	"encoding/json"
+||||||| .merge_file_a31292
+	"context"
+=======
+	"context"
+	"encoding/json"
+>>>>>>> .merge_file_a59036
 	"fmt"
 	"net/http"
 	"net/url"
@@ -169,11 +176,23 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+<<<<<<< .merge_file_a40692
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
 				return whitelistErrors(resp.StatusCode, message)
 			}
+||||||| .merge_file_a31292
+=======
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
+>>>>>>> .merge_file_a59036
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -219,11 +238,23 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+<<<<<<< .merge_file_a40692
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
 				return "", whitelistErrors(resp.StatusCode, message)
 			}
+||||||| .merge_file_a31292
+=======
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return "", HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
+>>>>>>> .merge_file_a59036
 			return "", HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -271,11 +302,23 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+<<<<<<< .merge_file_a40692
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
 				return whitelistErrors(resp.StatusCode, message)
 			}
+||||||| .merge_file_a31292
+=======
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
+>>>>>>> .merge_file_a59036
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
@@ -316,11 +359,23 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
+<<<<<<< .merge_file_a40692
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
 				return whitelistErrors(resp.StatusCode, message)
 			}
+||||||| .merge_file_a31292
+=======
+			var response map[string]string
+			err := json.Unmarshal(resp.Bytes(), &response)
+			if message, ok := response["errorMessage"]; ok && err == nil {
+				return HTTPError{
+					HTTPStatus: resp.StatusCode,
+					Message:    message,
+				}
+			}
+>>>>>>> .merge_file_a59036
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),

@@ -115,7 +115,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a530f8e0c0ee8a3b440f9f0b0e9f4e5d5e47cfe3a581086ce32cd8ba114ddf4f"
+  digest = "1:086760278d762dbb0e9a26e09b57f04c89178c86467d8d94fae47d64c222f328"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -123,11 +123,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "9756ffdc24725223350eb3266ffb92590d28f278"
+  revision = "4def268fd1a49955bfb3dda92fe3db4f924f2285"
 
 [[projects]]
   branch = "master"
-  digest = "1:87c06c289123bf8be0a776c57ca40ce075f6c598a905ff2ff8ba40fba0d5d17c"
+  digest = "1:31cd6e3c114e17c5f0c9e8b0bcaa3025ab3c221ce36323c7ce1acaa753d0d0aa"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -136,7 +136,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "ba9fcec4b297b415637633c5a6e8fa592e4a16c3"
+  revision = "da137c7871d730100384dbcf36e6f8fa493aef5b"
 
 [[projects]]
   branch = "master"
@@ -175,7 +175,7 @@
   version = "v0.3.2"
 
 [[projects]]
-  digest = "1:0568e577f790e9bd0420521cff50580f9b38165a38f217ce68f55c4bbaa97066"
+  digest = "1:47f391ee443f578f01168347818cb234ed819521e49e4d2c8dd2fb80d48ee41a"
   name = "google.golang.org/appengine"
   packages = [
     "internal",
@@ -187,8 +187,8 @@
     "urlfetch",
   ]
   pruneopts = ""
-  revision = "5f2a59506353b8d5ba8cbbcd9f3c1f41f1eaf079"
-  version = "v1.6.2"
+  revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
+  version = "v1.6.1"
 
 [[projects]]
   digest = "1:e3250d192192f02fbb143d50de437cbe967d6be7bd9fad671600942a33269d08"
