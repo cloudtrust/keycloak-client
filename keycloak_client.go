@@ -187,10 +187,10 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				data = resp.Bytes()
 				return nil
 			default:
-				return fmt.Errorf(MsgErrUnkownHTTPContentType+".%v", resp.Header.Get("Content-Type"))
+				return fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, resp.Header.Get("Content-Type"))
 			}
 		default:
-			return fmt.Errorf(MsgErrUnknownResponseStatusCode+".%v", resp.StatusCode)
+			return fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
 		}
 	}
 }
@@ -242,7 +242,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				return location, nil
 			}
 		default:
-			return "", fmt.Errorf(MsgErrUnknownResponseStatusCode+".%v", resp.StatusCode)
+			return "", fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
 		}
 	}
 }
