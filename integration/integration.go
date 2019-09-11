@@ -16,19 +16,6 @@ const (
 	user     = "version"
 )
 
-// This should be converted into
-// GetClient(accessToken string, realmName, idClient string) (kc.ClientRepresentation, error)
-// GetClientRoleMappings(accessToken string, realmName, userID, clientID string) ([]kc.RoleRepresentation, error)
-// AddClientRolesToUserRoleMapping(accessToken string, realmName, userID, clientID string, roles []kc.RoleRepresentation) error
-// GetRealmLevelRoleMappings(accessToken string, realmName, userID string) ([]kc.RoleRepresentation, error)
-// ResetPassword(accessToken string, realmName string, userID string) error
-// SendVerifyEmail(accessToken string, realmName string, userID string) error
-
-// GetRoles(accessToken string, realmName string) ([]kc.RoleRepresentation, error)
-// GetRole(accessToken string, realmName string, roleID string) (kc.RoleRepresentation, error)
-// GetClientRoles(accessToken string, realmName, idClient string) ([]kc.RoleRepresentation, error)
-// CreateClientRole(accessToken string, realmName, clientID string, role kc.RoleRepresentation) (string, error)
-
 func main() {
 	var conf = getKeycloakConfig()
 	var client, err = keycloak.New(*conf)

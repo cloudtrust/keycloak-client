@@ -1,7 +1,7 @@
 package keycloak
 
 import (
-	"fmt"
+	"errors"
 
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
@@ -17,7 +17,7 @@ const (
 // viewableOnly (filter clients that cannot be viewed in full by admin, default="false")
 func (c *Client) GetClients(accessToken string, realmName string, paramKV ...string) ([]ClientRepresentation, error) {
 	if len(paramKV)%2 != 0 {
-		return nil, fmt.Errorf("the number of key/val parameters should be even")
+		return nil, errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 
 	var resp = []ClientRepresentation{}

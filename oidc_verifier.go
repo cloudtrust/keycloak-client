@@ -55,7 +55,7 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 		var issuer = fmt.Sprintf("%s/auth/realms/%s", vc.tokenProviderURL.String(), realm)
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
-			return nil, errors.Wrap(err, "could not create oidc provider")
+			return nil, errors.Wrap(err, MsgErrCannotCreate+"."+OIDCProvider)
 		}
 	}
 

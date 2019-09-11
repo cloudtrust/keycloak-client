@@ -2,11 +2,13 @@ package keycloak
 
 import (
 	"encoding/json"
+
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
+	commonhttp "github.com/cloudtrust/common-service/errors"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
@@ -49,7 +51,7 @@ func New(config Config) (*Client, error) {
 		var err error
 		uToken, err = url.Parse(config.AddrTokenProvider)
 		if err != nil {
-			return nil, errors.Wrap(err, "could not parse Token Provider URL")
+			return nil, errors.Wrap(err, MsgErrCannotParse+"."+TokenProviderURL)
 		}
 	}
 
@@ -58,7 +60,7 @@ func New(config Config) (*Client, error) {
 		var err error
 		uAPI, err = url.Parse(config.AddrAPI)
 		if err != nil {
-			return nil, errors.Wrap(err, "could not parse API URL")
+			return nil, errors.Wrap(err, MsgErrCannotParse+"."+APIURL)
 		}
 	}
 
@@ -87,7 +89,7 @@ func New(config Config) (*Client, error) {
 	return client, nil
 }
 
-// GetToken returns a valid token from keycloak.
+// GetToken returns a valid token from keycloak
 func (c *Client) GetToken(realm string, username string, password string) (string, error) {
 	var req *gentleman.Request
 	{
@@ -104,7 +106,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return "", errors.Wrap(err, "could not get token")
+			return "", errors.Wrap(err, MsgErrCannotObtain+"."+TokenMsg)
 		}
 	}
 	defer resp.Close()
@@ -114,7 +116,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		var err error
 		err = resp.JSON(&unmarshalledBody)
 		if err != nil {
-			return "", errors.Wrap(err, "could not unmarshal response")
+			return "", errors.Wrap(err, MsgErrCannotUnmarshal+"."+Response)
 		}
 	}
 
@@ -123,7 +125,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		var ok bool
 		accessToken, ok = unmarshalledBody["access_token"]
 		if !ok {
-			return "", fmt.Errorf("could not find access token in response body")
+			return "", fmt.Errorf(MsgErrMissingParam + "." + AccessToken)
 		}
 	}
 
@@ -158,7 +160,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, "could not get response")
+			return errors.Wrap(err, MsgErrCannotObtain+"."+Response)
 		}
 
 		switch {
@@ -171,10 +173,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return whitelistErrors(resp.StatusCode, message)
 			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -188,10 +187,10 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				data = resp.Bytes()
 				return nil
 			default:
-				return fmt.Errorf("unkown http content-type: %v", resp.Header.Get("Content-Type"))
+				return fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, resp.Header.Get("Content-Type"))
 			}
 		default:
-			return fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
 		}
 	}
 }
@@ -211,7 +210,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return "", errors.Wrap(err, "could not get response")
+			return "", errors.Wrap(err, MsgErrCannotObtain+"."+Response)
 		}
 
 		switch {
@@ -224,10 +223,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return "", HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return "", whitelistErrors(resp.StatusCode, message)
 			}
 			return "", HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -246,7 +242,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				return location, nil
 			}
 		default:
-			return "", fmt.Errorf("unknown response status code: %v", resp.StatusCode)
+			return "", fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
 		}
 	}
 }
@@ -266,7 +262,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, "could not get response")
+			return errors.Wrap(err, MsgErrCannotObtain+"."+Response)
 		}
 
 		switch {
@@ -279,10 +275,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return whitelistErrors(resp.StatusCode, message)
 			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -314,7 +307,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, "could not get response")
+			return errors.Wrap(err, MsgErrCannotObtain+"."+Response)
 		}
 
 		switch {
@@ -327,10 +320,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 			var response map[string]string
 			err := json.Unmarshal(resp.Bytes(), &response)
 			if message, ok := response["errorMessage"]; ok && err == nil {
-				return HTTPError{
-					HTTPStatus: resp.StatusCode,
-					Message:    message,
-				}
+				return whitelistErrors(resp.StatusCode, message)
 			}
 			return HTTPError{
 				HTTPStatus: resp.StatusCode,
@@ -383,7 +373,7 @@ func extractHostFromToken(token string) (string, error) {
 		var err error
 		u, err = url.Parse(issuer)
 		if err != nil {
-			return "", errors.Wrap(err, "could not parse Token issuer URL")
+			return "", errors.Wrap(err, MsgErrCannotParse+"."+TokenProviderURL)
 		}
 	}
 
@@ -394,13 +384,13 @@ func extractIssuerFromToken(token string) (string, error) {
 	payload, _, err := jwt.Parse(token)
 
 	if err != nil {
-		return "", errors.Wrap(err, "could not parse Token")
+		return "", errors.Wrap(err, MsgErrCannotParse+"."+TokenMsg)
 	}
 
 	var jot Token
 
 	if err = jwt.Unmarshal(payload, &jot); err != nil {
-		return "", errors.Wrap(err, "could not unmarshall token")
+		return "", errors.Wrap(err, MsgErrCannotUnmarshal+"."+TokenMsg)
 	}
 
 	return jot.Issuer, nil
@@ -419,6 +409,24 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 
 func str(s string) *string {
 	return &s
+}
+
+func whitelistErrors(statusCode int, message string) error {
+	// whitelist errors from Keycloak
+
+	switch message {
+	//POST account/credentials/password with error message "invalidPasswordExistingMessage"
+	case "invalidPasswordExistingMessage":
+		return commonhttp.Error{
+			Status:  statusCode,
+			Message: "keycloak." + message,
+		}
+	default:
+		return HTTPError{
+			HTTPStatus: statusCode,
+			Message:    message,
+		}
+	}
 }
 
 // Token is JWT token.
