@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:ba07d490a8733429c256c8a8c78bceec68d5af77ea95ae9ca05d86f833d99644"
+  name = "github.com/cloudtrust/common-service"
+  packages = ["errors"]
+  pruneopts = ""
+  revision = "bb18af383d1e95e6ced6966fb39f04594959df69"
+  version = "v1.0-rc7"
+
+[[projects]]
   digest = "1:379d34d9efc755fab444199f007819fe99718640f9ccfbdd3f0430340bb02b07"
   name = "github.com/coreos/go-oidc"
   packages = ["."]
@@ -115,7 +123,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:086760278d762dbb0e9a26e09b57f04c89178c86467d8d94fae47d64c222f328"
+  digest = "1:4a4c4edf69b61bf98e98d22696aa80c4059384895920de4d5e2fe696068d5f13"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -123,11 +131,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "4def268fd1a49955bfb3dda92fe3db4f924f2285"
+  revision = "227b76d455e791cb042b03e633e2f7fbcfdf74a5"
 
 [[projects]]
   branch = "master"
-  digest = "1:31cd6e3c114e17c5f0c9e8b0bcaa3025ab3c221ce36323c7ce1acaa753d0d0aa"
+  digest = "1:6cb053a62bf923c2b5d17fb53fa027a479e7b438a8be5b0c5d948dced78c2d1c"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -136,7 +144,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "da137c7871d730100384dbcf36e6f8fa493aef5b"
+  revision = "24e19bdeb0f2d062d8e2640d50a7aaf2a7f80e7a"
 
 [[projects]]
   branch = "master"
@@ -175,7 +183,7 @@
   version = "v0.3.2"
 
 [[projects]]
-  digest = "1:47f391ee443f578f01168347818cb234ed819521e49e4d2c8dd2fb80d48ee41a"
+  digest = "1:0568e577f790e9bd0420521cff50580f9b38165a38f217ce68f55c4bbaa97066"
   name = "google.golang.org/appengine"
   packages = [
     "internal",
@@ -187,8 +195,8 @@
     "urlfetch",
   ]
   pruneopts = ""
-  revision = "b2f4a3cf3c67576a2ee09e1fe62656a5086ce880"
-  version = "v1.6.1"
+  revision = "5f2a59506353b8d5ba8cbbcd9f3c1f41f1eaf079"
+  version = "v1.6.2"
 
 [[projects]]
   digest = "1:e3250d192192f02fbb143d50de437cbe967d6be7bd9fad671600942a33269d08"
@@ -237,6 +245,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/cloudtrust/common-service/errors",
     "github.com/coreos/go-oidc",
     "github.com/gbrlsnchs/jwt",
     "github.com/go-kit/kit/transport/http",
