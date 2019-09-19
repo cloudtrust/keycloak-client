@@ -139,9 +139,9 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 func (c *Client) VerifyToken(realmName string, accessToken string) error {
 	verifier, err := c.verifierProvider.GetOidcVerifier(realmName)
 	if err != nil {
-		err = verifier.Verify(accessToken)
+		return err
 	}
-	return err
+	return verifier.Verify(accessToken)
 }
 
 // get is a HTTP get method.
