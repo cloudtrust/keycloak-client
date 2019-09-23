@@ -86,7 +86,6 @@ func New(config Config) (*Client, error) {
 	}
 
 	var client = &Client{
-		tokenProviderURL: uToken,
 		apiURL:           uAPI,
 		httpClient:       httpClient,
 		verifierProvider: NewVerifierCache(uToken, cacheTTL, errTolerance),

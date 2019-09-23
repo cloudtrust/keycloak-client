@@ -8,18 +8,16 @@ import (
 )
 
 const (
-	userPath                     = "/auth/admin/realms/:realm/users"
-	usersAdminExtensionAPIPath   = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
-	userCountPath                = userPath + "/count"
-	userIDPath                   = userPath + "/:id"
-	userGroupsPath               = userIDPath + "/groups"
-	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
-	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
-	sendReminderEmailPath        = "/auth/realms/:realm/onboarding/sendReminderEmail"
-	smsAPI                       = "/auth/realms/:realm/smsApi"
-	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
-	getCredentialsForUserPath    = usersAdminExtensionAPIPath + "/:id/credentials"
-	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
+	userPath                   = "/auth/admin/realms/:realm/users"
+	usersAdminExtensionAPIPath = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
+	userCountPath              = userPath + "/count"
+	userIDPath                 = userPath + "/:id"
+	userGroupsPath             = userIDPath + "/groups"
+	sendVerifyEmailPath        = userIDPath + "/send-verify-email"
+	executeActionsEmailPath    = userIDPath + "/execute-actions-email"
+	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
+	smsAPI                     = "/auth/realms/:realm/smsApi"
+	sendNewEnrolmentCode       = smsAPI + "/sendNewCode"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -118,16 +116,4 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 
 	_, err := c.post(accessToken, nil, plugins...)
 	return err
-}
-
-// GetCredentialsForUser gets the credential list for a user
-func (c *Client) GetCredentialsForUser(accessToken string, realmReq, realmName string, userID string) ([]CredentialRepresentation, error) {
-	var resp = []CredentialRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(getCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID))
-	return resp, err
-}
-
-// DeleteCredentialsForUser remove credentials for a user
-func (c *Client) DeleteCredentialsForUser(accessToken string, realmReq, realmName string, userID string, credentialID string) error {
-	return c.delete(accessToken, url.Path(deleteCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID), url.Param("credid", credentialID))
 }
