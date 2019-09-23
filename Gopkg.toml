@@ -20,6 +20,9 @@
 #  name = "github.com/x/y"
 #  version = "2.4.0"
 
+[[constraint]]
+  name = "github.com/cloudtrust/common-service"
+  version = "v1.0-rc7"
 
 [[constraint]]
   name = "github.com/pkg/errors"

@@ -60,3 +60,21 @@ func (c *AccountClient) UpdatePassword(accessToken, realm, currentPassword, newP
 	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
 	return c.client.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
 }
+
+// GetAccount provides the user's information
+func (c *Client) GetAccount(accessToken string, realm string) (UserRepresentation, error) {
+	var resp = UserRepresentation{}
+	var err = c.get(accessToken, &resp, url.Path(accountExtensionAPIPath), url.Param("realm", realm), headers.Set("Accept", "application/json"))
+	return resp, err
+}
+
+// UpdateAccount updates the user's information
+func (c *Client) UpdateAccount(accessToken string, realm string, user UserRepresentation) error {
+	_, err := c.post(accessToken, nil, url.Path(accountExtensionAPIPath), url.Param("realm", realm), body.JSON(user))
+	return err
+}
+
+// DeleteAccount delete current user
+func (c *Client) DeleteAccount(accessToken string, realmName string) error {
+	return c.delete(accessToken, url.Path(accountExtensionAPIPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
+}
