@@ -7,15 +7,15 @@ import (
 )
 
 const (
-	accountPath                 = "/auth/realms/:realm/account"
-	accountExtensionAPIPath     = "/auth/realms/master/api/account/realms/:realm"
-	accountPasswordPath         = accountExtensionAPIPath + "/credentials/password"
-	accountCredentialsPath      = accountPath + "/credentials"
-	accountCredentialsTypesPath = accountCredentialsPath + "/types"
-	accountCredentialIDPath     = accountCredentialsPath + "/:credentialID"
-	accountCredentialLabelPath  = accountCredentialIDPath + "/label"
-	accountMoveFirstPath        = accountCredentialIDPath + "/moveToFirst"
-	accountMoveAfterPath        = accountCredentialIDPath + "/moveAfter/:previousCredentialID"
+	accountPath                        = "/auth/realms/:realm/account"
+	accountExtensionAPIPath            = "/auth/realms/master/api/account/realms/:realm"
+	accountPasswordPath                = accountExtensionAPIPath + "/credentials/password"
+	accountCredentialsPath             = accountPath + "/credentials"
+	accountCredentialsRegistratorsPath = accountCredentialsPath + "/registrators"
+	accountCredentialIDPath            = accountCredentialsPath + "/:credentialID"
+	accountCredentialLabelPath         = accountCredentialIDPath + "/label"
+	accountMoveFirstPath               = accountCredentialIDPath + "/moveToFirst"
+	accountMoveAfterPath               = accountCredentialIDPath + "/moveAfter/:previousCredentialID"
 )
 
 // GetCredentials returns the list of credentials of the user
@@ -25,10 +25,10 @@ func (c *AccountClient) GetCredentials(accessToken string, realmName string) ([]
 	return resp, err
 }
 
-// GetCredentialTypes returns list of credentials types available for the user
-func (c *AccountClient) GetCredentialTypes(accessToken string, realmName string) ([]string, error) {
+// GetCredentialRegistrators returns list of credentials types available for the user
+func (c *AccountClient) GetCredentialRegistrators(accessToken string, realmName string) ([]string, error) {
 	var resp = []string{}
-	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsTypesPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
+	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsRegistratorsPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 	return resp, err
 }
 
