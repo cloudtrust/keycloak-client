@@ -70,11 +70,11 @@ func (c *AccountClient) GetAccount(accessToken string, realm string) (UserRepres
 
 // UpdateAccount updates the user's information
 func (c *AccountClient) UpdateAccount(accessToken string, realm string, user UserRepresentation) error {
-	_, err := c.post(accessToken, nil, url.Path(accountExtensionAPIPath), url.Param("realm", realm), body.JSON(user))
+	_, err := c.client.post(accessToken, nil, url.Path(accountExtensionAPIPath), url.Param("realm", realm), body.JSON(user))
 	return err
 }
 
 // DeleteAccount delete current user
 func (c *AccountClient) DeleteAccount(accessToken string, realmName string) error {
-	return c.delete(accessToken, url.Path(accountExtensionAPIPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
+	return c.client.delete(accessToken, url.Path(accountExtensionAPIPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 }
