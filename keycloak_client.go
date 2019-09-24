@@ -2,6 +2,7 @@ package keycloak
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"fmt"
 	"net/http"
@@ -46,7 +47,7 @@ type HTTPError struct {
 }
 
 func (e HTTPError) Error() string {
-	return e.Message
+	return strconv.Itoa(e.HTTPStatus) + ":" + e.Message
 }
 
 // New returns a keycloak client.
