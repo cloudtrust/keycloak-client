@@ -4,26 +4,20 @@ import (
 	"errors"
 
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
-	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
 const (
-	userPath                     = "/auth/admin/realms/:realm/users"
-	usersAdminExtensionApiPath   = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
-	userCountPath                = userPath + "/count"
-	userIDPath                   = userPath + "/:id"
-	userGroupsPath               = userIDPath + "/groups"
-	resetPasswordPath            = userIDPath + "/reset-password"
-	sendVerifyEmailPath          = userIDPath + "/send-verify-email"
-	executeActionsEmailPath      = userIDPath + "/execute-actions-email"
-	sendReminderEmailPath        = "/auth/realms/:realm/onboarding/sendReminderEmail"
-	smsAPI                       = "/auth/realms/:realm/smsApi"
-	sendNewEnrolmentCode         = smsAPI + "/sendNewCode"
-	getCredentialsForUserPath    = usersAdminExtensionApiPath + "/:id/credentials"
-	deleteCredentialsForUserPath = getCredentialsForUserPath + "/:credid"
-	accountPasswordPath          = "/auth/realms/master/api/account/realms/:realm/credentials/password"
-	accountPath                  = "/auth/realms/master/api/account/realms/:realm/"
+	userPath                   = "/auth/admin/realms/:realm/users"
+	usersAdminExtensionAPIPath = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
+	userCountPath              = userPath + "/count"
+	userIDPath                 = userPath + "/:id"
+	userGroupsPath             = userIDPath + "/groups"
+	sendVerifyEmailPath        = userIDPath + "/send-verify-email"
+	executeActionsEmailPath    = userIDPath + "/execute-actions-email"
+	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
+	smsAPI                     = "/auth/realms/:realm/smsApi"
+	sendNewEnrolmentCode       = smsAPI + "/sendNewCode"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -36,14 +30,14 @@ func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName stri
 		return resp, errors.New(MsgErrInvalidParam + "." + EvenParams)
 	}
 
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionApiPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
 }
 
 // CreateUser creates the user from its UserRepresentation. The username must be unique.
 func (c *Client) CreateUser(accessToken string, reqRealmName, targetRealmName string, user UserRepresentation) (string, error) {
-	return c.post(accessToken, nil, url.Path(usersAdminExtensionApiPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
+	return c.post(accessToken, nil, url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
 }
 
 // CountUsers returns the number of users in the realm.
@@ -75,11 +69,6 @@ func (c *Client) UpdateUser(accessToken string, realmName, userID string, user U
 // DeleteUser deletes the user.
 func (c *Client) DeleteUser(accessToken string, realmName, userID string) error {
 	return c.delete(accessToken, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
-}
-
-// ResetPassword resets password of the user.
-func (c *Client) ResetPassword(accessToken string, realmName, userID string, cred CredentialRepresentation) error {
-	return c.put(accessToken, url.Path(resetPasswordPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(cred))
 }
 
 // SendVerifyEmail sends an email-verification email to the user An email contains a link the user can click to verify their email address.
@@ -127,41 +116,4 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 
 	_, err := c.post(accessToken, nil, plugins...)
 	return err
-}
-
-// GetCredentialsForUser gets the credential list for a user
-func (c *Client) GetCredentialsForUser(accessToken string, realmReq, realmName string, userID string) ([]CredentialRepresentation, error) {
-	var resp = []CredentialRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(getCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID))
-	return resp, err
-}
-
-// DeleteCredentialsForUser remove credentials for a user
-func (c *Client) DeleteCredentialsForUser(accessToken string, realmReq, realmName string, userID string, credentialID string) error {
-	return c.delete(accessToken, url.Path(deleteCredentialsForUserPath), url.Param("realmReq", realmReq), url.Param("realm", realmName), url.Param("id", userID), url.Param("credid", credentialID))
-}
-
-// UpdatePassword updates the user's password
-// Parameters: realm, currentPassword, newPassword, confirmPassword
-func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
-	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
-	return c.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
-}
-
-// GetAccount provides the user's information
-func (c *Client) GetAccount(accessToken string, realm string) (UserRepresentation, error) {
-	var resp = UserRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(accountPath), url.Param("realm", realm), headers.Set("Accept", "application/json"))
-	return resp, err
-}
-
-// UpdateAccount updates the user's information
-func (c *Client) UpdateAccount(accessToken string, realm string, user UserRepresentation) error {
-	_, err := c.post(accessToken, nil, url.Path(accountPath), url.Param("realm", realm), body.JSON(user))
-	return err
-}
-
-// DeleteAccount delete current user
-func (c *Client) DeleteAccount(accessToken string, realmName string) error {
-	return c.delete(accessToken, url.Path(accountPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 }

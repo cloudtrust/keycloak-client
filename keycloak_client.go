@@ -32,7 +32,12 @@ type Config struct {
 type Client struct {
 	apiURL           *url.URL
 	httpClient       *gentleman.Client
+	account          *AccountClient
 	verifierProvider OidcVerifierProvider
+}
+
+type AccountClient struct {
+	client *Client
 }
 
 // HTTPError is returned when an error occured while contacting the keycloak instance.
@@ -65,12 +70,6 @@ func New(config Config) (*Client, error) {
 		}
 	}
 
-	var httpClient = gentleman.New()
-	{
-		httpClient = httpClient.URL(uAPI.String())
-		httpClient = httpClient.Use(timeout.Request(config.Timeout))
-	}
-
 	// Use default values when clients are not initializing these values
 	cacheTTL := config.CacheTTL
 	if cacheTTL == 0 {
@@ -81,10 +80,20 @@ func New(config Config) (*Client, error) {
 		errTolerance = time.Minute
 	}
 
+	var httpClient = gentleman.New()
+	{
+		httpClient = httpClient.URL(uAPI.String())
+		httpClient = httpClient.Use(timeout.Request(config.Timeout))
+	}
+
 	var client = &Client{
 		apiURL:           uAPI,
 		httpClient:       httpClient,
 		verifierProvider: NewVerifierCache(uToken, cacheTTL, errTolerance),
+	}
+
+	client.account = &AccountClient{
+		client: client,
 	}
 
 	return client, nil
@@ -143,6 +152,10 @@ func (c *Client) VerifyToken(realmName string, accessToken string) error {
 		return err
 	}
 	return verifier.Verify(accessToken)
+}
+
+func (c *Client) AccountClient() *AccountClient {
+	return c.account
 }
 
 // get is a HTTP get method.

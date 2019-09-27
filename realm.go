@@ -2,13 +2,15 @@ package keycloak
 
 import (
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
+	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
 const (
-	realmRootPath   = "/auth/admin/realms"
-	realmPath       = realmRootPath + "/:realm"
-	exportRealmPath = "/auth/realms/:realm/export/realm"
+	realmRootPath               = "/auth/admin/realms"
+	realmPath                   = realmRootPath + "/:realm"
+	realmCredentialRegistrators = realmPath + "/credential-registrators"
+	exportRealmPath             = "/auth/realms/:realm/export/realm"
 )
 
 // GetRealms get the top level represention of all the realms. Nested information like users are
@@ -47,5 +49,12 @@ func (c *Client) DeleteRealm(accessToken string, realmName string) error {
 func (c *Client) ExportRealm(accessToken string, realmName string) (RealmRepresentation, error) {
 	var resp = RealmRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(exportRealmPath), url.Param("realm", realmName))
+	return resp, err
+}
+
+// GetRealmCredentialRegistrators returns list of credentials types available for the realm
+func (c *Client) GetRealmCredentialRegistrators(accessToken string, realmName string) ([]string, error) {
+	var resp = []string{}
+	var err = c.get(accessToken, &resp, url.Path(realmCredentialRegistrators), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 	return resp, err
 }
