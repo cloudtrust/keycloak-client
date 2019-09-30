@@ -37,8 +37,8 @@ func (c *Client) GetCredentialTypes(accessToken string, realmName string) ([]str
 }
 
 // UpdateLabelCredential updates the label of credential
-func (c *Client) UpdateLabelCredential(accessToken string, realmName string, credentialID string, label string) error {
-	return c.put(accessToken, url.Path(labelPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.String(label), headers.Set("Accept", "application/json"), headers.Set("Content-Type", "text/plain"))
+func (c *Client) UpdateLabelCredential(accessToken string, realmName string, userID string, credentialID string, label string) error {
+	return c.put(accessToken, url.Path(labelPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID), body.String(label), headers.Set("Accept", "application/json"), headers.Set("Content-Type", "text/plain"))
 }
 
 // DeleteCredential deletes the credential
