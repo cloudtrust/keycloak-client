@@ -2,6 +2,7 @@ package keycloak
 
 import (
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
+	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
@@ -9,7 +10,8 @@ const (
 	resetPasswordPath    = userIDPath + "/reset-password"
 	credentialsPath      = userIDPath + "/credentials"
 	credentialsTypesPath = realmPath + "/credentialTypes"
-	credentialIDPath     = "/:credentialID"
+	credentialIDPath     = credentialsPath + "/:credentialID"
+	labelPath            = credentialIDPath + "/label"
 	moveFirstPath        = credentialIDPath + "/moveToFirst"
 	moveAfterPath        = credentialIDPath + "/moveAfter/:previousCredentialID"
 )
@@ -34,9 +36,9 @@ func (c *Client) GetCredentialTypes(accessToken string, realmName string) ([]str
 	return resp, err
 }
 
-// UpdateCredential updates the credential
-func (c *Client) UpdateCredential(accessToken string, realmName string, userID string, credentialID string, credential CredentialRepresentation) error {
-	return c.put(accessToken, url.Path(credentialIDPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID), body.JSON(credential))
+// UpdateLabelCredential updates the label of credential
+func (c *Client) UpdateLabelCredential(accessToken string, realmName string, credentialID string, label string) error {
+	return c.put(accessToken, url.Path(labelPath), url.Param("realm", realmName), url.Param("credentialID", credentialID), body.String(label), headers.Set("Accept", "application/json"), headers.Set("Content-Type", "text/plain"))
 }
 
 // DeleteCredential deletes the credential
