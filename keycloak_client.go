@@ -1,6 +1,7 @@
 package keycloak
 
 import (
+	"context"
 	"encoding/json"
 	"strconv"
 
@@ -30,12 +31,13 @@ type Config struct {
 
 // Client is the keycloak client.
 type Client struct {
-	apiURL           *url.URL
-	httpClient       *gentleman.Client
-	account          *AccountClient
-	verifierProvider OidcVerifierProvider
+	apiURL        *url.URL
+	httpClient    *gentleman.Client
+	account       *AccountClient
+	issuerManager IssuerManager
 }
 
+// AccountClient structure
 type AccountClient struct {
 	client *Client
 }
@@ -52,10 +54,10 @@ func (e HTTPError) Error() string {
 
 // New returns a keycloak client.
 func New(config Config) (*Client, error) {
-	var uToken *url.URL
+	var issuerMgr IssuerManager
 	{
 		var err error
-		uToken, err = url.Parse(config.AddrTokenProvider)
+		issuerMgr, err = NewIssuerManager(config)
 		if err != nil {
 			return nil, errors.Wrap(err, MsgErrCannotParse+"."+TokenProviderURL)
 		}
@@ -70,16 +72,6 @@ func New(config Config) (*Client, error) {
 		}
 	}
 
-	// Use default values when clients are not initializing these values
-	cacheTTL := config.CacheTTL
-	if cacheTTL == 0 {
-		cacheTTL = 15 * time.Minute
-	}
-	errTolerance := config.ErrorTolerance
-	if errTolerance == 0 {
-		errTolerance = time.Minute
-	}
-
 	var httpClient = gentleman.New()
 	{
 		httpClient = httpClient.URL(uAPI.String())
@@ -87,9 +79,9 @@ func New(config Config) (*Client, error) {
 	}
 
 	var client = &Client{
-		apiURL:           uAPI,
-		httpClient:       httpClient,
-		verifierProvider: NewVerifierCache(uToken, cacheTTL, errTolerance),
+		apiURL:        uAPI,
+		httpClient:    httpClient,
+		issuerManager: issuerMgr,
 	}
 
 	client.account = &AccountClient{
@@ -146,14 +138,16 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 }
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
-func (c *Client) VerifyToken(realmName string, accessToken string) error {
-	verifier, err := c.verifierProvider.GetOidcVerifier(realmName)
+func (c *Client) VerifyToken(ctx context.Context, realmName string, accessToken string) error {
+	issuer := c.issuerManager.GetIssuer(ctx)
+	verifier, err := issuer.GetOidcVerifier(realmName)
 	if err != nil {
 		return err
 	}
 	return verifier.Verify(accessToken)
 }
 
+// AccountClient gets the associated AccountClient
 func (c *Client) AccountClient() *AccountClient {
 	return c.account
 }

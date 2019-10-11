@@ -21,10 +21,10 @@ type OidcVerifier interface {
 }
 
 type verifierCache struct {
-	duration         time.Duration
-	errorTolerance   time.Duration
-	tokenProviderURL *url.URL
-	verifiers        map[string]cachedVerifier
+	duration       time.Duration
+	errorTolerance time.Duration
+	tokenURL       *url.URL
+	verifiers      map[string]cachedVerifier
 }
 
 type cachedVerifier struct {
@@ -35,12 +35,12 @@ type cachedVerifier struct {
 }
 
 // NewVerifierCache create an instance of OIDC verifier cache
-func NewVerifierCache(tokenProviderURL *url.URL, timeToLive time.Duration, errorTolerance time.Duration) OidcVerifierProvider {
+func NewVerifierCache(tokenURL *url.URL, timeToLive time.Duration, errorTolerance time.Duration) OidcVerifierProvider {
 	return &verifierCache{
-		duration:         timeToLive,
-		errorTolerance:   errorTolerance,
-		tokenProviderURL: tokenProviderURL,
-		verifiers:        make(map[string]cachedVerifier),
+		duration:       timeToLive,
+		errorTolerance: errorTolerance,
+		tokenURL:       tokenURL,
+		verifiers:      make(map[string]cachedVerifier),
 	}
 }
 
@@ -52,7 +52,7 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 	var oidcProvider *oidc.Provider
 	{
 		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/%s", vc.tokenProviderURL.String(), realm)
+		var issuer = fmt.Sprintf("%s/auth/realms/%s", vc.tokenURL.String(), realm)
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
 			return nil, errors.Wrap(err, MsgErrCannotCreate+"."+OIDCProvider)

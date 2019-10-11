@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -29,7 +30,7 @@ func main() {
 		log.Fatalf("could not get access token: %v", err)
 	}
 
-	err = client.VerifyToken("master", accessToken)
+	err = client.VerifyToken(context.Background(), "master", accessToken)
 	if err != nil {
 		log.Fatalf("could not validate access token: %v", err)
 	}
