@@ -2,12 +2,15 @@
 
 
 [[projects]]
-  digest = "1:ba07d490a8733429c256c8a8c78bceec68d5af77ea95ae9ca05d86f833d99644"
+  digest = "1:0a2237121db84f64bbcbc96bee4b268dceb0badf817824903502b7ab448dbe44"
   name = "github.com/cloudtrust/common-service"
-  packages = ["errors"]
+  packages = [
+    ".",
+    "errors",
+  ]
   pruneopts = ""
-  revision = "bb18af383d1e95e6ced6966fb39f04594959df69"
-  version = "v1.0-rc7"
+  revision = "926680e453c4688a250df9cf4b663ba373787c1b"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:379d34d9efc755fab444199f007819fe99718640f9ccfbdd3f0430340bb02b07"
@@ -123,7 +126,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4a4c4edf69b61bf98e98d22696aa80c4059384895920de4d5e2fe696068d5f13"
+  digest = "1:9026a485cbd92c93566178e917d1c049b94b592ad98a6188557f941f5d9360e7"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -131,11 +134,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "227b76d455e791cb042b03e633e2f7fbcfdf74a5"
+  revision = "af544f31c8ac5794d2134b792e9eb714d9d8f9ce"
 
 [[projects]]
   branch = "master"
-  digest = "1:ce26d94b8841936fff59bb524f4b96ac434f411b780b3aa784da90ee96ae2367"
+  digest = "1:f18ed86e2dc96177f15764afe4a31c900cf85c2a7b50a57ce1320836223c64f0"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -144,7 +147,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "a8b05e9114ab0cb08faec337c959aed24b68bf50"
+  revision = "d66e71096ffb9f08f36d9aefcae80ce319de6d68"
 
 [[projects]]
   branch = "master"
@@ -183,7 +186,7 @@
   version = "v0.3.2"
 
 [[projects]]
-  digest = "1:0568e577f790e9bd0420521cff50580f9b38165a38f217ce68f55c4bbaa97066"
+  digest = "1:c4404231035fad619a12f82ae3f0f8f9edc1cc7f34e7edad7a28ccac5336cc96"
   name = "google.golang.org/appengine"
   packages = [
     "internal",
@@ -195,8 +198,8 @@
     "urlfetch",
   ]
   pruneopts = ""
-  revision = "5f2a59506353b8d5ba8cbbcd9f3c1f41f1eaf079"
-  version = "v1.6.2"
+  revision = "971852bfffca25b069c31162ae8f247a3dba083b"
+  version = "v1.6.5"
 
 [[projects]]
   digest = "1:e3250d192192f02fbb143d50de437cbe967d6be7bd9fad671600942a33269d08"
@@ -234,17 +237,18 @@
   version = "v2.3.1"
 
 [[projects]]
-  digest = "1:cedccf16b71e86db87a24f8d4c70b0a855872eb967cb906a66b95de56aefbd0d"
+  digest = "1:ab9547706f32a7535bb4f25d6b58ad00436630593cd3e3ed4602f1613ed84783"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = ""
-  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
-  version = "v2.2.2"
+  revision = "f221b8435cfb71e54062f6c6e99e9ade30b124d5"
+  version = "v2.2.4"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/cloudtrust/common-service",
     "github.com/cloudtrust/common-service/errors",
     "github.com/coreos/go-oidc",
     "github.com/gbrlsnchs/jwt",
