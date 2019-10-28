@@ -179,15 +179,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]interface{}
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return whitelistErrors(resp.StatusCode, message.(string))
-			}
-			return HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
@@ -229,15 +221,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]interface{}
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return "", whitelistErrors(resp.StatusCode, message.(string))
-			}
-			return "", HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return "", treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			var location = resp.Header.Get("Location")
 
@@ -281,15 +265,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]interface{}
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return whitelistErrors(resp.StatusCode, message.(string))
-			}
-			return HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -326,15 +302,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]interface{}
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return whitelistErrors(resp.StatusCode, message.(string))
-			}
-			return HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -418,6 +386,18 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 
 func str(s string) *string {
 	return &s
+}
+
+func treatErrorStatus(resp *gentleman.Response) error {
+	var response map[string]interface{}
+	err := json.Unmarshal(resp.Bytes(), &response)
+	if message, ok := response["errorMessage"]; ok && err == nil {
+		return whitelistErrors(resp.StatusCode, message.(string))
+	}
+	return HTTPError{
+		HTTPStatus: resp.StatusCode,
+		Message:    string(resp.Bytes()),
+	}
 }
 
 func whitelistErrors(statusCode int, message string) error {
