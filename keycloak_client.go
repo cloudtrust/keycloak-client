@@ -3,6 +3,7 @@ package keycloak
 import (
 	"context"
 	"encoding/json"
+	"regexp"
 	"strconv"
 
 	"fmt"
@@ -178,15 +179,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]string
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return whitelistErrors(resp.StatusCode, message)
-			}
-			return HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
@@ -228,15 +221,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]string
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return "", whitelistErrors(resp.StatusCode, message)
-			}
-			return "", HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return "", treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			var location = resp.Header.Get("Location")
 
@@ -280,15 +265,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]string
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return whitelistErrors(resp.StatusCode, message)
-			}
-			return HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -325,15 +302,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 				Message:    string(resp.Bytes()),
 			}
 		case resp.StatusCode >= 400:
-			var response map[string]string
-			err := json.Unmarshal(resp.Bytes(), &response)
-			if message, ok := response["errorMessage"]; ok && err == nil {
-				return whitelistErrors(resp.StatusCode, message)
-			}
-			return HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
 			return nil
 		default:
@@ -419,12 +388,26 @@ func str(s string) *string {
 	return &s
 }
 
+func treatErrorStatus(resp *gentleman.Response) error {
+	var response map[string]interface{}
+	err := json.Unmarshal(resp.Bytes(), &response)
+	if message, ok := response["errorMessage"]; ok && err == nil {
+		return whitelistErrors(resp.StatusCode, message.(string))
+	}
+	return HTTPError{
+		HTTPStatus: resp.StatusCode,
+		Message:    string(resp.Bytes()),
+	}
+}
+
 func whitelistErrors(statusCode int, message string) error {
 	// whitelist errors from Keycloak
+	reg := regexp.MustCompile("invalidPassword[a-zA-Z]*Message")
 
-	switch message {
-	//POST account/credentials/password with error message "invalidPasswordExistingMessage"
-	case "invalidPasswordExistingMessage":
+	switch {
+	//POST account/credentials/password with error message related to invalid value for the password
+	// of the format invalidPassword{a-zA-Z}*Message, e.g. invalidPasswordMinDigitsMessage
+	case reg.MatchString(message):
 		return commonhttp.Error{
 			Status:  statusCode,
 			Message: "keycloak." + message,
