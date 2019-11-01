@@ -429,6 +429,11 @@ func whitelistErrors(statusCode int, message string) error {
 			Status:  statusCode,
 			Message: "keycloak." + message,
 		}
+	case message == "User exists with same username or email":
+		return commonhttp.Error{
+			Status:  statusCode,
+			Message: "keycloak." + MsgErrExistingValue + UsrOrEmail,
+		}
 	default:
 		return HTTPError{
 			HTTPStatus: statusCode,
