@@ -11,6 +11,7 @@ const (
 	MsgErrUnkownHTTPContentType     = "unkownHTTPContentType"
 	MsgErrUnknownResponseStatusCode = "unknownResponseStatusCode"
 	MsgErrExistingValue             = "existing"
+	MsgErrReadOnly                  = "readOlyValue"
 
 	EvenParams       = "key/valParametersShouldBeEven"
 	TokenProviderURL = "tokenProviderURL"
@@ -20,4 +21,5 @@ const (
 	AccessToken      = "accessToken"
 	OIDCProvider     = "OIDCProvider"
 	UsrOrEmail       = "UsernameOrEmail"
+	Username         = "username"
 )

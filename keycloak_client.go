@@ -417,6 +417,11 @@ func whitelistErrors(statusCode int, message string) error {
 			Status:  statusCode,
 			Message: "keycloak." + MsgErrExistingValue + "." + UsrOrEmail,
 		}
+	case message == "readOnlyUsernameMessage":
+		return commonhttp.Error{
+			Status:  statusCode,
+			Message: "keycloak." + MsgErrReadOnly + "." + Username,
+		}
 	default:
 		return HTTPError{
 			HTTPStatus: statusCode,
