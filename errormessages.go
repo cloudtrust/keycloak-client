@@ -11,7 +11,7 @@ const (
 	MsgErrUnkownHTTPContentType     = "unkownHTTPContentType"
 	MsgErrUnknownResponseStatusCode = "unknownResponseStatusCode"
 	MsgErrExistingValue             = "existing"
-	MsgErrReadOnly                  = "readOlyValue"
+	MsgErrReadOnly                  = "readOnlyValue"
 
 	EvenParams       = "key/valParametersShouldBeEven"
 	TokenProviderURL = "tokenProviderURL"
