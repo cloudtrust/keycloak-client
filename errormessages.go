@@ -10,6 +10,8 @@ const (
 	MsgErrCannotCreate              = "cannotCreate"
 	MsgErrUnkownHTTPContentType     = "unkownHTTPContentType"
 	MsgErrUnknownResponseStatusCode = "unknownResponseStatusCode"
+	MsgErrExistingValue             = "existing"
+	MsgErrReadOnly                  = "readOnlyValue"
 
 	EvenParams       = "key/valParametersShouldBeEven"
 	TokenProviderURL = "tokenProviderURL"
@@ -18,4 +20,6 @@ const (
 	Response         = "response"
 	AccessToken      = "accessToken"
 	OIDCProvider     = "OIDCProvider"
+	UserOrEmail      = "UsernameOrEmail"
+	Username         = "username"
 )
