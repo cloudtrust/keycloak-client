@@ -416,7 +416,7 @@ func whitelistErrors(statusCode int, message string) error {
 	case (message == "User exists with same username or email") || (message == "usernameExistsMessage") || (message == "emailExistsMessage"):
 		return commonhttp.Error{
 			Status:  statusCode,
-			Message: "keycloak." + MsgErrExistingValue + "." + UsrOrEmail,
+			Message: "keycloak." + MsgErrExistingValue + "." + UserOrEmail,
 		}
 	case message == "readOnlyUsernameMessage":
 		return commonhttp.Error{

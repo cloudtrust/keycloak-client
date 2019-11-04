@@ -20,6 +20,6 @@ const (
 	Response         = "response"
 	AccessToken      = "accessToken"
 	OIDCProvider     = "OIDCProvider"
-	UsrOrEmail       = "UsernameOrEmail"
+	UserOrEmail      = "UsernameOrEmail"
 	Username         = "username"
 )
