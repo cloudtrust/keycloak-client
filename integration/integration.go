@@ -279,7 +279,7 @@ func main() {
 		// Check credentials
 		{
 			tstRealmReq := "master"
-			var creds, err = client.GetCredentialsForUser(accessToken, tstRealmReq, tstRealm, userID)
+			var creds, err = client.GetCredentials(accessToken, tstRealmReq, userID)
 			if err != nil {
 				log.Fatalf("could not get credentials: %v", err)
 			}
