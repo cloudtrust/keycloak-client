@@ -413,7 +413,7 @@ func whitelistErrors(statusCode int, message string) error {
 			Message: "keycloak." + message,
 		}
 	// update account in back-office or self-service
-	case (message == "User exists with same username or email") || (message == "usernameExistsMessage") || (message == "emailExistsMessage"):
+	case (message == "User exists with same username or email") || (message == "usernameExistsMessage") || (message == "emailExistsMessage") || (message == "Username exists with same username") || (message == "Username exists with same email"):
 		return commonhttp.Error{
 			Status:  statusCode,
 			Message: "keycloak." + MsgErrExistingValue + "." + UserOrEmail,
