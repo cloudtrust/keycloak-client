@@ -403,6 +403,14 @@ func treatErrorStatus(resp *gentleman.Response) error {
 func whitelistErrors(statusCode int, message string) error {
 	// whitelist errors from Keycloak
 	reg := regexp.MustCompile("invalidPassword[a-zA-Z]*Message")
+	errorMessages := map[string]string{
+		"User exists with same username or email": MsgErrExistingValue + "." + UserOrEmail,
+		"usernameExistsMessage":                   MsgErrExistingValue + "." + UserOrEmail,
+		"emailExistsMessage":                      MsgErrExistingValue + "." + UserOrEmail,
+		"Username exists with same username":      MsgErrExistingValue + "." + UserOrEmail,
+		"Username exists with same email":         MsgErrExistingValue + "." + UserOrEmail,
+		"readOnlyUsernameMessage":                 MsgErrReadOnly + "." + Username,
+	}
 
 	switch {
 	//POST account/credentials/password with error message related to invalid value for the password
@@ -413,15 +421,10 @@ func whitelistErrors(statusCode int, message string) error {
 			Message: "keycloak." + message,
 		}
 	// update account in back-office or self-service
-	case (message == "User exists with same username or email") || (message == "usernameExistsMessage") || (message == "emailExistsMessage"):
+	case errorMessages[message] != "":
 		return commonhttp.Error{
 			Status:  statusCode,
-			Message: "keycloak." + MsgErrExistingValue + "." + UserOrEmail,
-		}
-	case message == "readOnlyUsernameMessage":
-		return commonhttp.Error{
-			Status:  statusCode,
-			Message: "keycloak." + MsgErrReadOnly + "." + Username,
+			Message: "keycloak." + errorMessages[message],
 		}
 	default:
 		return HTTPError{
