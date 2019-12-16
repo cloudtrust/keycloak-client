@@ -22,4 +22,5 @@ const (
 	OIDCProvider     = "OIDCProvider"
 	UserOrEmail      = "UsernameOrEmail"
 	Username         = "username"
+	Email            = "email"
 )
