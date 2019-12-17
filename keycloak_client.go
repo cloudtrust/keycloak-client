@@ -407,8 +407,8 @@ func whitelistErrors(statusCode int, message string) error {
 		"User exists with same username or email": MsgErrExistingValue + "." + UserOrEmail,
 		"usernameExistsMessage":                   MsgErrExistingValue + "." + UserOrEmail,
 		"emailExistsMessage":                      MsgErrExistingValue + "." + UserOrEmail,
-		"Username exists with same username":      MsgErrExistingValue + "." + Username,
-		"Username exists with same email":         MsgErrExistingValue + "." + Email,
+		"User exists with same username":          MsgErrExistingValue + "." + Username,
+		"User exists with same email":             MsgErrExistingValue + "." + Email,
 		"readOnlyUsernameMessage":                 MsgErrReadOnly + "." + Username,
 	}
 
