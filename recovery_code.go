@@ -14,7 +14,7 @@ type RecoveryCodeRepresentation struct {
 func (c *Client) CreateRecoveryCode(accessToken string, realmName string, userID string) (RecoveryCodeRepresentation, error) {
 	var resp = RecoveryCodeRepresentation{}
 
-	var plugins = append(createQueryPlugins("userid", userID), url.Path(recoveryCodePath), url.Param("realm", realmName))
+	var plugins = append(createQueryPlugins("userId", userID), url.Path(recoveryCodePath), url.Param("realm", realmName))
 	_, err := c.post(accessToken, &resp, plugins...)
 	return resp, err
 }
