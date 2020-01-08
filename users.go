@@ -13,7 +13,6 @@ const (
 	userCountPath              = userPath + "/count"
 	userIDPath                 = userPath + "/:id"
 	userGroupsPath             = userIDPath + "/groups"
-	sendVerifyEmailPath        = userIDPath + "/send-verify-email"
 	executeActionsEmailPath    = userIDPath + "/execute-actions-email"
 	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                     = "/auth/realms/:realm/smsApi"
@@ -69,17 +68,6 @@ func (c *Client) UpdateUser(accessToken string, realmName, userID string, user U
 // DeleteUser deletes the user.
 func (c *Client) DeleteUser(accessToken string, realmName, userID string) error {
 	return c.delete(accessToken, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
-}
-
-// SendVerifyEmail sends an email-verification email to the user An email contains a link the user can click to verify their email address.
-func (c *Client) SendVerifyEmail(accessToken string, realmName string, userID string, paramKV ...string) error {
-	if len(paramKV)%2 != 0 {
-		return errors.New(MsgErrInvalidParam + "." + EvenParams)
-	}
-
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendVerifyEmailPath), url.Param("realm", realmName), url.Param("id", userID))
-
-	return c.put(accessToken, plugins...)
 }
 
 // ExecuteActionsEmail sends an update account email to the user. An email contains a link the user can click to perform a set of required actions.
