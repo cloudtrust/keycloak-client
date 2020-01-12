@@ -2,15 +2,24 @@
 
 
 [[projects]]
+<<<<<<< HEAD
   digest = "1:5642d26fba562723106466a33c8fb7710f32dd608d54491e499b76c82387bcc7"
+=======
+  branch = "CLOUDTRUST-2109_authorizationsManagement"
+  digest = "1:90f5cbba8a963518043f61eb5f49fe08f1d769a4eecd4cf39723d6951a1677aa"
+>>>>>>> Update dep to point on branch
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
     "errors",
   ]
   pruneopts = ""
+<<<<<<< HEAD
   revision = "ae957836daffbc39f197fa5f27201f8d100179d5"
   version = "v1.2.3"
+=======
+  revision = "9d5d935c329846582d2c4e5bfcd33bfb45b16fc1"
+>>>>>>> Update dep to point on branch
 
 [[projects]]
   digest = "1:379d34d9efc755fab444199f007819fe99718640f9ccfbdd3f0430340bb02b07"
