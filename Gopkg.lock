@@ -2,15 +2,15 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:283fa25b90335c1dbb910249b9f48851eaefdf8098e0d48bdfa3b57504a15aab"
+  branch = "CLOUDTRUST-2109_authorizationsManagement"
+  digest = "1:90f5cbba8a963518043f61eb5f49fe08f1d769a4eecd4cf39723d6951a1677aa"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
     "errors",
   ]
   pruneopts = ""
-  revision = "e164d81b968e97a3fc079275352764978e35ab42"
+  revision = "9d5d935c329846582d2c4e5bfcd33bfb45b16fc1"
 
 [[projects]]
   digest = "1:379d34d9efc755fab444199f007819fe99718640f9ccfbdd3f0430340bb02b07"
