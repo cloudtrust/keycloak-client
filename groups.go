@@ -42,6 +42,11 @@ func (c *Client) AssignClientRole(accessToken string, realmName string, groupID 
 	return err
 }
 
+// RemoveClientRole delete client roles to a specific group
+func (c *Client) RemoveClientRole(accessToken string, realmName string, groupID string, clientID string, roles []RoleRepresentation) error {
+	return c.delete(accessToken, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID), body.JSON(roles))
+}
+
 // GetGroupClientRoles get client roles assigned to a specific group
 func (c *Client) GetGroupClientRoles(accessToken string, realmName string, groupID string, clientID string) ([]RoleRepresentation, error) {
 	var roles = []RoleRepresentation{}
