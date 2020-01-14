@@ -38,7 +38,7 @@ func (c *Client) DeleteGroup(accessToken string, realmName string, groupID strin
 
 // AssignClientRole assign client roles to a specific group
 func (c *Client) AssignClientRole(accessToken string, realmName string, groupID string, clientID string, roles []RoleRepresentation) error {
-	_, err := c.post(accessToken, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID), body.JSON(roles))
+	_, err := c.post(accessToken, nil, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID), body.JSON(roles))
 	return err
 }
 
