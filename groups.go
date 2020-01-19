@@ -31,30 +31,30 @@ func (c *Client) CreateGroup(accessToken string, reqRealmName string, group Grou
 	return c.post(accessToken, nil, url.Path(groupsPath), url.Param("realm", reqRealmName), body.JSON(group))
 }
 
-// DeleteGroup delete a specific group’s representation
+// DeleteGroup deletes a specific group’s representation
 func (c *Client) DeleteGroup(accessToken string, realmName string, groupID string) error {
 	return c.delete(accessToken, url.Path(groupByIDPath), url.Param("realm", realmName), url.Param("id", groupID))
 }
 
-// AssignClientRole assign client roles to a specific group
+// AssignClientRole assigns client roles to a specific group
 func (c *Client) AssignClientRole(accessToken string, realmName string, groupID string, clientID string, roles []RoleRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID), body.JSON(roles))
 	return err
 }
 
-// RemoveClientRole delete client roles to a specific group
+// RemoveClientRole deletes client roles to a specific group
 func (c *Client) RemoveClientRole(accessToken string, realmName string, groupID string, clientID string, roles []RoleRepresentation) error {
 	return c.delete(accessToken, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID), body.JSON(roles))
 }
 
-// GetGroupClientRoles get client roles assigned to a specific group
+// GetGroupClientRoles gets client roles assigned to a specific group
 func (c *Client) GetGroupClientRoles(accessToken string, realmName string, groupID string, clientID string) ([]RoleRepresentation, error) {
 	var roles = []RoleRepresentation{}
 	var err = c.get(accessToken, &roles, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID))
 	return roles, err
 }
 
-// GetAvailableGroupClientRoles get client roles available to a specific group
+// GetAvailableGroupClientRoles gets client roles available to a specific group
 func (c *Client) GetAvailableGroupClientRoles(accessToken string, realmName string, groupID string, clientID string) ([]RoleRepresentation, error) {
 	var roles = []RoleRepresentation{}
 	var err = c.get(accessToken, &roles, url.Path(availableGroupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID))
