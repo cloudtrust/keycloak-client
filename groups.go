@@ -42,7 +42,7 @@ func (c *Client) AssignClientRole(accessToken string, realmName string, groupID 
 	return err
 }
 
-// RemoveClientRole deletes client roles to a specific group
+// RemoveClientRole deletes client roles from a specific group
 func (c *Client) RemoveClientRole(accessToken string, realmName string, groupID string, clientID string, roles []RoleRepresentation) error {
 	return c.delete(accessToken, url.Path(groupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID), body.JSON(roles))
 }
@@ -54,7 +54,7 @@ func (c *Client) GetGroupClientRoles(accessToken string, realmName string, group
 	return roles, err
 }
 
-// GetAvailableGroupClientRoles gets client roles available to a specific group
+// GetAvailableGroupClientRoles gets client roles available in a specific group
 func (c *Client) GetAvailableGroupClientRoles(accessToken string, realmName string, groupID string, clientID string) ([]RoleRepresentation, error) {
 	var roles = []RoleRepresentation{}
 	var err = c.get(accessToken, &roles, url.Path(availableGroupClientRoleMappingPath), url.Param("realm", realmName), url.Param("id", groupID), url.Param("clientId", clientID))
