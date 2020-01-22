@@ -3,14 +3,15 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c3e6e91aafe6e3a12e3669b77f8fd608ddf8e61a727858ce50811daabc9600ea"
+  digest = "1:9cd919baadd8b77a9af99f59b3240f7296f58acd88c7ceb4fe812649be8ae176"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
     "errors",
+    "log",
   ]
   pruneopts = ""
-  revision = "bda3eb6af01813931780dc33b49aabd0f878be19"
+  revision = "739cff91a05f8dbcf3a0c4e6e57b95089f2a052b"
 
 [[projects]]
   digest = "1:379d34d9efc755fab444199f007819fe99718640f9ccfbdd3f0430340bb02b07"
@@ -37,17 +38,17 @@
   version = "v2.0.0"
 
 [[projects]]
-  digest = "1:183b1cb81b770d8033281c5629a4847a2ed7614068bb33c5a9a159d1226b23f0"
+  digest = "1:48e65aaf8ce34ffb3e8d56daa9417826db162afbc2040705db331e9a2e9eebe3"
   name = "github.com/go-kit/kit"
   packages = [
     "endpoint",
     "log",
-    "transport",
+    "log/level",
     "transport/http",
   ]
   pruneopts = ""
-  revision = "150a65a7ec6156b4b640c1fd55f26fd3d475d656"
-  version = "v0.9.0"
+  revision = "12210fb6ace19e0496167bb3e667dcd91fa9f69b"
+  version = "v0.8.0"
 
 [[projects]]
   digest = "1:aa9a6ccd5fd7d29804a27cb0666bc4ac5eb4b73439b7edd54f4b377e5ef8bb47"
@@ -242,6 +243,7 @@
   input-imports = [
     "github.com/cloudtrust/common-service",
     "github.com/cloudtrust/common-service/errors",
+    "github.com/cloudtrust/common-service/log",
     "github.com/coreos/go-oidc",
     "github.com/gbrlsnchs/jwt",
     "github.com/go-kit/kit/transport/http",
