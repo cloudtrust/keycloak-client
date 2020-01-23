@@ -2,8 +2,7 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:9cd919baadd8b77a9af99f59b3240f7296f58acd88c7ceb4fe812649be8ae176"
+  digest = "1:400f59817639afc9724a4ebbb673ed6de133fe9e9989b552aafec4c6cc31c601"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -11,7 +10,8 @@
     "log",
   ]
   pruneopts = ""
-  revision = "739cff91a05f8dbcf3a0c4e6e57b95089f2a052b"
+  revision = "a378b70b4d40f96407e066b6d4fb17d70f29074c"
+  version = "v1.2.4"
 
 [[projects]]
   digest = "1:379d34d9efc755fab444199f007819fe99718640f9ccfbdd3f0430340bb02b07"
@@ -110,12 +110,12 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:f7b541897bcde05a04a044c342ddc7425aab7e331f37b47fbb486cd16324b48e"
+  digest = "1:381bcbeb112a51493d9d998bbba207a529c73dbb49b3fd789e48c63fac1f192c"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "221dbe5ed46703ee255b1da0dec05086f5035f62"
-  version = "v1.4.0"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
@@ -228,14 +228,6 @@
   pruneopts = ""
   revision = "4ef0f1b175ccd65472d154e1207c4d7b8102545f"
   version = "v2.4.1"
-
-[[projects]]
-  digest = "1:5a53f6ef09fb1ac261a97f8a72e8837ff53cbaa969022a6679da210e4cbe9b0f"
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  pruneopts = ""
-  revision = "1f64d6156d11335c3f22d9330b0ad14fc1e789ce"
-  version = "v2.2.7"
 
 [solve-meta]
   analyzer-name = "dep"
