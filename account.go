@@ -10,7 +10,7 @@ const (
 	accountPath                        = "/auth/realms/:realm/account"
 	accountExtensionAPIPath            = "/auth/realms/master/api/account/realms/:realm"
 	accountPasswordPath                = accountExtensionAPIPath + "/credentials/password"
-	accountCredentialsPath             = accountPath + "/credentials"
+	accountCredentialsPath             = accountExtensionAPIPath + "/credentials"
 	accountCredentialsRegistratorsPath = accountCredentialsPath + "/registrators"
 	accountCredentialIDPath            = accountCredentialsPath + "/:credentialID"
 	accountCredentialLabelPath         = accountCredentialIDPath + "/label"
