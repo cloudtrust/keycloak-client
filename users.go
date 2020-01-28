@@ -17,7 +17,7 @@ const (
 	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                     = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode       = smsAPI + "/sendNewCode"
-	shadowUser                 = userPath + "/:id/federated-identity/:provider"
+	shadowUser                 = userIDPath + "/federated-identity/:provider"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
