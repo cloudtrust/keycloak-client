@@ -140,7 +140,11 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
 func (c *Client) VerifyToken(ctx context.Context, realmName string, accessToken string) error {
-	issuer := c.issuerManager.GetIssuer(ctx)
+	issuer, err := c.issuerManager.GetIssuer(ctx)
+	if err != nil {
+		return err
+	}
+
 	verifier, err := issuer.GetOidcVerifier(realmName)
 	if err != nil {
 		return err

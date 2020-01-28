@@ -2,6 +2,7 @@ package keycloak
 
 import (
 	"context"
+	"errors"
 	"net/url"
 	"regexp"
 	"strings"
@@ -12,12 +13,11 @@ import (
 
 // IssuerManager provides URL according to a given context
 type IssuerManager interface {
-	GetIssuer(ctx context.Context) OidcVerifierProvider
+	GetIssuer(ctx context.Context) (OidcVerifierProvider, error)
 }
 
 type issuerManager struct {
 	domainToIssuer map[string]OidcVerifierProvider
-	defaultIssuer  OidcVerifierProvider
 }
 
 func getProtocolAndDomain(URL string) string {
@@ -44,7 +44,6 @@ func NewIssuerManager(config Config) (IssuerManager, error) {
 	}
 
 	var domainToIssuer = make(map[string]OidcVerifierProvider)
-	var defaultIssuer OidcVerifierProvider
 
 	for _, value := range strings.Split(URLs, " ") {
 		uToken, err := url.Parse(value)
@@ -53,23 +52,19 @@ func NewIssuerManager(config Config) (IssuerManager, error) {
 		}
 		issuer := NewVerifierCache(uToken, cacheTTL, errTolerance)
 		domainToIssuer[getProtocolAndDomain(value)] = issuer
-		if domainToIssuer == nil {
-			defaultIssuer = issuer
-		}
 	}
 	return &issuerManager{
 		domainToIssuer: domainToIssuer,
-		defaultIssuer:  defaultIssuer,
 	}, nil
 }
 
-func (im *issuerManager) GetIssuer(ctx context.Context) OidcVerifierProvider {
+func (im *issuerManager) GetIssuer(ctx context.Context) (OidcVerifierProvider, error) {
 	if rawValue := ctx.Value(cs.CtContextIssuerDomain); rawValue != nil {
 		// The issuer domain has been found in the context
 		issuerDomain := getProtocolAndDomain(rawValue.(string))
 		if issuer, ok := im.domainToIssuer[issuerDomain]; ok {
-			return issuer
+			return issuer, nil
 		}
 	}
-	return im.defaultIssuer
+	return nil, errors.New("Unknown issuer")
 }
