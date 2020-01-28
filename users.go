@@ -17,6 +17,7 @@ const (
 	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                     = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode       = smsAPI + "/sendNewCode"
+	shadowUser                 = userIDPath + "/federated-identity/:provider"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -103,5 +104,11 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 	var plugins = append(createQueryPlugins(newParamKV...), url.Path(sendReminderEmailPath), url.Param("realm", realmName))
 
 	_, err := c.post(accessToken, nil, plugins...)
+	return err
+}
+
+// CreateShadowUser creates the a shadow user in the context of brokering
+func (c *Client) CreateShadowUser(accessToken string, reqRealmName string, userID string, provider string, fedIDKC FederatedIdentityRepresentation) error {
+	_, err := c.post(accessToken, nil, url.Path(shadowUser), url.Param("realm", reqRealmName), url.Param("id", userID), url.Param("provider", provider), body.JSON(fedIDKC))
 	return err
 }
