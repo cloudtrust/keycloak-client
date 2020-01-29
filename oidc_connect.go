@@ -46,7 +46,10 @@ const (
 
 // NewOidcTokenProvider creates an OidcTokenProvider
 func NewOidcTokenProvider(config Config, realm, username, password, clientID string, logger log.Logger) OidcTokenProvider {
-	var tokenURL = fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrAPI, realm)
+	var urls = strings.Split(config.AddrTokenProvider, " ")
+	var keycloakPublicURL = urls[0]
+
+	var tokenURL = fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", keycloakPublicURL, realm)
 	// If needed, can add &client_secret={secret}
 	var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
 		url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))
