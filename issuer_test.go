@@ -31,13 +31,13 @@ func TestNewIssuerManager(t *testing.T) {
 	assert.NotNil(t, prov)
 
 	// No issuer provided with context
-	issuerNoContext := prov.GetIssuer(context.Background())
+	issuerNoContext, _ := prov.GetIssuer(context.Background())
 	// Unrecognized issuer provided in context
-	issuerDefault := prov.GetIssuer(context.WithValue(context.Background(), cs.CtContextIssuerDomain, "http://unknown.issuer.com/one/path"))
+	issuerDefault, _ := prov.GetIssuer(context.WithValue(context.Background(), cs.CtContextIssuerDomain, "http://unknown.issuer.com/one/path"))
 	// Case insensitive
-	issuerMyDomain := prov.GetIssuer(context.WithValue(context.Background(), cs.CtContextIssuerDomain, "http://MY.DOMAIN.COM/issuer"))
+	issuerMyDomain, _ := prov.GetIssuer(context.WithValue(context.Background(), cs.CtContextIssuerDomain, "http://MY.DOMAIN.COM/issuer"))
 	// Other domain
-	issuerOtherDomain := prov.GetIssuer(context.WithValue(context.Background(), cs.CtContextIssuerDomain, "http://other.domain.com:2120/any/thing/here"))
+	issuerOtherDomain, _ := prov.GetIssuer(context.WithValue(context.Background(), cs.CtContextIssuerDomain, "http://other.domain.com:2120/any/thing/here"))
 
 	assert.Equal(t, issuerNoContext, issuerDefault)
 	assert.NotEqual(t, issuerNoContext, issuerMyDomain)
