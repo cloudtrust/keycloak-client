@@ -2,7 +2,8 @@
 
 
 [[projects]]
-  digest = "1:400f59817639afc9724a4ebbb673ed6de133fe9e9989b552aafec4c6cc31c601"
+  branch = "CLOUDTRUST-2109_2_authorizationManagement"
+  digest = "1:9617b819ebbd08ea0f8eba68d9f95622457de71c17febbc674b30f5fee425c76"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -10,8 +11,7 @@
     "log",
   ]
   pruneopts = ""
-  revision = "a378b70b4d40f96407e066b6d4fb17d70f29074c"
-  version = "v1.2.4"
+  revision = "1edbb17daf09a4a6dc422ff012fbe840f000b975"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -59,12 +59,12 @@
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:b852d2b62be24e445fcdbad9ce3015b44c207815d631230dfce3f14e7803f5bf"
+  digest = "1:232da37b3204bcdb01af3df45982d154798e191b4d94357191d164e254070771"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = ""
-  revision = "6c65a5562fc06764971b7c5d05c76c75e84bdbf7"
-  version = "v1.3.2"
+  revision = "d23c5127dc24889085f8ccea5c9d560a57a879d8"
+  version = "v1.3.3"
 
 [[projects]]
   digest = "1:883e2fdbdd0e577187bd8106fec775b1176059af267a7f40eba5308955c67d52"
@@ -119,7 +119,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8dc5306c5097afa86c85335c9e981a22c164aab641ff749f88d2eecf9dbfdb93"
+  digest = "1:b1c446e8e2a315dc41bbb5009c9238a2cef3f74496b74f5ba19348b7bffd3600"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -127,11 +127,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "530e935923ad688be97c15eeb8e5ee42ebf2b54a"
+  revision = "ecb85df213405b7d32e4d73cb5bbaace2ec88881"
 
 [[projects]]
   branch = "master"
-  digest = "1:bce1fb1dafa615413d845819aa75ba69d0979cdc2ac3b840e1c19c802a737916"
+  digest = "1:a6b4c0203496549bdd9eb7a34a9c34aa428851951f3bdea48fc3332b3633d8fe"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -140,7 +140,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "6afb5195e5aab057fda82e27171243402346b0ad"
+  revision = "16171245cfb220d5317888b716d69c1fb4e7992b"
 
 [[projects]]
   branch = "master"
