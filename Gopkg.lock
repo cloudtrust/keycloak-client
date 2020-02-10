@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "CLOUDTRUST-2109_2_authorizationManagement"
-  digest = "1:9617b819ebbd08ea0f8eba68d9f95622457de71c17febbc674b30f5fee425c76"
+  digest = "1:46d970cc3eee74e8f281332687e9dd874828429c5d0b53d6481f748cb3439f73"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -11,7 +11,7 @@
     "log",
   ]
   pruneopts = ""
-  revision = "1edbb17daf09a4a6dc422ff012fbe840f000b975"
+  revision = "87ee56cefd79af64f22a62473cbc2dd2cb8e9ed5"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -110,16 +110,16 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:f7b541897bcde05a04a044c342ddc7425aab7e331f37b47fbb486cd16324b48e"
+  digest = "1:381bcbeb112a51493d9d998bbba207a529c73dbb49b3fd789e48c63fac1f192c"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "221dbe5ed46703ee255b1da0dec05086f5035f62"
-  version = "v1.4.0"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:b1c446e8e2a315dc41bbb5009c9238a2cef3f74496b74f5ba19348b7bffd3600"
+  digest = "1:9f1dc3a531ecb78b5e9b2a8f16a276aa52bf010ce327a58bbc1503e8fffcb9bf"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -127,7 +127,7 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "ecb85df213405b7d32e4d73cb5bbaace2ec88881"
+  revision = "6ca56c2f2e2b26dc733347707d0e75d8eb050ee1"
 
 [[projects]]
   branch = "master"
@@ -228,14 +228,6 @@
   pruneopts = ""
   revision = "4ef0f1b175ccd65472d154e1207c4d7b8102545f"
   version = "v2.4.1"
-
-[[projects]]
-  digest = "1:2efc9662a6a1ff28c65c84fc2f9030f13d3afecdb2ecad445f3b0c80e75fc281"
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  pruneopts = ""
-  revision = "53403b58ad1b561927d19068c655246f2db79d48"
-  version = "v2.2.8"
 
 [solve-meta]
   analyzer-name = "dep"
