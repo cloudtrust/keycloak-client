@@ -110,12 +110,12 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:afd6af0d5299495ffe15af3fde504097f66dd40235831d4078ddf112133b9b5a"
+  digest = "1:cc4eb6813da8d08694e557fcafae8fcc24f47f61a0717f952da130ca9a486dfc"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "624f997379a27f38832b4b22ef5e4d31385c6daf"
-  version = "v1.5.0"
+  revision = "3ebf1ddaeb260c4b1ae502a01c7844fa8c1fa0e9"
+  version = "v1.5.1"
 
 [[projects]]
   branch = "master"
@@ -131,7 +131,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a6b4c0203496549bdd9eb7a34a9c34aa428851951f3bdea48fc3332b3633d8fe"
+  digest = "1:7a47c042d49394c27885a5012e828e2c31cc12838b35aa546fd823aa224d3d51"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -140,7 +140,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "16171245cfb220d5317888b716d69c1fb4e7992b"
+  revision = "46282727080fcf56da5781d0a9ef2fda184be5e6"
 
 [[projects]]
   branch = "master"
