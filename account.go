@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	accountPath                        = "/auth/realms/:realm/account"
 	accountExtensionAPIPath            = "/auth/realms/master/api/account/realms/:realm"
-	accountPasswordPath                = accountExtensionAPIPath + "/credentials/password"
+	accountExecuteActionsEmail         = accountExtensionAPIPath + "/execute-actions-email"
 	accountCredentialsPath             = accountExtensionAPIPath + "/credentials"
+	accountPasswordPath                = accountCredentialsPath + "/password"
 	accountCredentialsRegistratorsPath = accountCredentialsPath + "/registrators"
 	accountCredentialIDPath            = accountCredentialsPath + "/:credentialID"
 	accountCredentialLabelPath         = accountCredentialIDPath + "/label"
@@ -77,4 +77,9 @@ func (c *AccountClient) UpdateAccount(accessToken string, realm string, user Use
 // DeleteAccount delete current user
 func (c *AccountClient) DeleteAccount(accessToken string, realmName string) error {
 	return c.client.delete(accessToken, url.Path(accountExtensionAPIPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
+}
+
+// ExecuteActionsEmail send an email with required actions to the user
+func (c *AccountClient) ExecuteActionsEmail(accessToken string, realmName string, actions []string) error {
+	return c.client.put(accessToken, url.Path(accountExecuteActionsEmail), url.Param("realm", realmName), body.JSON(actions))
 }

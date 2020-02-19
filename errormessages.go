@@ -1,5 +1,6 @@
 package keycloak
 
+// Constants for error management
 const (
 	MsgErrMissingParam              = "missingParameter"
 	MsgErrInvalidParam              = "invalidParameter"

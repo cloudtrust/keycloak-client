@@ -1,5 +1,6 @@
 package keycloak
 
+// AdminEventRepresentation struct
 type AdminEventRepresentation struct {
 	AuthDetails    *AuthDetailsRepresentation `json:"authDetails,omitempty"`
 	Error          *string                    `json:"error,omitempty"`
@@ -11,6 +12,7 @@ type AdminEventRepresentation struct {
 	Time           *int64                     `json:"time,omitempty"`
 }
 
+// AuthDetailsRepresentation struct
 type AuthDetailsRepresentation struct {
 	ClientId  *string `json:"clientId,omitempty"`
 	IpAddress *string `json:"ipAddress,omitempty"`
@@ -18,6 +20,7 @@ type AuthDetailsRepresentation struct {
 	UserId    *string `json:"userId,omitempty"`
 }
 
+// AuthenticationExecutionExportRepresentation struct
 type AuthenticationExecutionExportRepresentation struct {
 	Authenticator       *string `json:"authenticator,omitempty"`
 	AuthenticatorConfig *string `json:"authenticatorConfig,omitempty"`
@@ -29,6 +32,7 @@ type AuthenticationExecutionExportRepresentation struct {
 	UserSetupAllowed    *bool   `json:"userSetupAllowed,omitempty"`
 }
 
+// AuthenticationExecutionInfoRepresentation struct
 type AuthenticationExecutionInfoRepresentation struct {
 	Alias                *string   `json:"alias,omitempty"`
 	AuthenticationConfig *string   `json:"authenticationConfig,omitempty"`
@@ -44,6 +48,7 @@ type AuthenticationExecutionInfoRepresentation struct {
 	RequirementChoices   *[]string `json:"requirementChoices,omitempty"`
 }
 
+// AuthenticationExecutionRepresentation struct
 type AuthenticationExecutionRepresentation struct {
 	Authenticator       *string `json:"authenticator,omitempty"`
 	AuthenticatorConfig *string `json:"authenticatorConfig,omitempty"`
@@ -56,6 +61,7 @@ type AuthenticationExecutionRepresentation struct {
 	Requirement         *string `json:"requirement,omitempty"`
 }
 
+// AuthenticationFlowRepresentation struct
 type AuthenticationFlowRepresentation struct {
 	Alias                    *string                                        `json:"alias,omitempty"`
 	AuthenticationExecutions *[]AuthenticationExecutionExportRepresentation `json:"authenticationExecutions,omitempty"`
@@ -66,6 +72,7 @@ type AuthenticationFlowRepresentation struct {
 	TopLevel                 *bool                                          `json:"topLevel,omitempty"`
 }
 
+// AuthenticatorConfigInfoRepresentation struct
 type AuthenticatorConfigInfoRepresentation struct {
 	HelpText   *string                         `json:"helpText,omitempty"`
 	Name       *string                         `json:"name,omitempty"`
@@ -73,12 +80,14 @@ type AuthenticatorConfigInfoRepresentation struct {
 	ProviderId *string                         `json:"providerId,omitempty"`
 }
 
+// AuthenticatorConfigRepresentation struct
 type AuthenticatorConfigRepresentation struct {
 	Alias  *string                 `json:"alias,omitempty"`
 	Config *map[string]interface{} `json:"config,omitempty"`
 	Id     *string                 `json:"id,omitempty"`
 }
 
+// CertificateRepresentation struct
 type CertificateRepresentation struct {
 	Certificate *string `json:"certificate,omitempty"`
 	Kid         *string `json:"kid,omitempty"`
@@ -86,11 +95,13 @@ type CertificateRepresentation struct {
 	PublicKey   *string `json:"publicKey,omitempty"`
 }
 
+// ClientInitialAccessCreatePresentation struct
 type ClientInitialAccessCreatePresentation struct {
 	Count      *int32 `json:"count,omitempty"`
 	Expiration *int32 `json:"expiration,omitempty"`
 }
 
+// ClientInitialAccessPresentation struct
 type ClientInitialAccessPresentation struct {
 	Count          *int32  `json:"count,omitempty"`
 	Expiration     *int32  `json:"expiration,omitempty"`
@@ -100,12 +111,14 @@ type ClientInitialAccessPresentation struct {
 	Token          *string `json:"token,omitempty"`
 }
 
+// ClientMappingsRepresentation struct
 type ClientMappingsRepresentation struct {
 	Client   *string               `json:"client,omitempty"`
 	Id       *string               `json:"id,omitempty"`
 	Mappings *[]RoleRepresentation `json:"mappings,omitempty"`
 }
 
+// ClientRepresentation struct
 type ClientRepresentation struct {
 	Access                       *map[string]interface{}         `json:"access,omitempty"`
 	AdminUrl                     *string                         `json:"adminUrl,omitempty"`
@@ -146,6 +159,7 @@ type ClientRepresentation struct {
 	WebOrigins                   *[]string                       `json:"webOrigins,omitempty"`
 }
 
+// ClientTemplateRepresentation struct
 type ClientTemplateRepresentation struct {
 	Attributes                *map[string]interface{}         `json:"attributes,omitempty"`
 	BearerOnly                *bool                           `json:"bearerOnly,omitempty"`
@@ -164,6 +178,7 @@ type ClientTemplateRepresentation struct {
 	StandardFlowEnabled       *bool                           `json:"standardFlowEnabled,omitempty"`
 }
 
+// ComponentExportRepresentation struct
 type ComponentExportRepresentation struct {
 	Config        *MultivaluedHashMap `json:"config,omitempty"`
 	Id            *string             `json:"id,omitempty"`
@@ -173,6 +188,7 @@ type ComponentExportRepresentation struct {
 	SubType       *string             `json:"subType,omitempty"`
 }
 
+// ComponentRepresentation struct
 type ComponentRepresentation struct {
 	Config       *MultivaluedHashMap `json:"config,omitempty"`
 	Id           *string             `json:"id,omitempty"`
@@ -183,6 +199,7 @@ type ComponentRepresentation struct {
 	SubType      *string             `json:"subType,omitempty"`
 }
 
+// ComponentTypeRepresentation struct
 type ComponentTypeRepresentation struct {
 	HelpText   *string                         `json:"helpText,omitempty"`
 	Id         *string                         `json:"id,omitempty"`
@@ -190,6 +207,7 @@ type ComponentTypeRepresentation struct {
 	Properties *[]ConfigPropertyRepresentation `json:"properties,omitempty"`
 }
 
+// ConfigPropertyRepresentation struct
 type ConfigPropertyRepresentation struct {
 	DefaultValue *map[string]interface{} `json:"defaultValue,omitempty"`
 	HelpText     *string                 `json:"helpText,omitempty"`
@@ -200,6 +218,7 @@ type ConfigPropertyRepresentation struct {
 	Type         *string                 `json:"type,omitempty"`
 }
 
+// CredentialRepresentation struct
 type CredentialRepresentation struct {
 	Id             *string `json:"id,omitempty"`
 	Type           *string `json:"type,omitempty"`
@@ -210,6 +229,7 @@ type CredentialRepresentation struct {
 	Temporary      *bool   `json:"temporary,omitempty"`
 }
 
+// EventRepresentation struct
 type EventRepresentation struct {
 	ClientId  *string                 `json:"clientId,omitempty"`
 	Details   *map[string]interface{} `json:"details,omitempty"`
@@ -222,17 +242,20 @@ type EventRepresentation struct {
 	UserId    *string                 `json:"userId,omitempty"`
 }
 
+// FederatedIdentityRepresentation struct
 type FederatedIdentityRepresentation struct {
 	IdentityProvider *string `json:"identityProvider,omitempty"`
 	UserId           *string `json:"userId,omitempty"`
 	UserName         *string `json:"userName,omitempty"`
 }
 
+// GlobalRequestResult struct
 type GlobalRequestResult struct {
 	FailedRequests  *[]string `json:"failedRequests,omitempty"`
 	SuccessRequests *[]string `json:"successRequests,omitempty"`
 }
 
+// GroupRepresentation struct
 type GroupRepresentation struct {
 	Access      *map[string]interface{} `json:"access,omitempty"`
 	Attributes  *map[string]interface{} `json:"attributes,omitempty"`
@@ -244,6 +267,7 @@ type GroupRepresentation struct {
 	SubGroups   *[]GroupRepresentation  `json:"subGroups,omitempty"`
 }
 
+// IdentityProviderMapperRepresentation struct
 type IdentityProviderMapperRepresentation struct {
 	Config                 *map[string]interface{} `json:"config,omitempty"`
 	Id                     *string                 `json:"id,omitempty"`
@@ -252,6 +276,7 @@ type IdentityProviderMapperRepresentation struct {
 	Name                   *string                 `json:"name,omitempty"`
 }
 
+// IdentityProviderRepresentation struct
 type IdentityProviderRepresentation struct {
 	AddReadTokenRoleOnCreate  *bool                   `json:"addReadTokenRoleOnCreate,omitempty"`
 	Alias                     *string                 `json:"alias,omitempty"`
@@ -267,11 +292,13 @@ type IdentityProviderRepresentation struct {
 	TrustEmail                *bool                   `json:"trustEmail,omitempty"`
 }
 
+// KeysMetadataRepresentation struct
 type KeysMetadataRepresentation struct {
 	Active *map[string]interface{}                                `json:"active,omitempty"`
 	Keys   *[]KeysMetadataRepresentationKeyMetadataRepresentation `json:"keys,omitempty"`
 }
 
+// KeysMetadataRepresentationKeyMetadataRepresentation struct
 type KeysMetadataRepresentationKeyMetadataRepresentation struct {
 	Certificate      *string `json:"certificate,omitempty"`
 	Kid              *string `json:"kid,omitempty"`
@@ -282,6 +309,7 @@ type KeysMetadataRepresentationKeyMetadataRepresentation struct {
 	Type             *string `json:"type,omitempty"`
 }
 
+// KeyStoreConfig struct
 type KeyStoreConfig struct {
 	Format           *string `json:"format,omitempty"`
 	KeyAlias         *string `json:"keyAlias,omitempty"`
@@ -291,17 +319,20 @@ type KeyStoreConfig struct {
 	StorePassword    *string `json:"storePassword,omitempty"`
 }
 
+// ManagementPermissionReference struct
 type ManagementPermissionReference struct {
 	Enabled          *bool                   `json:"enabled,omitempty"`
 	Resource         *string                 `json:"resource,omitempty"`
 	ScopePermissions *map[string]interface{} `json:"scopePermissions,omitempty"`
 }
 
+// MappingsRepresentation struct
 type MappingsRepresentation struct {
 	ClientMappings *map[string]interface{} `json:"clientMappings,omitempty"`
 	RealmMappings  *[]RoleRepresentation   `json:"realmMappings,omitempty"`
 }
 
+// MemoryInfoRepresentation struct
 type MemoryInfoRepresentation struct {
 	Free           *int64  `json:"free,omitempty"`
 	FreeFormated   *string `json:"freeFormated,omitempty"`
@@ -312,12 +343,14 @@ type MemoryInfoRepresentation struct {
 	UsedFormated   *string `json:"usedFormated,omitempty"`
 }
 
+// MultivaluedHashMap struct
 type MultivaluedHashMap struct {
 	Empty      *bool  `json:"empty,omitempty"`
 	LoadFactor *int32 `json:"loadFactor,omitempty"`
 	Threshold  *int32 `json:"threshold,omitempty"`
 }
 
+// PartialImportRepresentation struct
 type PartialImportRepresentation struct {
 	Clients           *[]ClientRepresentation           `json:"clients,omitempty"`
 	Groups            *[]GroupRepresentation            `json:"groups,omitempty"`
@@ -328,6 +361,7 @@ type PartialImportRepresentation struct {
 	Users             *[]UserRepresentation             `json:"users,omitempty"`
 }
 
+// PasswordPolicyTypeRepresentation struct
 type PasswordPolicyTypeRepresentation struct {
 	ConfigType        *string `json:"configType,omitempty"`
 	DefaultValue      *string `json:"defaultValue,omitempty"`
@@ -336,6 +370,7 @@ type PasswordPolicyTypeRepresentation struct {
 	MultipleSupported *bool   `json:"multipleSupported,omitempty"`
 }
 
+// PolicyRepresentation struct
 type PolicyRepresentation struct {
 	Config           *map[string]interface{} `json:"config,omitempty"`
 	DecisionStrategy *string                 `json:"decisionStrategy,omitempty"`
@@ -349,11 +384,13 @@ type PolicyRepresentation struct {
 	Type             *string                 `json:"type,omitempty"`
 }
 
+// ProfileInfoRepresentation struct
 type ProfileInfoRepresentation struct {
 	DisabledFeatures *[]string `json:"disabledFeatures,omitempty"`
 	Name             *string   `json:"name,omitempty"`
 }
 
+// ProtocolMapperRepresentation struct
 type ProtocolMapperRepresentation struct {
 	Config          *map[string]interface{} `json:"config,omitempty"`
 	ConsentRequired *bool                   `json:"consentRequired,omitempty"`
@@ -364,11 +401,13 @@ type ProtocolMapperRepresentation struct {
 	ProtocolMapper  *string                 `json:"protocolMapper,omitempty"`
 }
 
+// ProviderRepresentation struct
 type ProviderRepresentation struct {
 	OperationalInfo *map[string]interface{} `json:"operationalInfo,omitempty"`
 	Order           *int32                  `json:"order,omitempty"`
 }
 
+// RealmEventsConfigRepresentation struct
 type RealmEventsConfigRepresentation struct {
 	AdminEventsDetailsEnabled *bool     `json:"adminEventsDetailsEnabled,omitempty"`
 	AdminEventsEnabled        *bool     `json:"adminEventsEnabled,omitempty"`
@@ -378,6 +417,7 @@ type RealmEventsConfigRepresentation struct {
 	EventsListeners           *[]string `json:"eventsListeners,omitempty"`
 }
 
+// RealmRepresentation struct
 type RealmRepresentation struct {
 	AccessCodeLifespan                  *int32                                  `json:"accessCodeLifespan,omitempty"`
 	AccessCodeLifespanLogin             *int32                                  `json:"accessCodeLifespanLogin,omitempty"`
@@ -466,6 +506,7 @@ type RealmRepresentation struct {
 	WaitIncrementSeconds                *int32                                  `json:"waitIncrementSeconds,omitempty"`
 }
 
+// RequiredActionProviderRepresentation struct
 type RequiredActionProviderRepresentation struct {
 	Alias         *string                 `json:"alias,omitempty"`
 	Config        *map[string]interface{} `json:"config,omitempty"`
@@ -475,11 +516,13 @@ type RequiredActionProviderRepresentation struct {
 	ProviderId    *string                 `json:"providerId,omitempty"`
 }
 
+// ResourceOwnerRepresentation struct
 type ResourceOwnerRepresentation struct {
 	Id   *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`
 }
 
+// ResourceRepresentation struct
 type ResourceRepresentation struct {
 	Id          *string                      `json:"id,omitempty"`
 	Icon_uri    *string                      `json:"icon_uri,omitempty"`
@@ -492,6 +535,7 @@ type ResourceRepresentation struct {
 	Uri         *string                      `json:"uri,omitempty"`
 }
 
+// ResourceServerRepresentation struct
 type ResourceServerRepresentation struct {
 	AllowRemoteResourceManagement *bool                     `json:"allowRemoteResourceManagement,omitempty"`
 	ClientId                      *string                   `json:"clientId,omitempty"`
@@ -503,6 +547,7 @@ type ResourceServerRepresentation struct {
 	Scopes                        *[]ScopeRepresentation    `json:"scopes,omitempty"`
 }
 
+// RoleRepresentation struct
 type RoleRepresentation struct {
 	ClientRole         *bool                         `json:"clientRole,omitempty"`
 	Composite          *bool                         `json:"composite,omitempty"`
@@ -514,16 +559,19 @@ type RoleRepresentation struct {
 	ScopeParamRequired *bool                         `json:"scopeParamRequired,omitempty"`
 }
 
+// RoleRepresentationComposites struct
 type RoleRepresentationComposites struct {
 	Client *map[string]interface{} `json:"client,omitempty"`
 	Realm  *[]string               `json:"realm,omitempty"`
 }
 
+// RolesRepresentation struct
 type RolesRepresentation struct {
 	Client *map[string]interface{} `json:"client,omitempty"`
 	Realm  *[]RoleRepresentation   `json:"realm,omitempty"`
 }
 
+// ScopeMappingRepresentation struct
 type ScopeMappingRepresentation struct {
 	Client         *string   `json:"client,omitempty"`
 	ClientTemplate *string   `json:"clientTemplate,omitempty"`
@@ -531,6 +579,7 @@ type ScopeMappingRepresentation struct {
 	Self           *string   `json:"self,omitempty"`
 }
 
+// ScopeRepresentation struct
 type ScopeRepresentation struct {
 	IconUri   *string                   `json:"iconUri,omitempty"`
 	Id        *string                   `json:"id,omitempty"`
@@ -539,6 +588,7 @@ type ScopeRepresentation struct {
 	Resources *[]ResourceRepresentation `json:"resources,omitempty"`
 }
 
+// ServerInfoRepresentation struct
 type ServerInfoRepresentation struct {
 	BuiltinProtocolMappers *map[string]interface{}             `json:"builtinProtocolMappers,omitempty"`
 	ClientImporters        *[]map[string]interface{}           `json:"clientImporters,omitempty"`
@@ -556,11 +606,13 @@ type ServerInfoRepresentation struct {
 	Themes                 *map[string]interface{}             `json:"themes,omitempty"`
 }
 
+// SpiInfoRepresentation struct
 type SpiInfoRepresentation struct {
 	Internal  *bool                   `json:"internal,omitempty"`
 	Providers *map[string]interface{} `json:"providers,omitempty"`
 }
 
+// SynchronizationResult struct
 type SynchronizationResult struct {
 	Added   *int32  `json:"added,omitempty"`
 	Failed  *int32  `json:"failed,omitempty"`
@@ -570,6 +622,7 @@ type SynchronizationResult struct {
 	Updated *int32  `json:"updated,omitempty"`
 }
 
+// SystemInfoRepresentation struct
 type SystemInfoRepresentation struct {
 	FileEncoding   *string `json:"fileEncoding,omitempty"`
 	JavaHome       *string `json:"javaHome,omitempty"`
@@ -591,6 +644,7 @@ type SystemInfoRepresentation struct {
 	Version        *string `json:"version,omitempty"`
 }
 
+// UserConsentRepresentation struct
 type UserConsentRepresentation struct {
 	ClientId               *string                 `json:"clientId,omitempty"`
 	CreatedDate            *int64                  `json:"createdDate,omitempty"`
@@ -600,6 +654,7 @@ type UserConsentRepresentation struct {
 	LastUpdatedDate        *int64                  `json:"lastUpdatedDate,omitempty"`
 }
 
+// UserFederationMapperRepresentation struct
 type UserFederationMapperRepresentation struct {
 	Config                        *map[string]interface{} `json:"config,omitempty"`
 	FederationMapperType          *string                 `json:"federationMapperType,omitempty"`
@@ -608,6 +663,7 @@ type UserFederationMapperRepresentation struct {
 	Name                          *string                 `json:"name,omitempty"`
 }
 
+// UserFederationProviderRepresentation struct
 type UserFederationProviderRepresentation struct {
 	ChangedSyncPeriod *int32                  `json:"changedSyncPeriod,omitempty"`
 	Config            *map[string]interface{} `json:"config,omitempty"`
@@ -619,6 +675,7 @@ type UserFederationProviderRepresentation struct {
 	ProviderName      *string                 `json:"providerName,omitempty"`
 }
 
+// UserRepresentation struct
 type UserRepresentation struct {
 	Access                     *map[string]bool                   `json:"access,omitempty"`
 	Attributes                 *map[string][]string               `json:"attributes,omitempty"`
@@ -651,6 +708,7 @@ type UsersPageRepresentation struct {
 	Users []UserRepresentation `json:"users,omitempty"`
 }
 
+// UserSessionRepresentation struct
 type UserSessionRepresentation struct {
 	Clients    *map[string]interface{} `json:"clients,omitempty"`
 	Id         *string                 `json:"id,omitempty"`
@@ -661,6 +719,7 @@ type UserSessionRepresentation struct {
 	Username   *string                 `json:"username,omitempty"`
 }
 
+// SmsCodeRepresentation struct
 type SmsCodeRepresentation struct {
 	Code *string `json:"code,omitempty"`
 }

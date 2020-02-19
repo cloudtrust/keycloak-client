@@ -119,7 +119,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:58c4f5cde1e9820c1304cba1f284f96fd8a1dadba173695788b87aa8327f5873"
+  digest = "1:ba4e56fdae3b9a3d6ed2428979ed8d0e4dfd3cbe1fe37e95fe312641d16c2924"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -127,7 +127,7 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "1d94cc7ab1c630336ab82ccb9c9cda72a875c382"
+  revision = "1ad67e1f0ef495d4014b6ffd8f2cf80f91fffbce"
 
 [[projects]]
   branch = "master"
