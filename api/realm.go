@@ -1,6 +1,7 @@
-package keycloak
+package api
 
 import (
+	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
@@ -15,28 +16,28 @@ const (
 
 // GetRealms get the top level represention of all the realms. Nested information like users are
 // not included.
-func (c *Client) GetRealms(accessToken string) ([]RealmRepresentation, error) {
-	var resp = []RealmRepresentation{}
+func (c *Client) GetRealms(accessToken string) ([]keycloak.RealmRepresentation, error) {
+	var resp = []keycloak.RealmRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(realmRootPath))
 	return resp, err
 }
 
 // CreateRealm creates the realm from its RealmRepresentation.
-func (c *Client) CreateRealm(accessToken string, realm RealmRepresentation) (string, error) {
+func (c *Client) CreateRealm(accessToken string, realm keycloak.RealmRepresentation) (string, error) {
 	return c.post(accessToken, nil, url.Path(realmRootPath), body.JSON(realm))
 }
 
 // GetRealm get the top level represention of the realm. Nested information like users are
 // not included.
-func (c *Client) GetRealm(accessToken string, realmName string) (RealmRepresentation, error) {
-	var resp = RealmRepresentation{}
+func (c *Client) GetRealm(accessToken string, realmName string) (keycloak.RealmRepresentation, error) {
+	var resp = keycloak.RealmRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(realmPath), url.Param("realm", realmName))
 	return resp, err
 }
 
 // UpdateRealm update the top lovel information of the realm. Any user, role or client information
 // from the realm representation will be ignored.
-func (c *Client) UpdateRealm(accessToken string, realmName string, realm RealmRepresentation) error {
+func (c *Client) UpdateRealm(accessToken string, realmName string, realm keycloak.RealmRepresentation) error {
 	return c.put(accessToken, url.Path(realmPath), url.Param("realm", realmName), body.JSON(realm))
 }
 
@@ -46,8 +47,8 @@ func (c *Client) DeleteRealm(accessToken string, realmName string) error {
 }
 
 // ExportRealm recovers the full realm.
-func (c *Client) ExportRealm(accessToken string, realmName string) (RealmRepresentation, error) {
-	var resp = RealmRepresentation{}
+func (c *Client) ExportRealm(accessToken string, realmName string) (keycloak.RealmRepresentation, error) {
+	var resp = keycloak.RealmRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(exportRealmPath), url.Param("realm", realmName))
 	return resp, err
 }

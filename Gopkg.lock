@@ -2,7 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
   digest = "1:f5259fbdb0775d08aa60d3ac55b0f1aa810c5f22097a18942eabc437a15dc81a"
   name = "github.com/cloudtrust/common-service"
   packages = [
@@ -12,6 +11,7 @@
   ]
   pruneopts = ""
   revision = "3a38f0fb73305dc93ec4d0d8a3b6ec1cfb98fa5b"
+  version = "v2.1.1"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
