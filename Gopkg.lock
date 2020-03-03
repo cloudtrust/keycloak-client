@@ -2,8 +2,7 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:1e9b579897feb3ca3a7e72af20f92b238d0d4c3512e18fff7ffea09a3b54f122"
+  digest = "1:8f6002b9f5b58e8b0a908ff932100fe232f8259f782400556bdd997c4d53bca1"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -11,7 +10,8 @@
     "log",
   ]
   pruneopts = ""
-  revision = "bb889caf59451e4434253125e12864d06eb0bd02"
+  revision = "6f43146697b189b011f98619ca2674c29d769ea0"
+  version = "v2.0.1"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -59,12 +59,12 @@
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:232da37b3204bcdb01af3df45982d154798e191b4d94357191d164e254070771"
+  digest = "1:387627c55b54e4c11ebc64cd772dd7503d96fcb86c893c33399b63aef6c387da"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = ""
-  revision = "d23c5127dc24889085f8ccea5c9d560a57a879d8"
-  version = "v1.3.3"
+  revision = "5d5b4c10bd43f85e63bd9e4a3fa9b1ea2ef88af2"
+  version = "v1.3.4"
 
 [[projects]]
   digest = "1:fbab76ba211c99fcd45a481a32530efc229f3510fd94889f361dcaf13ff05fe0"
@@ -119,7 +119,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2eda274020f8dfe2b4e66c55e0f86e17b9545fb0bad431b2ea520668b7c77f7b"
+  digest = "1:a5ecec7a7007b0af5622967f39375001299ca9559c8028617bbf846ac37bb398"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -127,11 +127,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "2aa609cf4a9d7d1126360de73b55b6002f9e052a"
+  revision = "78000ba7a073cafc0278790f6bce552a0f25850e"
 
 [[projects]]
   branch = "master"
-  digest = "1:03958399ce5fe4d03756acb4748ce12901105d593b5687332a283f4ab3fdb3c2"
+  digest = "1:9ac4dae84a6c14d4d0458d27a8c46fca553cfba156fe0c87f99c50d22034c7e3"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -140,7 +140,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "5a598a2470a0279bd28bab287167dc1ef0813153"
+  revision = "244492dfa37ae2ce87222fd06250a03160745faa"
 
 [[projects]]
   branch = "master"
