@@ -675,10 +675,16 @@ type UserFederationProviderRepresentation struct {
 	ProviderName      *string                 `json:"providerName,omitempty"`
 }
 
+// AttributeKey type
+type AttributeKey string
+
+// Attributes type
+type Attributes map[AttributeKey][]string
+
 // UserRepresentation struct
 type UserRepresentation struct {
 	Access                     *map[string]bool                   `json:"access,omitempty"`
-	Attributes                 *map[string][]string               `json:"attributes,omitempty"`
+	Attributes                 *Attributes                        `json:"attributes,omitempty"`
 	ClientConsents             *[]UserConsentRepresentation       `json:"clientConsents,omitempty"`
 	ClientRoles                *map[string][]string               `json:"clientRoles,omitempty"`
 	CreatedTimestamp           *int64                             `json:"createdTimestamp,omitempty"`
