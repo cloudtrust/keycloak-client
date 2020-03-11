@@ -2,8 +2,7 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:8f5ac811829608c7b2f41a0556ec269660e0490a7e8a2e1e6d30e873f61f5cea"
+  digest = "1:34853ceea51786181355929fdb7d9d126c00a37498d151d8d1e073e70695c098"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -11,7 +10,8 @@
     "log",
   ]
   pruneopts = ""
-  revision = "f4ba60b596a01823f15277487cc046ca0faab79e"
+  revision = "5fe45695250a8712a92d0e089add532fa06fd24d"
+  version = "v2.1.0"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
