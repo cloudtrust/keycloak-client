@@ -1,7 +1,6 @@
 package keycloak
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -34,7 +33,9 @@ func TestGetTheIdp(t *testing.T) {
 	assert.Nil(t, err)
 
 	token, err := client.GetToken(master, username, password)
-	fmt.Printf(token)
+	if err != nil {
+		t.Skip("Skipping test, no Keycloak configured to test properly.")
+	}
 	assert.Nil(t, err)
 
 	idp, err := client.GetTheIdp(token, realm, idpAlias)
@@ -48,7 +49,9 @@ func TestGetIdps(t *testing.T) {
 	assert.Nil(t, err)
 
 	token, err := client.GetToken(master, username, password)
-	fmt.Printf(token)
+	if err != nil {
+		t.Skip("Skipping test, no Keycloak configured to test properly.")
+	}
 	assert.Nil(t, err)
 
 	idps, err := client.GetIdps(token, realm)
@@ -62,7 +65,9 @@ func TestGetIdpMappers(t *testing.T) {
 	assert.Nil(t, err)
 
 	token, err := client.GetToken(master, username, password)
-	fmt.Printf(token)
+	if err != nil {
+		t.Skip("Skipping test, no Keycloak configured to test properly.")
+	}
 	assert.Nil(t, err)
 
 	mappers, err := client.GetIdpMappers(token, realm, idpAlias)
