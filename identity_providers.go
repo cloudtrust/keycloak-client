@@ -7,8 +7,9 @@ import (
 )
 
 const (
-	idpsPath     = "/auth/admin/realms/:realm/identity-provider/instances"
-	idpAliasPath = "/auth/admin/realms/:realm/identity-provider/instances/:alias"
+	idpsPath       = "/auth/admin/realms/:realm/identity-provider/instances"
+	idpAliasPath   = "/auth/admin/realms/:realm/identity-provider/instances/:alias"
+	idpMappersPath = idpAliasPath + "/mappers"
 )
 
 func (c *Client) GetIdps(accessToken string, realmName string, paramKV ...string) ([]IdentityProviderRepresentation, error) {
@@ -30,6 +31,18 @@ func (c *Client) GetTheIdp(accessToken string, realmName string, idpAlias string
 	}
 
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(idpAliasPath), url.Param("realm", realmName), url.Param("alias", idpAlias))
+	var err = c.get(accessToken, &resp, plugins...)
+	return resp, err
+}
+
+func (c *Client) GetIdpMappers(accessToken string, realmName string, idpAlias string, paramKV ...string) ([]IdentityProviderMapperRepresentation, error) {
+	var resp = []IdentityProviderMapperRepresentation{}
+
+	if len(paramKV)%2 != 0 {
+		return resp, errors.New(MsgErrInvalidParam + "." + EvenParams)
+	}
+
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(idpMappersPath), url.Param("realm", realmName), url.Param("alias", idpAlias))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
 }
