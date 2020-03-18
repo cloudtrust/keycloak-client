@@ -8,7 +8,7 @@ import (
 
 const (
 	idpsPath       = "/auth/admin/realms/:realm/identity-provider/instances"
-	idpAliasPath   = "/auth/admin/realms/:realm/identity-provider/instances/:alias"
+	idpAliasPath   = idpsPath + "/:alias"
 	idpMappersPath = idpAliasPath + "/mappers"
 )
 
