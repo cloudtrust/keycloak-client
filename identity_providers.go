@@ -23,7 +23,7 @@ func (c *Client) GetIdps(accessToken string, realmName string, paramKV ...string
 	return resp, err
 }
 
-func (c *Client) GetTheIdp(accessToken string, realmName string, idpAlias string, paramKV ...string) (IdentityProviderRepresentation, error) {
+func (c *Client) GetIdp(accessToken string, realmName string, idpAlias string, paramKV ...string) (IdentityProviderRepresentation, error) {
 	var resp = IdentityProviderRepresentation{}
 
 	if len(paramKV)%2 != 0 {

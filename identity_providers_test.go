@@ -28,7 +28,7 @@ func makeDefaultClient() (*Client, error) {
 	return New(config)
 }
 
-func TestGetTheIdp(t *testing.T) {
+func TestGetIdp(t *testing.T) {
 	client, err := makeDefaultClient()
 	assert.Nil(t, err)
 
@@ -38,7 +38,7 @@ func TestGetTheIdp(t *testing.T) {
 	}
 	assert.Nil(t, err)
 
-	idp, err := client.GetTheIdp(token, realm, idpAlias)
+	idp, err := client.GetIdp(token, realm, idpAlias)
 	assert.Nil(t, err)
 	assert.Equal(t, idpAlias, *(idp.Alias))
 
