@@ -13,6 +13,7 @@ const (
 	userCountPath              = userPath + "/count"
 	userIDPath                 = userPath + "/:id"
 	userGroupsPath             = userIDPath + "/groups"
+	userGroupIDPath            = userGroupsPath + "/:groupId"
 	executeActionsEmailPath    = userIDPath + "/execute-actions-email"
 	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                     = "/auth/realms/:realm/smsApi"
@@ -47,18 +48,28 @@ func (c *Client) CountUsers(accessToken string, realmName string) (int, error) {
 	return resp, err
 }
 
-// GetUser get the represention of the user.
+// GetUser gets the represention of the user.
 func (c *Client) GetUser(accessToken string, realmName, userID string) (UserRepresentation, error) {
 	var resp = UserRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
 
-// GetGroupsOfUser get the groups of the user.
+// GetGroupsOfUser gets the groups of the user.
 func (c *Client) GetGroupsOfUser(accessToken string, realmName, userID string) ([]GroupRepresentation, error) {
 	var resp = []GroupRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(userGroupsPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
+}
+
+// AddGroupToUser adds a group to the groups of the user.
+func (c *Client) AddGroupToUser(accessToken string, realmName, userID, groupID string) error {
+	return c.put(accessToken, url.Path(userGroupIDPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("groupId", groupID))
+}
+
+// DeleteGroupFromUser adds a group to the groups of the user.
+func (c *Client) DeleteGroupFromUser(accessToken string, realmName, userID, groupID string) error {
+	return c.delete(accessToken, url.Path(userGroupIDPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("groupId", groupID))
 }
 
 // UpdateUser updates the user.
