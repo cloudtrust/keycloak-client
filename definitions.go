@@ -111,6 +111,17 @@ type ClientInitialAccessPresentation struct {
 	Token          *string `json:"token,omitempty"`
 }
 
+// ClientMapperRepresentation struct
+// https://www.keycloak.org/docs-api/9.0/rest-api/index.html#_clientscopeevaluateresource-protocolmapperevaluationrepresentation
+type ClientMapperRepresentation struct {
+	ContainerId    *string `json:"containerId,omitempty"`
+	ContainerName  *string `json:"containerName,omitempty"`
+	ContainerType  *string `json:"containerType,omitempty"`
+	MapperId       *string `json:"mapperId,omitempty"`
+	MapperName     *string `json:"mapperName,omitempty"`
+	ProtocolMapper *string `json:"protocolMapper,omitempty"`
+}
+
 // ClientMappingsRepresentation struct
 type ClientMappingsRepresentation struct {
 	Client   *string               `json:"client,omitempty"`
