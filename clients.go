@@ -35,7 +35,7 @@ func (c *Client) GetClient(accessToken string, realmName, idClient string) (Clie
 }
 
 func (c *Client) GetClientMappers(accessToke string, realmName, idClient string) ([]ClientMapperRepresentation, error) {
-	var resp = ClientMapperRepresentation{}
+	var resp = []ClientMapperRepresentation{}
 	var err = c.get(accessToke, &resp, url.Path(clientMappersPath), url.Param("realm", realmName), url.Param("id", idClient))
 	return resp, err
 }
