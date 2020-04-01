@@ -14,14 +14,6 @@
   version = "v2.1.0"
 
 [[projects]]
-  digest = "1:1e20175fe67c4034deb8cf6103745da8493ed532ec2a1c3d073531dfbace9040"
-  name = "github.com/cloudtrust/keycloak-client"
-  packages = ["."]
-  pruneopts = ""
-  revision = "8ff2bc5438f41a4d165677d6cb38168be8bb80bc"
-  version = "v1.3.0"
-
-[[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
   name = "github.com/coreos/go-oidc"
   packages = ["."]
@@ -118,12 +110,12 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:cc4eb6813da8d08694e557fcafae8fcc24f47f61a0717f952da130ca9a486dfc"
+  digest = "1:381bcbeb112a51493d9d998bbba207a529c73dbb49b3fd789e48c63fac1f192c"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "3ebf1ddaeb260c4b1ae502a01c7844fa8c1fa0e9"
-  version = "v1.5.1"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
@@ -237,14 +229,6 @@
   revision = "4ef0f1b175ccd65472d154e1207c4d7b8102545f"
   version = "v2.4.1"
 
-[[projects]]
-  digest = "1:2efc9662a6a1ff28c65c84fc2f9030f13d3afecdb2ecad445f3b0c80e75fc281"
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  pruneopts = ""
-  revision = "53403b58ad1b561927d19068c655246f2db79d48"
-  version = "v2.2.8"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -252,7 +236,6 @@
     "github.com/cloudtrust/common-service",
     "github.com/cloudtrust/common-service/errors",
     "github.com/cloudtrust/common-service/log",
-    "github.com/cloudtrust/keycloak-client",
     "github.com/coreos/go-oidc",
     "github.com/gbrlsnchs/jwt",
     "github.com/go-kit/kit/transport/http",
