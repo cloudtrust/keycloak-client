@@ -118,8 +118,8 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 	return err
 }
 
-// CreateShadowUser creates the a shadow user in the context of brokering
-func (c *Client) CreateShadowUser(accessToken string, reqRealmName string, userID string, provider string, fedIDKC FederatedIdentityRepresentation) error {
+// LinlShadowUser links shadow user to a realm in the context of brokering
+func (c *Client) LinkShadowUser(accessToken string, reqRealmName string, userID string, provider string, fedIDKC FederatedIdentityRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(shadowUser), url.Param("realm", reqRealmName), url.Param("id", userID), url.Param("provider", provider), body.JSON(fedIDKC))
 	return err
 }
