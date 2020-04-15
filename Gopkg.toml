@@ -22,7 +22,8 @@
 
 [[constraint]]
   name = "github.com/cloudtrust/common-service"
-  version = "v2.1.1"
+#  version = "v2.1.1"
+  branch = "CT-2237-encrypt-PII"
 
 [[constraint]]
   name = "github.com/pkg/errors"
