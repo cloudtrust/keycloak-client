@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/cloudtrust/keycloak-client"
+	api "github.com/cloudtrust/keycloak-client/api"
 	"github.com/spf13/pflag"
 )
 
@@ -19,7 +20,7 @@ const (
 
 func main() {
 	var conf = getKeycloakConfig()
-	var client, err = keycloak.New(*conf)
+	var client, err = api.New(*conf)
 	if err != nil {
 		log.Fatalf("could not create keycloak client: %v", err)
 	}
@@ -156,7 +157,7 @@ func main() {
 				log.Fatalf("there should be 50 users")
 			}
 
-			user, err := client.GetUser(accessToken, tstRealm, *(users.Users[0].Id))
+			user, err := client.GetUser(accessToken, tstRealm, *(users.Users[0].ID))
 			if err != nil {
 				log.Fatalf("could not get user")
 			}
@@ -244,10 +245,10 @@ func main() {
 			if len(users.Users) != 1 {
 				log.Fatalf("there should be 1 users matched by search Maria")
 			}
-			if users.Users[0].Id == nil {
+			if users.Users[0].ID == nil {
 				log.Fatalf("user ID should not be nil")
 			}
-			userID = *users.Users[0].Id
+			userID = *users.Users[0].ID
 		}
 		// Update user.
 		var username = "Maria"
@@ -301,10 +302,10 @@ func main() {
 			if len(users.Users) != 1 {
 				log.Fatalf("there should be 1 users matched by search Toni")
 			}
-			if users.Users[0].Id == nil {
+			if users.Users[0].ID == nil {
 				log.Fatalf("user ID should not be nil")
 			}
-			userID = *users.Users[0].Id
+			userID = *users.Users[0].ID
 		}
 		// Delete user.
 		{

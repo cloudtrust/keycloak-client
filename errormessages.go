@@ -1,5 +1,7 @@
 package keycloak
 
+import "strconv"
+
 // Constants for error management
 const (
 	MsgErrMissingParam              = "missingParameter"
@@ -25,3 +27,13 @@ const (
 	Username         = "username"
 	Email            = "email"
 )
+
+// HTTPError is returned when an error occured while contacting the keycloak instance.
+type HTTPError struct {
+	HTTPStatus int
+	Message    string
+}
+
+func (e HTTPError) Error() string {
+	return strconv.Itoa(e.HTTPStatus) + ":" + e.Message
+}

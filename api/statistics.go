@@ -1,6 +1,7 @@
-package keycloak
+package api
 
 import (
+	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
@@ -10,16 +11,9 @@ const (
 	statisticsCredentials = statisticsPath + "/credentials"
 )
 
-// StatisticsUsersRepresentation elements returned by GetStatisticsUsers
-type StatisticsUsersRepresentation struct {
-	Total    int64 `json:"total,omitempty"`
-	Disabled int64 `json:"disabled,omitempty"`
-	Inactive int64 `json:"inactive,omitempty"`
-}
-
 // GetStatisticsUsers returns statisctics on the total number of users and on their status
-func (c *Client) GetStatisticsUsers(accessToken string, realmName string) (StatisticsUsersRepresentation, error) {
-	var resp = StatisticsUsersRepresentation{}
+func (c *Client) GetStatisticsUsers(accessToken string, realmName string) (keycloak.StatisticsUsersRepresentation, error) {
+	var resp = keycloak.StatisticsUsersRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(statisticsUsers), url.Param("realm", realmName))
 	return resp, err
 }

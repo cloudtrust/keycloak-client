@@ -1,4 +1,4 @@
-package keycloak
+package toolbox
 
 import (
 	"bytes"
@@ -12,6 +12,7 @@ import (
 
 	errorhandler "github.com/cloudtrust/common-service/errors"
 	"github.com/cloudtrust/common-service/log"
+	"github.com/cloudtrust/keycloak-client"
 )
 
 // OidcTokenProvider provides OIDC tokens
@@ -45,7 +46,7 @@ const (
 )
 
 // NewOidcTokenProvider creates an OidcTokenProvider
-func NewOidcTokenProvider(config Config, realm, username, password, clientID string, logger log.Logger) OidcTokenProvider {
+func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger log.Logger) OidcTokenProvider {
 	var urls = strings.Split(config.AddrTokenProvider, " ")
 	var keycloakPublicURL = urls[0]
 

@@ -1,4 +1,4 @@
-package keycloak
+package toolbox
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/cloudtrust/keycloak-client"
 	oidc "github.com/coreos/go-oidc"
 	"github.com/pkg/errors"
 )
@@ -55,7 +56,7 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 		var issuer = fmt.Sprintf("%s/auth/realms/%s", vc.tokenURL.String(), realm)
 		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
 		if err != nil {
-			return nil, errors.Wrap(err, MsgErrCannotCreate+"."+OIDCProvider)
+			return nil, errors.Wrap(err, keycloak.MsgErrCannotCreate+"."+keycloak.OIDCProvider)
 		}
 	}
 

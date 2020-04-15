@@ -1,6 +1,7 @@
-package keycloak
+package api
 
 import (
+	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
@@ -24,21 +25,21 @@ func (c *Client) GetClientAuthenticatorProviders(accessToken string, realmName s
 }
 
 // GetAuthenticatorProviderConfig returns the authenticator provider’s configuration description.
-func (c *Client) GetAuthenticatorProviderConfig(accessToken string, realmName, providerID string) (AuthenticatorConfigInfoRepresentation, error) {
-	var resp = AuthenticatorConfigInfoRepresentation{}
+func (c *Client) GetAuthenticatorProviderConfig(accessToken string, realmName, providerID string) (keycloak.AuthenticatorConfigInfoRepresentation, error) {
+	var resp = keycloak.AuthenticatorConfigInfoRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/config-description/:providerID"), url.Param("realm", realmName), url.Param("providerID", providerID))
 	return resp, err
 }
 
 // GetAuthenticatorConfig returns the authenticator configuration.
-func (c *Client) GetAuthenticatorConfig(accessToken string, realmName, configID string) (AuthenticatorConfigRepresentation, error) {
-	var resp = AuthenticatorConfigRepresentation{}
+func (c *Client) GetAuthenticatorConfig(accessToken string, realmName, configID string) (keycloak.AuthenticatorConfigRepresentation, error) {
+	var resp = keycloak.AuthenticatorConfigRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/config/:id"), url.Param("realm", realmName), url.Param("id", configID))
 	return resp, err
 }
 
 // UpdateAuthenticatorConfig updates the authenticator configuration.
-func (c *Client) UpdateAuthenticatorConfig(accessToken string, realmName, configID string, config AuthenticatorConfigRepresentation) error {
+func (c *Client) UpdateAuthenticatorConfig(accessToken string, realmName, configID string, config keycloak.AuthenticatorConfigRepresentation) error {
 	return c.put(accessToken, url.Path(authenticationManagementPath+"/config/:id"), url.Param("realm", realmName), url.Param("id", configID), body.JSON(config))
 }
 
@@ -48,7 +49,7 @@ func (c *Client) DeleteAuthenticatorConfig(accessToken string, realmName, config
 }
 
 // CreateAuthenticationExecution add new authentication execution
-func (c *Client) CreateAuthenticationExecution(accessToken string, realmName string, authExec AuthenticationExecutionRepresentation) (string, error) {
+func (c *Client) CreateAuthenticationExecution(accessToken string, realmName string, authExec keycloak.AuthenticationExecutionRepresentation) (string, error) {
 	return c.post(accessToken, nil, url.Path(authenticationManagementPath+"/executions"), url.Param("realm", realmName), body.JSON(authExec))
 }
 
@@ -58,7 +59,7 @@ func (c *Client) DeleteAuthenticationExecution(accessToken string, realmName, ex
 }
 
 // UpdateAuthenticationExecution update execution with new configuration.
-func (c *Client) UpdateAuthenticationExecution(accessToken string, realmName, executionID string, authConfig AuthenticatorConfigRepresentation) error {
+func (c *Client) UpdateAuthenticationExecution(accessToken string, realmName, executionID string, authConfig keycloak.AuthenticatorConfigRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(authenticationManagementPath+"/executions/:id/config"), url.Param("realm", realmName), url.Param("id", executionID), body.JSON(authConfig))
 	return err
 }
@@ -76,14 +77,14 @@ func (c *Client) RaiseExecutionPriority(accessToken string, realmName, execution
 }
 
 // CreateAuthenticationFlow creates a new authentication flow.
-func (c *Client) CreateAuthenticationFlow(accessToken string, realmName string, authFlow AuthenticationFlowRepresentation) error {
+func (c *Client) CreateAuthenticationFlow(accessToken string, realmName string, authFlow keycloak.AuthenticationFlowRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(authenticationManagementPath+"/flows"), url.Param("realm", realmName), body.JSON(authFlow))
 	return err
 }
 
 // GetAuthenticationFlows returns a list of authentication flows.
-func (c *Client) GetAuthenticationFlows(accessToken string, realmName string) ([]AuthenticationFlowRepresentation, error) {
-	var resp = []AuthenticationFlowRepresentation{}
+func (c *Client) GetAuthenticationFlows(accessToken string, realmName string) ([]keycloak.AuthenticationFlowRepresentation, error) {
+	var resp = []keycloak.AuthenticationFlowRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/flows"), url.Param("realm", realmName))
 	return resp, err
 }
@@ -98,14 +99,14 @@ func (c *Client) CopyExistingAuthenticationFlow(accessToken string, realmName, f
 }
 
 // GetAuthenticationExecutionForFlow returns the authentication executions for a flow.
-func (c *Client) GetAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias string) (AuthenticationExecutionInfoRepresentation, error) {
-	var resp = AuthenticationExecutionInfoRepresentation{}
+func (c *Client) GetAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias string) (keycloak.AuthenticationExecutionInfoRepresentation, error) {
+	var resp = keycloak.AuthenticationExecutionInfoRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias))
 	return resp, err
 }
 
 // UpdateAuthenticationExecutionForFlow updates the authentication executions of a flow.
-func (c *Client) UpdateAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias string, authExecInfo AuthenticationExecutionInfoRepresentation) error {
+func (c *Client) UpdateAuthenticationExecutionForFlow(accessToken string, realmName, flowAlias string, authExecInfo keycloak.AuthenticationExecutionInfoRepresentation) error {
 	return c.put(accessToken, url.Path(authenticationManagementPath+"/flows/:flowAlias/executions"), url.Param("realm", realmName), url.Param("flowAlias", flowAlias), body.JSON(authExecInfo))
 }
 
@@ -124,8 +125,8 @@ func (c *Client) CreateFlowWithExecutionForExistingFlow(accessToken string, real
 }
 
 // GetAuthenticationFlow gets the authentication flow for id.
-func (c *Client) GetAuthenticationFlow(accessToken string, realmName, flowID string) (AuthenticationFlowRepresentation, error) {
-	var resp = AuthenticationFlowRepresentation{}
+func (c *Client) GetAuthenticationFlow(accessToken string, realmName, flowID string) (keycloak.AuthenticationFlowRepresentation, error) {
+	var resp = keycloak.AuthenticationFlowRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/flows/:id"), url.Param("realm", realmName), url.Param("id", flowID))
 	return resp, err
 }
@@ -164,21 +165,21 @@ func (c *Client) RegisterRequiredAction(accessToken string, realmName, providerI
 }
 
 // GetRequiredActions returns a list of required actions.
-func (c *Client) GetRequiredActions(accessToken string, realmName string) ([]RequiredActionProviderRepresentation, error) {
-	var resp = []RequiredActionProviderRepresentation{}
+func (c *Client) GetRequiredActions(accessToken string, realmName string) ([]keycloak.RequiredActionProviderRepresentation, error) {
+	var resp = []keycloak.RequiredActionProviderRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/required-actions"), url.Param("realm", realmName))
 	return resp, err
 }
 
 // GetRequiredAction returns the required action for the alias.
-func (c *Client) GetRequiredAction(accessToken string, realmName, actionAlias string) (RequiredActionProviderRepresentation, error) {
-	var resp = RequiredActionProviderRepresentation{}
+func (c *Client) GetRequiredAction(accessToken string, realmName, actionAlias string) (keycloak.RequiredActionProviderRepresentation, error) {
+	var resp = keycloak.RequiredActionProviderRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/required-actions/:alias"), url.Param("realm", realmName), url.Param("alias", actionAlias))
 	return resp, err
 }
 
 // UpdateRequiredAction updates the required action.
-func (c *Client) UpdateRequiredAction(accessToken string, realmName, actionAlias string, action RequiredActionProviderRepresentation) error {
+func (c *Client) UpdateRequiredAction(accessToken string, realmName, actionAlias string, action keycloak.RequiredActionProviderRepresentation) error {
 	return c.put(accessToken, url.Path(authenticationManagementPath+"/required-actions/:alias"), url.Param("realm", realmName), url.Param("alias", actionAlias), body.JSON(action))
 }
 

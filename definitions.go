@@ -5,7 +5,7 @@ type AdminEventRepresentation struct {
 	AuthDetails    *AuthDetailsRepresentation `json:"authDetails,omitempty"`
 	Error          *string                    `json:"error,omitempty"`
 	OperationType  *string                    `json:"operationType,omitempty"`
-	RealmId        *string                    `json:"realmId,omitempty"`
+	RealmID        *string                    `json:"realmId,omitempty"`
 	Representation *string                    `json:"representation,omitempty"`
 	ResourcePath   *string                    `json:"resourcePath,omitempty"`
 	ResourceType   *string                    `json:"resourceType,omitempty"`
@@ -14,10 +14,10 @@ type AdminEventRepresentation struct {
 
 // AuthDetailsRepresentation struct
 type AuthDetailsRepresentation struct {
-	ClientId  *string `json:"clientId,omitempty"`
-	IpAddress *string `json:"ipAddress,omitempty"`
-	RealmId   *string `json:"realmId,omitempty"`
-	UserId    *string `json:"userId,omitempty"`
+	ClientID  *string `json:"clientId,omitempty"`
+	IPAddress *string `json:"ipAddress,omitempty"`
+	RealmID   *string `json:"realmId,omitempty"`
+	UserID    *string `json:"userId,omitempty"`
 }
 
 // AuthenticationExecutionExportRepresentation struct
@@ -39,11 +39,11 @@ type AuthenticationExecutionInfoRepresentation struct {
 	AuthenticationFlow   *bool     `json:"authenticationFlow,omitempty"`
 	Configurable         *bool     `json:"configurable,omitempty"`
 	DisplayName          *string   `json:"displayName,omitempty"`
-	FlowId               *string   `json:"flowId,omitempty"`
-	Id                   *string   `json:"id,omitempty"`
+	FlowID               *string   `json:"flowId,omitempty"`
+	ID                   *string   `json:"id,omitempty"`
 	Index                *int32    `json:"index,omitempty"`
 	Level                *int32    `json:"level,omitempty"`
-	ProviderId           *string   `json:"providerId,omitempty"`
+	ProviderID           *string   `json:"providerId,omitempty"`
 	Requirement          *string   `json:"requirement,omitempty"`
 	RequirementChoices   *[]string `json:"requirementChoices,omitempty"`
 }
@@ -54,8 +54,8 @@ type AuthenticationExecutionRepresentation struct {
 	AuthenticatorConfig *string `json:"authenticatorConfig,omitempty"`
 	AuthenticatorFlow   *bool   `json:"authenticatorFlow,omitempty"`
 	AutheticatorFlow    *bool   `json:"autheticatorFlow,omitempty"`
-	FlowId              *string `json:"flowId,omitempty"`
-	Id                  *string `json:"id,omitempty"`
+	FlowID              *string `json:"flowId,omitempty"`
+	ID                  *string `json:"id,omitempty"`
 	ParentFlow          *string `json:"parentFlow,omitempty"`
 	Priority            *int32  `json:"priority,omitempty"`
 	Requirement         *string `json:"requirement,omitempty"`
@@ -67,8 +67,8 @@ type AuthenticationFlowRepresentation struct {
 	AuthenticationExecutions *[]AuthenticationExecutionExportRepresentation `json:"authenticationExecutions,omitempty"`
 	BuiltIn                  *bool                                          `json:"builtIn,omitempty"`
 	Description              *string                                        `json:"description,omitempty"`
-	Id                       *string                                        `json:"id,omitempty"`
-	ProviderId               *string                                        `json:"providerId,omitempty"`
+	ID                       *string                                        `json:"id,omitempty"`
+	ProviderID               *string                                        `json:"providerId,omitempty"`
 	TopLevel                 *bool                                          `json:"topLevel,omitempty"`
 }
 
@@ -77,14 +77,14 @@ type AuthenticatorConfigInfoRepresentation struct {
 	HelpText   *string                         `json:"helpText,omitempty"`
 	Name       *string                         `json:"name,omitempty"`
 	Properties *[]ConfigPropertyRepresentation `json:"properties,omitempty"`
-	ProviderId *string                         `json:"providerId,omitempty"`
+	ProviderID *string                         `json:"providerId,omitempty"`
 }
 
 // AuthenticatorConfigRepresentation struct
 type AuthenticatorConfigRepresentation struct {
 	Alias  *string                 `json:"alias,omitempty"`
 	Config *map[string]interface{} `json:"config,omitempty"`
-	Id     *string                 `json:"id,omitempty"`
+	ID     *string                 `json:"id,omitempty"`
 }
 
 // CertificateRepresentation struct
@@ -105,7 +105,7 @@ type ClientInitialAccessCreatePresentation struct {
 type ClientInitialAccessPresentation struct {
 	Count          *int32  `json:"count,omitempty"`
 	Expiration     *int32  `json:"expiration,omitempty"`
-	Id             *string `json:"id,omitempty"`
+	ID             *string `json:"id,omitempty"`
 	RemainingCount *int32  `json:"remainingCount,omitempty"`
 	Timestamp      *int32  `json:"timestamp,omitempty"`
 	Token          *string `json:"token,omitempty"`
@@ -114,10 +114,10 @@ type ClientInitialAccessPresentation struct {
 // ClientMapperRepresentation struct
 // https://www.keycloak.org/docs-api/9.0/rest-api/index.html#_clientscopeevaluateresource-protocolmapperevaluationrepresentation
 type ClientMapperRepresentation struct {
-	ContainerId    *string `json:"containerId,omitempty"`
+	ContainerID    *string `json:"containerId,omitempty"`
 	ContainerName  *string `json:"containerName,omitempty"`
 	ContainerType  *string `json:"containerType,omitempty"`
-	MapperId       *string `json:"mapperId,omitempty"`
+	MapperID       *string `json:"mapperId,omitempty"`
 	MapperName     *string `json:"mapperName,omitempty"`
 	ProtocolMapper *string `json:"protocolMapper,omitempty"`
 }
@@ -125,21 +125,21 @@ type ClientMapperRepresentation struct {
 // ClientMappingsRepresentation struct
 type ClientMappingsRepresentation struct {
 	Client   *string               `json:"client,omitempty"`
-	Id       *string               `json:"id,omitempty"`
+	ID       *string               `json:"id,omitempty"`
 	Mappings *[]RoleRepresentation `json:"mappings,omitempty"`
 }
 
 // ClientRepresentation struct
 type ClientRepresentation struct {
 	Access                       *map[string]interface{}         `json:"access,omitempty"`
-	AdminUrl                     *string                         `json:"adminUrl,omitempty"`
+	AdminURL                     *string                         `json:"adminUrl,omitempty"`
 	Attributes                   *map[string]interface{}         `json:"attributes,omitempty"`
 	AuthorizationServicesEnabled *bool                           `json:"authorizationServicesEnabled,omitempty"`
 	AuthorizationSettings        *ResourceServerRepresentation   `json:"authorizationSettings,omitempty"`
-	BaseUrl                      *string                         `json:"baseUrl,omitempty"`
+	BaseURL                      *string                         `json:"baseUrl,omitempty"`
 	BearerOnly                   *bool                           `json:"bearerOnly,omitempty"`
 	ClientAuthenticatorType      *string                         `json:"clientAuthenticatorType,omitempty"`
-	ClientId                     *string                         `json:"clientId,omitempty"`
+	ClientID                     *string                         `json:"clientId,omitempty"`
 	ClientTemplate               *string                         `json:"clientTemplate,omitempty"`
 	ConsentRequired              *bool                           `json:"consentRequired,omitempty"`
 	DefaultRoles                 *[]string                       `json:"defaultRoles,omitempty"`
@@ -148,7 +148,7 @@ type ClientRepresentation struct {
 	Enabled                      *bool                           `json:"enabled,omitempty"`
 	FrontchannelLogout           *bool                           `json:"frontchannelLogout,omitempty"`
 	FullScopeAllowed             *bool                           `json:"fullScopeAllowed,omitempty"`
-	Id                           *string                         `json:"id,omitempty"`
+	ID                           *string                         `json:"id,omitempty"`
 	ImplicitFlowEnabled          *bool                           `json:"implicitFlowEnabled,omitempty"`
 	Name                         *string                         `json:"name,omitempty"`
 	NodeReRegistrationTimeout    *int32                          `json:"nodeReRegistrationTimeout,omitempty"`
@@ -159,7 +159,7 @@ type ClientRepresentation struct {
 	RedirectUris                 *[]string                       `json:"redirectUris,omitempty"`
 	RegisteredNodes              *map[string]interface{}         `json:"registeredNodes,omitempty"`
 	RegistrationAccessToken      *string                         `json:"registrationAccessToken,omitempty"`
-	RootUrl                      *string                         `json:"rootUrl,omitempty"`
+	RootURL                      *string                         `json:"rootUrl,omitempty"`
 	Secret                       *string                         `json:"secret,omitempty"`
 	ServiceAccountsEnabled       *bool                           `json:"serviceAccountsEnabled,omitempty"`
 	StandardFlowEnabled          *bool                           `json:"standardFlowEnabled,omitempty"`
@@ -179,7 +179,7 @@ type ClientTemplateRepresentation struct {
 	DirectAccessGrantsEnabled *bool                           `json:"directAccessGrantsEnabled,omitempty"`
 	FrontchannelLogout        *bool                           `json:"frontchannelLogout,omitempty"`
 	FullScopeAllowed          *bool                           `json:"fullScopeAllowed,omitempty"`
-	Id                        *string                         `json:"id,omitempty"`
+	ID                        *string                         `json:"id,omitempty"`
 	ImplicitFlowEnabled       *bool                           `json:"implicitFlowEnabled,omitempty"`
 	Name                      *string                         `json:"name,omitempty"`
 	Protocol                  *string                         `json:"protocol,omitempty"`
@@ -192,9 +192,9 @@ type ClientTemplateRepresentation struct {
 // ComponentExportRepresentation struct
 type ComponentExportRepresentation struct {
 	Config        *MultivaluedHashMap `json:"config,omitempty"`
-	Id            *string             `json:"id,omitempty"`
+	ID            *string             `json:"id,omitempty"`
 	Name          *string             `json:"name,omitempty"`
-	ProviderId    *string             `json:"providerId,omitempty"`
+	ProviderID    *string             `json:"providerId,omitempty"`
 	SubComponents *MultivaluedHashMap `json:"subComponents,omitempty"`
 	SubType       *string             `json:"subType,omitempty"`
 }
@@ -202,10 +202,10 @@ type ComponentExportRepresentation struct {
 // ComponentRepresentation struct
 type ComponentRepresentation struct {
 	Config       *MultivaluedHashMap `json:"config,omitempty"`
-	Id           *string             `json:"id,omitempty"`
+	ID           *string             `json:"id,omitempty"`
 	Name         *string             `json:"name,omitempty"`
-	ParentId     *string             `json:"parentId,omitempty"`
-	ProviderId   *string             `json:"providerId,omitempty"`
+	ParentID     *string             `json:"parentId,omitempty"`
+	ProviderID   *string             `json:"providerId,omitempty"`
 	ProviderType *string             `json:"providerType,omitempty"`
 	SubType      *string             `json:"subType,omitempty"`
 }
@@ -213,7 +213,7 @@ type ComponentRepresentation struct {
 // ComponentTypeRepresentation struct
 type ComponentTypeRepresentation struct {
 	HelpText   *string                         `json:"helpText,omitempty"`
-	Id         *string                         `json:"id,omitempty"`
+	ID         *string                         `json:"id,omitempty"`
 	Metadata   *map[string]interface{}         `json:"metadata,omitempty"`
 	Properties *[]ConfigPropertyRepresentation `json:"properties,omitempty"`
 }
@@ -231,7 +231,7 @@ type ConfigPropertyRepresentation struct {
 
 // CredentialRepresentation struct
 type CredentialRepresentation struct {
-	Id             *string `json:"id,omitempty"`
+	ID             *string `json:"id,omitempty"`
 	Type           *string `json:"type,omitempty"`
 	UserLabel      *string `json:"userLabel,omitempty"`
 	CreatedDate    *int64  `json:"createdDate,omitempty"`
@@ -242,21 +242,21 @@ type CredentialRepresentation struct {
 
 // EventRepresentation struct
 type EventRepresentation struct {
-	ClientId  *string                 `json:"clientId,omitempty"`
+	ClientID  *string                 `json:"clientId,omitempty"`
 	Details   *map[string]interface{} `json:"details,omitempty"`
 	Error     *string                 `json:"error,omitempty"`
-	IpAddress *string                 `json:"ipAddress,omitempty"`
-	RealmId   *string                 `json:"realmId,omitempty"`
-	SessionId *string                 `json:"sessionId,omitempty"`
+	IPAddress *string                 `json:"ipAddress,omitempty"`
+	RealmID   *string                 `json:"realmId,omitempty"`
+	SessionID *string                 `json:"sessionId,omitempty"`
 	Time      *int64                  `json:"time,omitempty"`
 	Type      *string                 `json:"type,omitempty"`
-	UserId    *string                 `json:"userId,omitempty"`
+	UserID    *string                 `json:"userId,omitempty"`
 }
 
 // FederatedIdentityRepresentation struct
 type FederatedIdentityRepresentation struct {
 	IdentityProvider *string `json:"identityProvider,omitempty"`
-	UserId           *string `json:"userId,omitempty"`
+	UserID           *string `json:"userId,omitempty"`
 	UserName         *string `json:"userName,omitempty"`
 }
 
@@ -271,7 +271,7 @@ type GroupRepresentation struct {
 	Access      *map[string]interface{} `json:"access,omitempty"`
 	Attributes  *map[string]interface{} `json:"attributes,omitempty"`
 	ClientRoles *map[string]interface{} `json:"clientRoles,omitempty"`
-	Id          *string                 `json:"id,omitempty"`
+	ID          *string                 `json:"id,omitempty"`
 	Name        *string                 `json:"name,omitempty"`
 	Path        *string                 `json:"path,omitempty"`
 	RealmRoles  *[]string               `json:"realmRoles,omitempty"`
@@ -281,7 +281,7 @@ type GroupRepresentation struct {
 // IdentityProviderMapperRepresentation struct
 type IdentityProviderMapperRepresentation struct {
 	Config                 *map[string]interface{} `json:"config,omitempty"`
-	Id                     *string                 `json:"id,omitempty"`
+	ID                     *string                 `json:"id,omitempty"`
 	IdentityProviderAlias  *string                 `json:"identityProviderAlias,omitempty"`
 	IdentityProviderMapper *string                 `json:"identityProviderMapper,omitempty"`
 	Name                   *string                 `json:"name,omitempty"`
@@ -295,10 +295,10 @@ type IdentityProviderRepresentation struct {
 	DisplayName               *string                 `json:"displayName,omitempty"`
 	Enabled                   *bool                   `json:"enabled,omitempty"`
 	FirstBrokerLoginFlowAlias *string                 `json:"firstBrokerLoginFlowAlias,omitempty"`
-	InternalId                *string                 `json:"internalId,omitempty"`
+	InternalID                *string                 `json:"internalId,omitempty"`
 	LinkOnly                  *bool                   `json:"linkOnly,omitempty"`
 	PostBrokerLoginFlowAlias  *string                 `json:"postBrokerLoginFlowAlias,omitempty"`
-	ProviderId                *string                 `json:"providerId,omitempty"`
+	ProviderID                *string                 `json:"providerId,omitempty"`
 	StoreToken                *bool                   `json:"storeToken,omitempty"`
 	TrustEmail                *bool                   `json:"trustEmail,omitempty"`
 }
@@ -313,7 +313,7 @@ type KeysMetadataRepresentation struct {
 type KeysMetadataRepresentationKeyMetadataRepresentation struct {
 	Certificate      *string `json:"certificate,omitempty"`
 	Kid              *string `json:"kid,omitempty"`
-	ProviderId       *string `json:"providerId,omitempty"`
+	ProviderID       *string `json:"providerId,omitempty"`
 	ProviderPriority *int64  `json:"providerPriority,omitempty"`
 	PublicKey        *string `json:"publicKey,omitempty"`
 	Status           *string `json:"status,omitempty"`
@@ -377,7 +377,7 @@ type PasswordPolicyTypeRepresentation struct {
 	ConfigType        *string `json:"configType,omitempty"`
 	DefaultValue      *string `json:"defaultValue,omitempty"`
 	DisplayName       *string `json:"displayName,omitempty"`
-	Id                *string `json:"id,omitempty"`
+	ID                *string `json:"id,omitempty"`
 	MultipleSupported *bool   `json:"multipleSupported,omitempty"`
 }
 
@@ -386,7 +386,7 @@ type PolicyRepresentation struct {
 	Config           *map[string]interface{} `json:"config,omitempty"`
 	DecisionStrategy *string                 `json:"decisionStrategy,omitempty"`
 	Description      *string                 `json:"description,omitempty"`
-	Id               *string                 `json:"id,omitempty"`
+	ID               *string                 `json:"id,omitempty"`
 	Logic            *string                 `json:"logic,omitempty"`
 	Name             *string                 `json:"name,omitempty"`
 	Policies         *[]string               `json:"policies,omitempty"`
@@ -406,7 +406,7 @@ type ProtocolMapperRepresentation struct {
 	Config          *map[string]interface{} `json:"config,omitempty"`
 	ConsentRequired *bool                   `json:"consentRequired,omitempty"`
 	ConsentText     *string                 `json:"consentText,omitempty"`
-	Id              *string                 `json:"id,omitempty"`
+	ID              *string                 `json:"id,omitempty"`
 	Name            *string                 `json:"name,omitempty"`
 	Protocol        *string                 `json:"protocol,omitempty"`
 	ProtocolMapper  *string                 `json:"protocolMapper,omitempty"`
@@ -457,7 +457,7 @@ type RealmRepresentation struct {
 	DefaultRoles                        *[]string                               `json:"defaultRoles,omitempty"`
 	DirectGrantFlow                     *string                                 `json:"directGrantFlow,omitempty"`
 	DisplayName                         *string                                 `json:"displayName,omitempty"`
-	DisplayNameHtml                     *string                                 `json:"displayNameHtml,omitempty"`
+	DisplayNameHTML                     *string                                 `json:"displayNameHtml,omitempty"`
 	DockerAuthenticationFlow            *string                                 `json:"dockerAuthenticationFlow,omitempty"`
 	DuplicateEmailsAllowed              *bool                                   `json:"duplicateEmailsAllowed,omitempty"`
 	EditUsernameAllowed                 *bool                                   `json:"editUsernameAllowed,omitempty"`
@@ -470,7 +470,7 @@ type RealmRepresentation struct {
 	FailureFactor                       *int32                                  `json:"failureFactor,omitempty"`
 	FederatedUsers                      *[]UserRepresentation                   `json:"federatedUsers,omitempty"`
 	Groups                              *[]GroupRepresentation                  `json:"groups,omitempty"`
-	Id                                  *string                                 `json:"id,omitempty"`
+	ID                                  *string                                 `json:"id,omitempty"`
 	IdentityProviderMappers             *[]IdentityProviderMapperRepresentation `json:"identityProviderMappers,omitempty"`
 	IdentityProviders                   *[]IdentityProviderRepresentation       `json:"identityProviders,omitempty"`
 	InternationalizationEnabled         *bool                                   `json:"internationalizationEnabled,omitempty"`
@@ -505,7 +505,7 @@ type RealmRepresentation struct {
 	RevokeRefreshToken                  *bool                                   `json:"revokeRefreshToken,omitempty"`
 	Roles                               *RolesRepresentation                    `json:"roles,omitempty"`
 	ScopeMappings                       *[]ScopeMappingRepresentation           `json:"scopeMappings,omitempty"`
-	SmtpServer                          *map[string]interface{}                 `json:"smtpServer,omitempty"`
+	SMTPServer                          *map[string]interface{}                 `json:"smtpServer,omitempty"`
 	SslRequired                         *string                                 `json:"sslRequired,omitempty"`
 	SsoSessionIdleTimeout               *int32                                  `json:"ssoSessionIdleTimeout,omitempty"`
 	SsoSessionMaxLifespan               *int32                                  `json:"ssoSessionMaxLifespan,omitempty"`
@@ -524,33 +524,33 @@ type RequiredActionProviderRepresentation struct {
 	DefaultAction *bool                   `json:"defaultAction,omitempty"`
 	Enabled       *bool                   `json:"enabled,omitempty"`
 	Name          *string                 `json:"name,omitempty"`
-	ProviderId    *string                 `json:"providerId,omitempty"`
+	ProviderID    *string                 `json:"providerId,omitempty"`
 }
 
 // ResourceOwnerRepresentation struct
 type ResourceOwnerRepresentation struct {
-	Id   *string `json:"id,omitempty"`
+	ID   *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`
 }
 
 // ResourceRepresentation struct
 type ResourceRepresentation struct {
-	Id          *string                      `json:"id,omitempty"`
-	Icon_uri    *string                      `json:"icon_uri,omitempty"`
+	ID          *string                      `json:"id,omitempty"`
+	IconURI     *string                      `json:"icon_uri,omitempty"`
 	Name        *string                      `json:"name,omitempty"`
 	Owner       *ResourceOwnerRepresentation `json:"owner,omitempty"`
 	Policies    *[]PolicyRepresentation      `json:"policies,omitempty"`
 	Scopes      *[]ScopeRepresentation       `json:"scopes,omitempty"`
 	Type        *string                      `json:"type,omitempty"`
 	TypedScopes *[]ScopeRepresentation       `json:"typedScopes,omitempty"`
-	Uri         *string                      `json:"uri,omitempty"`
+	URI         *string                      `json:"uri,omitempty"`
 }
 
 // ResourceServerRepresentation struct
 type ResourceServerRepresentation struct {
 	AllowRemoteResourceManagement *bool                     `json:"allowRemoteResourceManagement,omitempty"`
-	ClientId                      *string                   `json:"clientId,omitempty"`
-	Id                            *string                   `json:"id,omitempty"`
+	ClientID                      *string                   `json:"clientId,omitempty"`
+	ID                            *string                   `json:"id,omitempty"`
 	Name                          *string                   `json:"name,omitempty"`
 	Policies                      *[]PolicyRepresentation   `json:"policies,omitempty"`
 	PolicyEnforcementMode         *string                   `json:"policyEnforcementMode,omitempty"`
@@ -563,9 +563,9 @@ type RoleRepresentation struct {
 	ClientRole         *bool                         `json:"clientRole,omitempty"`
 	Composite          *bool                         `json:"composite,omitempty"`
 	Composites         *RoleRepresentationComposites `json:"composites,omitempty"`
-	ContainerId        *string                       `json:"containerId,omitempty"`
+	ContainerID        *string                       `json:"containerId,omitempty"`
 	Description        *string                       `json:"description,omitempty"`
-	Id                 *string                       `json:"id,omitempty"`
+	ID                 *string                       `json:"id,omitempty"`
 	Name               *string                       `json:"name,omitempty"`
 	ScopeParamRequired *bool                         `json:"scopeParamRequired,omitempty"`
 }
@@ -592,8 +592,8 @@ type ScopeMappingRepresentation struct {
 
 // ScopeRepresentation struct
 type ScopeRepresentation struct {
-	IconUri   *string                   `json:"iconUri,omitempty"`
-	Id        *string                   `json:"id,omitempty"`
+	IconURI   *string                   `json:"iconUri,omitempty"`
+	ID        *string                   `json:"id,omitempty"`
 	Name      *string                   `json:"name,omitempty"`
 	Policies  *[]PolicyRepresentation   `json:"policies,omitempty"`
 	Resources *[]ResourceRepresentation `json:"resources,omitempty"`
@@ -640,8 +640,8 @@ type SystemInfoRepresentation struct {
 	JavaRuntime    *string `json:"javaRuntime,omitempty"`
 	JavaVendor     *string `json:"javaVendor,omitempty"`
 	JavaVersion    *string `json:"javaVersion,omitempty"`
-	JavaVm         *string `json:"javaVm,omitempty"`
-	JavaVmVersion  *string `json:"javaVmVersion,omitempty"`
+	JavaVM         *string `json:"javaVm,omitempty"`
+	JavaVMVersion  *string `json:"javaVmVersion,omitempty"`
 	OsArchitecture *string `json:"osArchitecture,omitempty"`
 	OsName         *string `json:"osName,omitempty"`
 	OsVersion      *string `json:"osVersion,omitempty"`
@@ -657,7 +657,7 @@ type SystemInfoRepresentation struct {
 
 // UserConsentRepresentation struct
 type UserConsentRepresentation struct {
-	ClientId               *string                 `json:"clientId,omitempty"`
+	ClientID               *string                 `json:"clientId,omitempty"`
 	CreatedDate            *int64                  `json:"createdDate,omitempty"`
 	GrantedClientRoles     *map[string]interface{} `json:"grantedClientRoles,omitempty"`
 	GrantedProtocolMappers *map[string]interface{} `json:"grantedProtocolMappers,omitempty"`
@@ -670,7 +670,7 @@ type UserFederationMapperRepresentation struct {
 	Config                        *map[string]interface{} `json:"config,omitempty"`
 	FederationMapperType          *string                 `json:"federationMapperType,omitempty"`
 	FederationProviderDisplayName *string                 `json:"federationProviderDisplayName,omitempty"`
-	Id                            *string                 `json:"id,omitempty"`
+	ID                            *string                 `json:"id,omitempty"`
 	Name                          *string                 `json:"name,omitempty"`
 }
 
@@ -680,7 +680,7 @@ type UserFederationProviderRepresentation struct {
 	Config            *map[string]interface{} `json:"config,omitempty"`
 	DisplayName       *string                 `json:"displayName,omitempty"`
 	FullSyncPeriod    *int32                  `json:"fullSyncPeriod,omitempty"`
-	Id                *string                 `json:"id,omitempty"`
+	ID                *string                 `json:"id,omitempty"`
 	LastSync          *int32                  `json:"lastSync,omitempty"`
 	Priority          *int32                  `json:"priority,omitempty"`
 	ProviderName      *string                 `json:"providerName,omitempty"`
@@ -708,14 +708,14 @@ type UserRepresentation struct {
 	FederationLink             *string                            `json:"federationLink,omitempty"`
 	FirstName                  *string                            `json:"firstName,omitempty"`
 	Groups                     *[]string                          `json:"groups,omitempty"`
-	Id                         *string                            `json:"id,omitempty"`
+	ID                         *string                            `json:"id,omitempty"`
 	LastName                   *string                            `json:"lastName,omitempty"`
 	NotBefore                  *int32                             `json:"notBefore,omitempty"`
 	Origin                     *string                            `json:"origin,omitempty"`
 	RealmRoles                 *[]string                          `json:"realmRoles,omitempty"`
 	RequiredActions            *[]string                          `json:"requiredActions,omitempty"`
 	Self                       *string                            `json:"self,omitempty"`
-	ServiceAccountClientId     *string                            `json:"serviceAccountClientId,omitempty"`
+	ServiceAccountClientID     *string                            `json:"serviceAccountClientId,omitempty"`
 	Username                   *string                            `json:"username,omitempty"`
 }
 
@@ -728,15 +728,27 @@ type UsersPageRepresentation struct {
 // UserSessionRepresentation struct
 type UserSessionRepresentation struct {
 	Clients    *map[string]interface{} `json:"clients,omitempty"`
-	Id         *string                 `json:"id,omitempty"`
-	IpAddress  *string                 `json:"ipAddress,omitempty"`
+	ID         *string                 `json:"id,omitempty"`
+	IPAddress  *string                 `json:"ipAddress,omitempty"`
 	LastAccess *int64                  `json:"lastAccess,omitempty"`
 	Start      *int64                  `json:"start,omitempty"`
-	UserId     *string                 `json:"userId,omitempty"`
+	UserID     *string                 `json:"userId,omitempty"`
 	Username   *string                 `json:"username,omitempty"`
 }
 
 // SmsCodeRepresentation struct
 type SmsCodeRepresentation struct {
+	Code *string `json:"code,omitempty"`
+}
+
+// StatisticsUsersRepresentation elements returned by GetStatisticsUsers
+type StatisticsUsersRepresentation struct {
+	Total    int64 `json:"total,omitempty"`
+	Disabled int64 `json:"disabled,omitempty"`
+	Inactive int64 `json:"inactive,omitempty"`
+}
+
+// RecoveryCodeRepresentation struct
+type RecoveryCodeRepresentation struct {
 	Code *string `json:"code,omitempty"`
 }

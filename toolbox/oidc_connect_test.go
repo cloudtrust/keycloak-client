@@ -1,4 +1,4 @@
-package keycloak
+package toolbox
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/cloudtrust/common-service/log"
+	"github.com/cloudtrust/keycloak-client"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
@@ -45,31 +46,31 @@ func TestCreateToken(t *testing.T) {
 	defer ts.Close()
 
 	t.Run("No body in HTTP response", func(t *testing.T) {
-		var p = NewOidcTokenProvider(Config{AddrTokenProvider: ts.URL}, "nobody", "user", "passwd", "clientID", log.NewNopLogger())
+		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: ts.URL}, "nobody", "user", "passwd", "clientID", log.NewNopLogger())
 		var _, err = p.ProvideToken(context.TODO())
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Invalid credentials", func(t *testing.T) {
-		var p = NewOidcTokenProvider(Config{AddrTokenProvider: ts.URL}, "invalid", "user", "passwd", "clientID", log.NewNopLogger())
+		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: ts.URL}, "invalid", "user", "passwd", "clientID", log.NewNopLogger())
 		var _, err = p.ProvideToken(context.TODO())
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Invalid JSON", func(t *testing.T) {
-		var p = NewOidcTokenProvider(Config{AddrTokenProvider: ts.URL}, "bad-json", "user", "passwd", "clientID", log.NewNopLogger())
+		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: ts.URL}, "bad-json", "user", "passwd", "clientID", log.NewNopLogger())
 		var _, err = p.ProvideToken(context.TODO())
 		assert.NotNil(t, err)
 	})
 
 	t.Run("No HTTP response", func(t *testing.T) {
-		var p = NewOidcTokenProvider(Config{AddrTokenProvider: ts.URL + "0"}, "bad-json", "user", "passwd", "clientID", log.NewNopLogger())
+		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: ts.URL + "0"}, "bad-json", "user", "passwd", "clientID", log.NewNopLogger())
 		var _, err = p.ProvideToken(context.TODO())
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Valid credentials", func(t *testing.T) {
-		var p = NewOidcTokenProvider(Config{AddrTokenProvider: ts.URL}, "valid", "user", "passwd", "clientID", log.NewNopLogger())
+		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: ts.URL}, "valid", "user", "passwd", "clientID", log.NewNopLogger())
 
 		var timeStart = time.Now()
 

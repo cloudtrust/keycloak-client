@@ -1,17 +1,17 @@
-package keycloak
+package api
 
 import (
 	"context"
 	"encoding/json"
 	"regexp"
-	"strconv"
 
 	"fmt"
 	"net/http"
 	"net/url"
-	"time"
 
 	commonhttp "github.com/cloudtrust/common-service/errors"
+	"github.com/cloudtrust/keycloak-client"
+	"github.com/cloudtrust/keycloak-client/toolbox"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
@@ -21,21 +21,12 @@ import (
 	jwt "github.com/gbrlsnchs/jwt"
 )
 
-// Config is the keycloak client http config.
-type Config struct {
-	AddrTokenProvider string
-	AddrAPI           string
-	Timeout           time.Duration
-	CacheTTL          time.Duration
-	ErrorTolerance    time.Duration
-}
-
 // Client is the keycloak client.
 type Client struct {
 	apiURL        *url.URL
 	httpClient    *gentleman.Client
 	account       *AccountClient
-	issuerManager IssuerManager
+	issuerManager toolbox.IssuerManager
 }
 
 // AccountClient structure
@@ -43,24 +34,14 @@ type AccountClient struct {
 	client *Client
 }
 
-// HTTPError is returned when an error occured while contacting the keycloak instance.
-type HTTPError struct {
-	HTTPStatus int
-	Message    string
-}
-
-func (e HTTPError) Error() string {
-	return strconv.Itoa(e.HTTPStatus) + ":" + e.Message
-}
-
 // New returns a keycloak client.
-func New(config Config) (*Client, error) {
-	var issuerMgr IssuerManager
+func New(config keycloak.Config) (*Client, error) {
+	var issuerMgr toolbox.IssuerManager
 	{
 		var err error
-		issuerMgr, err = NewIssuerManager(config)
+		issuerMgr, err = toolbox.NewIssuerManager(config)
 		if err != nil {
-			return nil, errors.Wrap(err, MsgErrCannotParse+"."+TokenProviderURL)
+			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenProviderURL)
 		}
 	}
 
@@ -69,7 +50,7 @@ func New(config Config) (*Client, error) {
 		var err error
 		uAPI, err = url.Parse(config.AddrAPI)
 		if err != nil {
-			return nil, errors.Wrap(err, MsgErrCannotParse+"."+APIURL)
+			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.APIURL)
 		}
 	}
 
@@ -109,7 +90,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return "", errors.Wrap(err, MsgErrCannotObtain+"."+TokenMsg)
+			return "", errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.TokenMsg)
 		}
 	}
 	defer resp.Close()
@@ -119,7 +100,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		var err error
 		err = resp.JSON(&unmarshalledBody)
 		if err != nil {
-			return "", errors.Wrap(err, MsgErrCannotUnmarshal+"."+Response)
+			return "", errors.Wrap(err, keycloak.MsgErrCannotUnmarshal+"."+keycloak.Response)
 		}
 	}
 
@@ -128,7 +109,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		var ok bool
 		accessToken, ok = unmarshalledBody["access_token"]
 		if !ok {
-			return "", fmt.Errorf(MsgErrMissingParam + "." + AccessToken)
+			return "", fmt.Errorf(keycloak.MsgErrMissingParam + "." + keycloak.AccessToken)
 		}
 	}
 
@@ -173,12 +154,12 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, MsgErrCannotObtain+"."+Response)
+			return errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return HTTPError{
+			return keycloak.HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
 			}
@@ -192,10 +173,10 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 				data = resp.Bytes()
 				return nil
 			default:
-				return fmt.Errorf("%s.%v", MsgErrUnkownHTTPContentType, resp.Header.Get("Content-Type"))
+				return fmt.Errorf("%s.%v", keycloak.MsgErrUnkownHTTPContentType, resp.Header.Get("Content-Type"))
 			}
 		default:
-			return fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
+			return fmt.Errorf("%s.%v", keycloak.MsgErrUnknownResponseStatusCode, resp.StatusCode)
 		}
 	}
 }
@@ -215,12 +196,12 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return "", errors.Wrap(err, MsgErrCannotObtain+"."+Response)
+			return "", errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return "", HTTPError{
+			return "", keycloak.HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
 			}
@@ -239,7 +220,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 				return location, nil
 			}
 		default:
-			return "", fmt.Errorf("%s.%v", MsgErrUnknownResponseStatusCode, resp.StatusCode)
+			return "", fmt.Errorf("%s.%v", keycloak.MsgErrUnknownResponseStatusCode, resp.StatusCode)
 		}
 	}
 }
@@ -259,12 +240,12 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, MsgErrCannotObtain+"."+Response)
+			return errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return HTTPError{
+			return keycloak.HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
 			}
@@ -273,7 +254,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 		case resp.StatusCode >= 200:
 			return nil
 		default:
-			return HTTPError{
+			return keycloak.HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
 			}
@@ -296,12 +277,12 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 		var err error
 		resp, err = req.Do()
 		if err != nil {
-			return errors.Wrap(err, MsgErrCannotObtain+"."+Response)
+			return errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return HTTPError{
+			return keycloak.HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
 			}
@@ -310,7 +291,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 		case resp.StatusCode >= 200:
 			return nil
 		default:
-			return HTTPError{
+			return keycloak.HTTPError{
 				HTTPStatus: resp.StatusCode,
 				Message:    string(resp.Bytes()),
 			}
@@ -354,7 +335,7 @@ func extractHostFromToken(token string) (string, error) {
 		var err error
 		u, err = url.Parse(issuer)
 		if err != nil {
-			return "", errors.Wrap(err, MsgErrCannotParse+"."+TokenProviderURL)
+			return "", errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenProviderURL)
 		}
 	}
 
@@ -365,13 +346,13 @@ func extractIssuerFromToken(token string) (string, error) {
 	payload, _, err := jwt.Parse(token)
 
 	if err != nil {
-		return "", errors.Wrap(err, MsgErrCannotParse+"."+TokenMsg)
+		return "", errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenMsg)
 	}
 
 	var jot Token
 
 	if err = jwt.Unmarshal(payload, &jot); err != nil {
-		return "", errors.Wrap(err, MsgErrCannotUnmarshal+"."+TokenMsg)
+		return "", errors.Wrap(err, keycloak.MsgErrCannotUnmarshal+"."+keycloak.TokenMsg)
 	}
 
 	return jot.Issuer, nil
@@ -398,7 +379,7 @@ func treatErrorStatus(resp *gentleman.Response) error {
 	if message, ok := response["errorMessage"]; ok && err == nil {
 		return whitelistErrors(resp.StatusCode, message.(string))
 	}
-	return HTTPError{
+	return keycloak.HTTPError{
 		HTTPStatus: resp.StatusCode,
 		Message:    string(resp.Bytes()),
 	}
@@ -408,12 +389,12 @@ func whitelistErrors(statusCode int, message string) error {
 	// whitelist errors from Keycloak
 	reg := regexp.MustCompile("invalidPassword[a-zA-Z]*Message")
 	errorMessages := map[string]string{
-		"User exists with same username or email": MsgErrExistingValue + "." + UserOrEmail,
-		"usernameExistsMessage":                   MsgErrExistingValue + "." + UserOrEmail,
-		"emailExistsMessage":                      MsgErrExistingValue + "." + UserOrEmail,
-		"User exists with same username":          MsgErrExistingValue + "." + Username,
-		"User exists with same email":             MsgErrExistingValue + "." + Email,
-		"readOnlyUsernameMessage":                 MsgErrReadOnly + "." + Username,
+		"User exists with same username or email": keycloak.MsgErrExistingValue + "." + keycloak.UserOrEmail,
+		"usernameExistsMessage":                   keycloak.MsgErrExistingValue + "." + keycloak.UserOrEmail,
+		"emailExistsMessage":                      keycloak.MsgErrExistingValue + "." + keycloak.UserOrEmail,
+		"User exists with same username":          keycloak.MsgErrExistingValue + "." + keycloak.Username,
+		"User exists with same email":             keycloak.MsgErrExistingValue + "." + keycloak.Email,
+		"readOnlyUsernameMessage":                 keycloak.MsgErrReadOnly + "." + keycloak.Username,
 	}
 
 	switch {
@@ -431,7 +412,7 @@ func whitelistErrors(statusCode int, message string) error {
 			Message: "keycloak." + errorMessages[message],
 		}
 	default:
-		return HTTPError{
+		return keycloak.HTTPError{
 			HTTPStatus: statusCode,
 			Message:    message,
 		}

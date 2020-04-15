@@ -1,4 +1,4 @@
-package keycloak
+package toolbox
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"time"
 
 	cs "github.com/cloudtrust/common-service"
+	"github.com/cloudtrust/keycloak-client"
 )
 
 // IssuerManager provides URL according to a given context
@@ -31,7 +32,7 @@ func getProtocolAndDomain(URL string) string {
 }
 
 // NewIssuerManager creates a new URLProvider
-func NewIssuerManager(config Config) (IssuerManager, error) {
+func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
 	URLs := config.AddrTokenProvider
 	// Use default values when clients are not initializing these values
 	cacheTTL := config.CacheTTL

@@ -1,6 +1,7 @@
-package keycloak
+package api
 
 import (
+	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
@@ -19,8 +20,8 @@ const (
 )
 
 // GetCredentials returns the list of credentials of the user
-func (c *AccountClient) GetCredentials(accessToken string, realmName string) ([]CredentialRepresentation, error) {
-	var resp = []CredentialRepresentation{}
+func (c *AccountClient) GetCredentials(accessToken string, realmName string) ([]keycloak.CredentialRepresentation, error) {
+	var resp = []keycloak.CredentialRepresentation{}
 	var err = c.client.get(accessToken, &resp, url.Path(accountCredentialsPath), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
 	return resp, err
 }
@@ -62,14 +63,14 @@ func (c *AccountClient) UpdatePassword(accessToken, realm, currentPassword, newP
 }
 
 // GetAccount provides the user's information
-func (c *AccountClient) GetAccount(accessToken string, realm string) (UserRepresentation, error) {
-	var resp = UserRepresentation{}
+func (c *AccountClient) GetAccount(accessToken string, realm string) (keycloak.UserRepresentation, error) {
+	var resp = keycloak.UserRepresentation{}
 	var err = c.client.get(accessToken, &resp, url.Path(accountExtensionAPIPath), url.Param("realm", realm), headers.Set("Accept", "application/json"))
 	return resp, err
 }
 
 // UpdateAccount updates the user's information
-func (c *AccountClient) UpdateAccount(accessToken string, realm string, user UserRepresentation) error {
+func (c *AccountClient) UpdateAccount(accessToken string, realm string, user keycloak.UserRepresentation) error {
 	_, err := c.client.post(accessToken, nil, url.Path(accountExtensionAPIPath), url.Param("realm", realm), body.JSON(user))
 	return err
 }

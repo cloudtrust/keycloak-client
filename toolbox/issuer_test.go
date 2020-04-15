@@ -1,4 +1,4 @@
-package keycloak
+package toolbox
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	cs "github.com/cloudtrust/common-service"
+	"github.com/cloudtrust/keycloak-client"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,7 @@ func TestGetProtocolAndDomain(t *testing.T) {
 
 func TestNewIssuerManager(t *testing.T) {
 	{
-		_, err := NewIssuerManager(Config{AddrTokenProvider: ":"})
+		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: ":"})
 		assert.NotNil(t, err)
 	}
 
@@ -26,7 +27,7 @@ func TestNewIssuerManager(t *testing.T) {
 	otherDomainPath := "http://other.domain.com:2120/"
 	allDomains := fmt.Sprintf("%s %s %s", defaultPath, myDomainPath, otherDomainPath)
 
-	prov, err := NewIssuerManager(Config{AddrTokenProvider: allDomains})
+	prov, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: allDomains})
 	assert.Nil(t, err)
 	assert.NotNil(t, prov)
 

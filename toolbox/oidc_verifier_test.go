@@ -1,4 +1,4 @@
-package keycloak
+package toolbox
 
 //go:generate mockgen -destination=./mock/authmanager.go -package=mock -mock_names=AuthorizationManager=AuthorizationManager github.com/cloudtrust/common-service/security AuthorizationManager
 
