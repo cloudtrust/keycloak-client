@@ -2,7 +2,8 @@
 
 
 [[projects]]
-  digest = "1:34853ceea51786181355929fdb7d9d126c00a37498d151d8d1e073e70695c098"
+  branch = "master"
+  digest = "1:f5259fbdb0775d08aa60d3ac55b0f1aa810c5f22097a18942eabc437a15dc81a"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -10,8 +11,7 @@
     "log",
   ]
   pruneopts = ""
-  revision = "5fe45695250a8712a92d0e089add532fa06fd24d"
-  version = "v2.1.0"
+  revision = "3a38f0fb73305dc93ec4d0d8a3b6ec1cfb98fa5b"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -59,12 +59,12 @@
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:387627c55b54e4c11ebc64cd772dd7503d96fcb86c893c33399b63aef6c387da"
+  digest = "1:9b5b3604ab15e4dd3508a4e00929d60c29e467a4475601bfec5ec987e261d984"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = ""
-  revision = "5d5b4c10bd43f85e63bd9e4a3fa9b1ea2ef88af2"
-  version = "v1.3.4"
+  revision = "1b794fe86dd6a0c7c52ae69b5c9cb0aeedc52afa"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:fbab76ba211c99fcd45a481a32530efc229f3510fd94889f361dcaf13ff05fe0"
@@ -110,16 +110,16 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:381bcbeb112a51493d9d998bbba207a529c73dbb49b3fd789e48c63fac1f192c"
+  digest = "1:cc4eb6813da8d08694e557fcafae8fcc24f47f61a0717f952da130ca9a486dfc"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
-  version = "v1.3.0"
+  revision = "3ebf1ddaeb260c4b1ae502a01c7844fa8c1fa0e9"
+  version = "v1.5.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:a5ecec7a7007b0af5622967f39375001299ca9559c8028617bbf846ac37bb398"
+  digest = "1:cadec9f74ad2027612c018d3f55e90a3bcb07e0b249fb91ce0724abb572d54d9"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -127,11 +127,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "78000ba7a073cafc0278790f6bce552a0f25850e"
+  revision = "0848c9571904fcbcb24543358ca8b5a7dbfde875"
 
 [[projects]]
   branch = "master"
-  digest = "1:9ac4dae84a6c14d4d0458d27a8c46fca553cfba156fe0c87f99c50d22034c7e3"
+  digest = "1:5ee8059477435bc4ec344bfa2ba129566bd0bc8137d98af9ec9aa4ba8e5f1e4e"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -140,7 +140,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "244492dfa37ae2ce87222fd06250a03160745faa"
+  revision = "d3edc9973b7eb1fb302b0ff2c62357091cea9a30"
 
 [[projects]]
   branch = "master"
@@ -195,6 +195,42 @@
   version = "v1.6.5"
 
 [[projects]]
+  digest = "1:ceb27cc89cd1ef77c07c3ee297bd5da842b25889c76123031950cc4595401859"
+  name = "google.golang.org/protobuf"
+  packages = [
+    "encoding/prototext",
+    "encoding/protowire",
+    "internal/descfmt",
+    "internal/descopts",
+    "internal/detrand",
+    "internal/encoding/defval",
+    "internal/encoding/messageset",
+    "internal/encoding/tag",
+    "internal/encoding/text",
+    "internal/errors",
+    "internal/fieldnum",
+    "internal/fieldsort",
+    "internal/filedesc",
+    "internal/filetype",
+    "internal/flags",
+    "internal/genname",
+    "internal/impl",
+    "internal/mapsort",
+    "internal/pragma",
+    "internal/set",
+    "internal/strs",
+    "internal/version",
+    "proto",
+    "reflect/protoreflect",
+    "reflect/protoregistry",
+    "runtime/protoiface",
+    "runtime/protoimpl",
+  ]
+  pruneopts = ""
+  revision = "3b9eee12916ce611400f93d6c2fed2fc2911b0ad"
+  version = "v1.21.0"
+
+[[projects]]
   digest = "1:95fa5eae3b22887e8aea55ad4f93bc1374d586f7dd3504cf0010845ccc0a95a8"
   name = "gopkg.in/h2non/gentleman.v2"
   packages = [
@@ -218,7 +254,7 @@
   version = "v2.0.4"
 
 [[projects]]
-  digest = "1:edd75ef05376347c02f40c36f2896d4aee3b8cbfe8247299c71aefd7ca28f443"
+  digest = "1:1212ba6ed5f78b15411d17af4d82f6c22fca7462c9d072059302a5e7e30aba12"
   name = "gopkg.in/square/go-jose.v2"
   packages = [
     ".",
@@ -226,8 +262,16 @@
     "json",
   ]
   pruneopts = ""
-  revision = "4ef0f1b175ccd65472d154e1207c4d7b8102545f"
-  version = "v2.4.1"
+  revision = "2204b3eaf539b5d4ad438a05b5e0a10e85816bf9"
+  version = "v2.5.0"
+
+[[projects]]
+  digest = "1:2efc9662a6a1ff28c65c84fc2f9030f13d3afecdb2ecad445f3b0c80e75fc281"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  pruneopts = ""
+  revision = "53403b58ad1b561927d19068c655246f2db79d48"
+  version = "v2.2.8"
 
 [solve-meta]
   analyzer-name = "dep"
