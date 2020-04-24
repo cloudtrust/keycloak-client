@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:f5259fbdb0775d08aa60d3ac55b0f1aa810c5f22097a18942eabc437a15dc81a"
+  digest = "1:ea7fa2b81554ed2cc1863ff770324c88f658c7f0981bf838d5e44b71004d5085"
   name = "github.com/cloudtrust/common-service"
   packages = [
     ".",
@@ -10,8 +10,8 @@
     "log",
   ]
   pruneopts = ""
-  revision = "3a38f0fb73305dc93ec4d0d8a3b6ec1cfb98fa5b"
-  version = "v2.1.1"
+  revision = "387e4f3d4426493c34334e3bdb792b9a406bf1e9"
+  version = "v2.1.2"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -119,7 +119,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cadec9f74ad2027612c018d3f55e90a3bcb07e0b249fb91ce0724abb572d54d9"
+  digest = "1:a3fc29aff1d04af39e237f927f9aba558ad1e293f5317e3cb7215c98b77cd278"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -127,11 +127,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "0848c9571904fcbcb24543358ca8b5a7dbfde875"
+  revision = "4bdfaf469ed5a1194e0ec57ec7b1af73991a7ee3"
 
 [[projects]]
   branch = "master"
-  digest = "1:5ee8059477435bc4ec344bfa2ba129566bd0bc8137d98af9ec9aa4ba8e5f1e4e"
+  digest = "1:cc0cd79615fac200d1df9b269bd74f8903ae793f27dfb4c4b9f9b47ce79f6b25"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -140,7 +140,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "d3edc9973b7eb1fb302b0ff2c62357091cea9a30"
+  revision = "ff2c4b7c35a07b0c1e90ce72aa7bfe41bb66a3cb"
 
 [[projects]]
   branch = "master"
@@ -179,7 +179,7 @@
   version = "v0.3.2"
 
 [[projects]]
-  digest = "1:c4404231035fad619a12f82ae3f0f8f9edc1cc7f34e7edad7a28ccac5336cc96"
+  digest = "1:2724bc9a6f84121903b6e33edc295b8182a95bb36535244fe2477ae64ba17654"
   name = "google.golang.org/appengine"
   packages = [
     "internal",
@@ -191,8 +191,8 @@
     "urlfetch",
   ]
   pruneopts = ""
-  revision = "971852bfffca25b069c31162ae8f247a3dba083b"
-  version = "v1.6.5"
+  revision = "553959209a20f3be281c16dd5be5c740a893978f"
+  version = "v1.6.6"
 
 [[projects]]
   digest = "1:ceb27cc89cd1ef77c07c3ee297bd5da842b25889c76123031950cc4595401859"
