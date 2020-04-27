@@ -369,10 +369,6 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 	return plugins
 }
 
-func str(s string) *string {
-	return &s
-}
-
 func treatErrorStatus(resp *gentleman.Response) error {
 	var response map[string]interface{}
 	err := json.Unmarshal(resp.Bytes(), &response)
