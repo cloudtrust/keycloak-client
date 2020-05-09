@@ -22,7 +22,7 @@
 
 [[constraint]]
   name = "github.com/cloudtrust/common-service"
-  version = "v2.1.2"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/pkg/errors"
