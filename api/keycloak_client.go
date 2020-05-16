@@ -35,11 +35,11 @@ type AccountClient struct {
 }
 
 // New returns a keycloak client.
-func New(config keycloak.Config) (*Client, error) {
+func New(config keycloak.Config, keyContextIssuerDomain interface{}) (*Client, error) {
 	var issuerMgr toolbox.IssuerManager
 	{
 		var err error
-		issuerMgr, err = toolbox.NewIssuerManager(config)
+		issuerMgr, err = toolbox.NewIssuerManager(config, keyContextIssuerDomain)
 		if err != nil {
 			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenProviderURL)
 		}

@@ -11,7 +11,6 @@ import (
 	"time"
 
 	errorhandler "github.com/cloudtrust/common-service/errors"
-	"github.com/cloudtrust/common-service/log"
 	"github.com/cloudtrust/keycloak-client"
 )
 
@@ -35,7 +34,7 @@ type oidcTokenProvider struct {
 	timeout    time.Duration
 	tokenURL   string
 	reqBody    string
-	logger     log.Logger
+	logger     Logger
 	oidcToken  oidcToken
 	validUntil int64
 }
@@ -46,7 +45,7 @@ const (
 )
 
 // NewOidcTokenProvider creates an OidcTokenProvider
-func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger log.Logger) OidcTokenProvider {
+func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
 	var urls = strings.Split(config.AddrTokenProvider, " ")
 	var keycloakPublicURL = urls[0]
 
@@ -90,7 +89,7 @@ func (o *oidcTokenProvider) ProvideToken(ctx context.Context) (string, error) {
 	}
 
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(resp.Body)
+	_, _ = buf.ReadFrom(resp.Body)
 
 	err = json.Unmarshal(buf.Bytes(), &o.oidcToken)
 	if err != nil {

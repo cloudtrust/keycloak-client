@@ -102,3 +102,28 @@ func TestUserRepresentationAttributes(t *testing.T) {
 		assert.True(t, *res)
 	})
 }
+
+func TestMergeAttributes(t *testing.T) {
+	var (
+		currentAttributes = make(Attributes)
+		newAttributes     = make(Attributes)
+		keyOne            = AttributeKey("one")
+		keyTwo            = AttributeKey("two")
+		keyThree          = AttributeKey("three")
+	)
+
+	currentAttributes.SetString(keyOne, "abc")
+	currentAttributes.SetString(keyThree, "zyx")
+
+	currentAttributes.Merge(nil)
+	assert.Len(t, currentAttributes, 2)
+
+	newAttributes.SetString(keyTwo, "def")
+	newAttributes.SetString(keyThree, "ghi")
+
+	currentAttributes.Merge(&newAttributes)
+	assert.Len(t, currentAttributes, 3)
+	assert.Equal(t, "abc", *currentAttributes.GetString(keyOne))
+	assert.Equal(t, "def", *currentAttributes.GetString(keyTwo))
+	assert.Equal(t, "ghi", *currentAttributes.GetString(keyThree))
+}

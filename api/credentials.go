@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
-	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
@@ -39,7 +38,7 @@ func (c *Client) GetCredentialTypes(accessToken string, realmName string) ([]str
 
 // UpdateLabelCredential updates the label of credential
 func (c *Client) UpdateLabelCredential(accessToken string, realmName string, userID string, credentialID string, label string) error {
-	return c.put(accessToken, url.Path(labelPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID), body.String(label), headers.Set("Accept", "application/json"), headers.Set("Content-Type", "text/plain"))
+	return c.put(accessToken, url.Path(labelPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("credentialID", credentialID), body.String(label), hdrAcceptJSON, hdrContentTypeTextPlain)
 }
 
 // DeleteCredential deletes the credential

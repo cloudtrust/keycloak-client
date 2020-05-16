@@ -155,6 +155,15 @@ func (a Attributes) reformatDate(value *string, dateLayouts []string) *string {
 	return &res
 }
 
+// Merge current attributes with others (Values from others replace those with the same key in current attributes)
+func (a Attributes) Merge(others *Attributes) {
+	if others != nil {
+		for key, attribute := range *others {
+			a[key] = attribute
+		}
+	}
+}
+
 // GetAttribute returns an attribute given its key
 func (u *UserRepresentation) GetAttribute(key AttributeKey) []string {
 	if u.Attributes != nil {

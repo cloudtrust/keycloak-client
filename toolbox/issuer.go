@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	cs "github.com/cloudtrust/common-service"
 	"github.com/cloudtrust/keycloak-client"
 )
 
@@ -18,7 +17,8 @@ type IssuerManager interface {
 }
 
 type issuerManager struct {
-	domainToIssuer map[string]OidcVerifierProvider
+	domainToIssuer         map[string]OidcVerifierProvider
+	keyContextIssuerDomain interface{}
 }
 
 func getProtocolAndDomain(URL string) string {
@@ -32,7 +32,7 @@ func getProtocolAndDomain(URL string) string {
 }
 
 // NewIssuerManager creates a new URLProvider
-func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
+func NewIssuerManager(config keycloak.Config, keyContextIssuerDomain interface{}) (IssuerManager, error) {
 	URLs := config.AddrTokenProvider
 	// Use default values when clients are not initializing these values
 	cacheTTL := config.CacheTTL
@@ -55,12 +55,13 @@ func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
 		domainToIssuer[getProtocolAndDomain(value)] = issuer
 	}
 	return &issuerManager{
-		domainToIssuer: domainToIssuer,
+		domainToIssuer:         domainToIssuer,
+		keyContextIssuerDomain: keyContextIssuerDomain,
 	}, nil
 }
 
 func (im *issuerManager) GetIssuer(ctx context.Context) (OidcVerifierProvider, error) {
-	if rawValue := ctx.Value(cs.CtContextIssuerDomain); rawValue != nil {
+	if rawValue := ctx.Value(im.keyContextIssuerDomain); rawValue != nil {
 		// The issuer domain has been found in the context
 		issuerDomain := getProtocolAndDomain(rawValue.(string))
 		if issuer, ok := im.domainToIssuer[issuerDomain]; ok {

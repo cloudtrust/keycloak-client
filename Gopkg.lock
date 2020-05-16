@@ -3,15 +3,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:840df8ec522c8d8d5f2f6fe0cf507e2370dcd5137bc119c1a280211e0cae2b9a"
+  digest = "1:25978b40c574b73c64527f6238aa6d5cdad0330baca73efa8b9c47832d692a9c"
   name = "github.com/cloudtrust/common-service"
-  packages = [
-    ".",
-    "errors",
-    "log",
-  ]
+  packages = ["errors"]
   pruneopts = ""
-  revision = "641630ce2eb40df09540f688a885ef450ea10d6b"
+  revision = "e96d4c97f7b8d23bc3f3c9003ec4bdf08a4d74a7"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -38,17 +34,17 @@
   version = "v2.0.0"
 
 [[projects]]
-  digest = "1:48e65aaf8ce34ffb3e8d56daa9417826db162afbc2040705db331e9a2e9eebe3"
+  digest = "1:324437ddda77526fea02c29a2208ef1260e7a96ff0202965143215941564c400"
   name = "github.com/go-kit/kit"
   packages = [
     "endpoint",
     "log",
-    "log/level",
+    "transport",
     "transport/http",
   ]
   pruneopts = ""
-  revision = "12210fb6ace19e0496167bb3e667dcd91fa9f69b"
-  version = "v0.8.0"
+  revision = "cc938d52e0cdf4c811ab203f428fcd06f9d9a148"
+  version = "v0.10.0"
 
 [[projects]]
   digest = "1:aa9a6ccd5fd7d29804a27cb0666bc4ac5eb4b73439b7edd54f4b377e5ef8bb47"
@@ -59,12 +55,20 @@
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:686f864c452288f97bb25a51da037cdad321b40e17a803aa7645f848c729874e"
+  digest = "1:03f8f40437ef8b7a1c7aed0ab000474245559153639ee44d6d43ec8eb9e24eda"
+  name = "github.com/golang/mock"
+  packages = ["gomock"]
+  pruneopts = ""
+  revision = "3a35fb6e3e18b9dbfee291262260dee7372d2a92"
+  version = "v1.4.3"
+
+[[projects]]
+  digest = "1:02c7a8570f619bdb5620e8f6a16407455c8e63433d8a9e829f618813dc7f89a5"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   pruneopts = ""
-  revision = "6c66de79d66478d166c7ea05f5d2ccaf016fbd6b"
-  version = "v1.4.1"
+  revision = "d04d7b157bb510b1e0c10132224b616ac0e26b17"
+  version = "v1.4.2"
 
 [[projects]]
   digest = "1:fbab76ba211c99fcd45a481a32530efc229f3510fd94889f361dcaf13ff05fe0"
@@ -110,12 +114,12 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:cc4eb6813da8d08694e557fcafae8fcc24f47f61a0717f952da130ca9a486dfc"
+  digest = "1:9cc06d7468e429919ead45fc408b26838b4dfb12075f9756685ac6eae867b1a3"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "3ebf1ddaeb260c4b1ae502a01c7844fa8c1fa0e9"
-  version = "v1.5.1"
+  revision = "004e3cb72213e5e727e4e08f668ee6c8f27e5d32"
+  version = "v1.6.0"
 
 [[projects]]
   branch = "master"
@@ -131,7 +135,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ea84836e35d7a66c9b8944796295912509c80c921244bc4e098c5417219895f2"
+  digest = "1:062ad15c804458cf32ab945b58c6f8c4a97467cb4a7142bbc6ad51a77d94b314"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -140,7 +144,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "7e3656a0809f6f95abd88ac65313578f80b00df2"
+  revision = "3c3fba18258b2a1398a025a6aeb7374d2a470009"
 
 [[projects]]
   branch = "master"
@@ -195,7 +199,7 @@
   version = "v1.6.6"
 
 [[projects]]
-  digest = "1:3f5031bb27e860d92d43004a88db1143b1c393c0430f68e562f1efd7e8d186ec"
+  digest = "1:7579d802036911f3a087652830860739fcd8a03967ad5a3531e190aefe647f9d"
   name = "google.golang.org/protobuf"
   packages = [
     "encoding/prototext",
@@ -227,8 +231,8 @@
     "runtime/protoimpl",
   ]
   pruneopts = ""
-  revision = "8b0d71ac935315b10385aaaf30175de0c74bbba6"
-  version = "v1.22.0"
+  revision = "5c3dd7024aed895adfe053f26b5a479e991cbca9"
+  version = "v1.24.0"
 
 [[projects]]
   digest = "1:95fa5eae3b22887e8aea55ad4f93bc1374d586f7dd3504cf0010845ccc0a95a8"
@@ -266,23 +270,22 @@
   version = "v2.5.1"
 
 [[projects]]
-  digest = "1:2efc9662a6a1ff28c65c84fc2f9030f13d3afecdb2ecad445f3b0c80e75fc281"
-  name = "gopkg.in/yaml.v2"
+  branch = "v3"
+  digest = "1:a576995a0e44e1986a8fea110c05920d5f258941a7a02c4717dd7ac486e95bb0"
+  name = "gopkg.in/yaml.v3"
   packages = ["."]
   pruneopts = ""
-  revision = "53403b58ad1b561927d19068c655246f2db79d48"
-  version = "v2.2.8"
+  revision = "2ff61e1afc866138abf1a8adf3cc89721090ac31"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/cloudtrust/common-service",
     "github.com/cloudtrust/common-service/errors",
-    "github.com/cloudtrust/common-service/log",
     "github.com/coreos/go-oidc",
     "github.com/gbrlsnchs/jwt",
     "github.com/go-kit/kit/transport/http",
+    "github.com/golang/mock/gomock",
     "github.com/gorilla/mux",
     "github.com/pkg/errors",
     "github.com/spf13/pflag",
