@@ -9,8 +9,9 @@ import (
 )
 
 const (
+	adminExtensionAPIPath      = "/auth/realms/:realmReq/api/admin/realms/:realm"
+	usersAdminExtensionAPIPath = adminExtensionAPIPath + "/users"
 	userPath                   = "/auth/admin/realms/:realm/users"
-	usersAdminExtensionAPIPath = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
 	userCountPath              = userPath + "/count"
 	userIDPath                 = userPath + "/:id"
 	userGroupsPath             = userIDPath + "/groups"
@@ -20,6 +21,8 @@ const (
 	smsAPI                     = "/auth/realms/:realm/smsApi"
 	sendNewEnrolmentCode       = smsAPI + "/sendNewCode"
 	shadowUser                 = userIDPath + "/federated-identity/:provider"
+	lockedUsersPath            = adminExtensionAPIPath + "/locked-users"
+	usersAuthenticatorsPath    = adminExtensionAPIPath + "/authenticators-count"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -34,6 +37,20 @@ func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName stri
 
 	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
 	var err = c.get(accessToken, &resp, plugins...)
+	return resp, err
+}
+
+// GetLockedUsers returns a list of locked user IDs
+func (c *Client) GetLockedUsers(accessToken, reqRealmName, targetRealmName string) ([]string, error) {
+	var resp []string
+	var err = c.get(accessToken, &resp, url.Path(lockedUsersPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
+	return resp, err
+}
+
+// GetUsersAuthenticatorsCount returns a map of authenticators count per user ID
+func (c *Client) GetUsersAuthenticatorsCount(accessToken, reqRealmName, targetRealmName string) (map[string]int, error) {
+	var resp = make(map[string]int)
+	var err = c.get(accessToken, &resp, url.Path(usersAuthenticatorsPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
 	return resp, err
 }
 
