@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  branch = "master"
-  digest = "1:25978b40c574b73c64527f6238aa6d5cdad0330baca73efa8b9c47832d692a9c"
+  digest = "1:fcbbb02d897902b3460476fcc6723f21a1674c0b6bd4a5579de11d53983d3d70"
   name = "github.com/cloudtrust/common-service"
   packages = ["errors"]
   pruneopts = ""
-  revision = "e96d4c97f7b8d23bc3f3c9003ec4bdf08a4d74a7"
+  revision = "0dac96e146315562f548272f90e3f0ccf9ea7ddb"
+  version = "v2.2.0"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -123,7 +123,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:90f8aa620559abef3e8222064705e420dcb3498085b20782d128e5fa477b3a89"
+  digest = "1:90e0a5569023a45d6f5ba62cf7b250b89a4310107e42c45b76481f518bb09cc7"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -131,11 +131,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "06a226fb4e3765ef3f48aa2852b401bc7b98e981"
+  revision = "279210d13fedf5be6d476bad5df6a015042bb905"
 
 [[projects]]
   branch = "master"
-  digest = "1:062ad15c804458cf32ab945b58c6f8c4a97467cb4a7142bbc6ad51a77d94b314"
+  digest = "1:7254fd3f1a6e5ae98ab721ce6f3f09a79a59d3a1426e045fabc2548101e37333"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -144,7 +144,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "3c3fba18258b2a1398a025a6aeb7374d2a470009"
+  revision = "627f9648deb96c27737b83199d44bb5c1010cbcf"
 
 [[projects]]
   branch = "master"
@@ -271,11 +271,11 @@
 
 [[projects]]
   branch = "v3"
-  digest = "1:a576995a0e44e1986a8fea110c05920d5f258941a7a02c4717dd7ac486e95bb0"
+  digest = "1:4eec9bf48dd37d5c72af308fb8609bb61ed7c18dc2677848ff1da45edb1dbbfd"
   name = "gopkg.in/yaml.v3"
   packages = ["."]
   pruneopts = ""
-  revision = "2ff61e1afc866138abf1a8adf3cc89721090ac31"
+  revision = "e3079894b1e86c57cd48ff0d67dfd45de276d131"
 
 [solve-meta]
   analyzer-name = "dep"

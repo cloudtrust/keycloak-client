@@ -31,6 +31,8 @@ pipeline {
 
               dep ensure
 
+              go generate ./...
+
               go test -coverprofile=coverage.out -json ./... | tee report.json
               go tool cover -func=coverage.out
               bash -c \"go vet ./... > >(cat) 2> >(tee govet.out)\" || true
