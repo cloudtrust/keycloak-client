@@ -12,15 +12,19 @@ import (
 	"github.com/spf13/pflag"
 )
 
+type keyContext int
+
 const (
 	tstRealm = "__internal"
 	reqRealm = "master"
 	user     = "version"
+
+	keyContextIssuerDomain keyContext = iota
 )
 
 func main() {
 	var conf = getKeycloakConfig()
-	var client, err = api.New(*conf)
+	var client, err = api.New(*conf, keyContextIssuerDomain)
 	if err != nil {
 		log.Fatalf("could not create keycloak client: %v", err)
 	}

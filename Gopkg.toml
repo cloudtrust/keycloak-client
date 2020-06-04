@@ -22,7 +22,7 @@
 
 [[constraint]]
   name = "github.com/cloudtrust/common-service"
-  branch = "master"
+  version = "v2.2.0"
 
 [[constraint]]
   name = "github.com/pkg/errors"
@@ -31,7 +31,6 @@
 [[constraint]]
   name = "gopkg.in/h2non/gentleman.v2"
   version = "2.0.0"
-
 
 [[constraint]]
   name = "github.com/gbrlsnchs/jwt"

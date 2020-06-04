@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
-	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
@@ -56,6 +55,6 @@ func (c *Client) ExportRealm(accessToken string, realmName string) (keycloak.Rea
 // GetRealmCredentialRegistrators returns list of credentials types available for the realm
 func (c *Client) GetRealmCredentialRegistrators(accessToken string, realmName string) ([]string, error) {
 	var resp = []string{}
-	var err = c.get(accessToken, &resp, url.Path(realmCredentialRegistrators), url.Param("realm", realmName), headers.Set("Accept", "application/json"))
+	var err = c.get(accessToken, &resp, url.Path(realmCredentialRegistrators), url.Param("realm", realmName), hdrAcceptJSON)
 	return resp, err
 }

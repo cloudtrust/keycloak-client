@@ -35,11 +35,11 @@ type AccountClient struct {
 }
 
 // New returns a keycloak client.
-func New(config keycloak.Config) (*Client, error) {
+func New(config keycloak.Config, keyContextIssuerDomain interface{}) (*Client, error) {
 	var issuerMgr toolbox.IssuerManager
 	{
 		var err error
-		issuerMgr, err = toolbox.NewIssuerManager(config)
+		issuerMgr, err = toolbox.NewIssuerManager(config, keyContextIssuerDomain)
 		if err != nil {
 			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenProviderURL)
 		}
@@ -159,10 +159,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return keycloak.HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
 		case resp.StatusCode >= 400:
 			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
@@ -201,10 +198,7 @@ func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Pl
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return "", keycloak.HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return "", keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
 		case resp.StatusCode >= 400:
 			return "", treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
@@ -245,10 +239,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return keycloak.HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
 		case resp.StatusCode >= 400:
 			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:
@@ -282,10 +273,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 
 		switch {
 		case resp.StatusCode == http.StatusUnauthorized:
-			return keycloak.HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
+			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
 		case resp.StatusCode >= 400:
 			return treatErrorStatus(resp)
 		case resp.StatusCode >= 200:

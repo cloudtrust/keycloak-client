@@ -1,6 +1,8 @@
 package keycloak
 
-import "strconv"
+import (
+	"fmt"
+)
 
 // Constants for error management
 const (
@@ -35,5 +37,26 @@ type HTTPError struct {
 }
 
 func (e HTTPError) Error() string {
-	return strconv.Itoa(e.HTTPStatus) + ":" + e.Message
+	return fmt.Sprintf("%d:%s", e.HTTPStatus, e.Message)
+}
+
+// ClientDetailedError struct
+type ClientDetailedError struct {
+	HTTPStatus int
+	Message    string
+}
+
+// Error implements error
+func (e ClientDetailedError) Error() string {
+	return fmt.Sprintf("%d:%s", e.HTTPStatus, e.Message)
+}
+
+// Status implements common-service/errors/DetailedError
+func (e ClientDetailedError) Status() int {
+	return e.HTTPStatus
+}
+
+// ErrorMessage implements common-service/errors/DetailedError
+func (e ClientDetailedError) ErrorMessage() string {
+	return e.Message
 }

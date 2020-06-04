@@ -7,7 +7,10 @@ import (
 )
 
 const (
-	authenticationManagementPath = "/auth/admin/realms/:realm/authentication"
+	authenticationManagementPath      = "/auth/admin/realms/:realm/authentication"
+	authenticationConfigPath          = authenticationManagementPath + "/config/:id"
+	authenticationRequiredActionsPath = authenticationManagementPath + "/required-actions"
+	authenticationRequiredActionPath  = authenticationRequiredActionsPath + "/:alias"
 )
 
 // GetAuthenticatorProviders returns a list of authenticator providers.
@@ -34,18 +37,18 @@ func (c *Client) GetAuthenticatorProviderConfig(accessToken string, realmName, p
 // GetAuthenticatorConfig returns the authenticator configuration.
 func (c *Client) GetAuthenticatorConfig(accessToken string, realmName, configID string) (keycloak.AuthenticatorConfigRepresentation, error) {
 	var resp = keycloak.AuthenticatorConfigRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/config/:id"), url.Param("realm", realmName), url.Param("id", configID))
+	var err = c.get(accessToken, &resp, url.Path(authenticationConfigPath), url.Param("realm", realmName), url.Param("id", configID))
 	return resp, err
 }
 
 // UpdateAuthenticatorConfig updates the authenticator configuration.
 func (c *Client) UpdateAuthenticatorConfig(accessToken string, realmName, configID string, config keycloak.AuthenticatorConfigRepresentation) error {
-	return c.put(accessToken, url.Path(authenticationManagementPath+"/config/:id"), url.Param("realm", realmName), url.Param("id", configID), body.JSON(config))
+	return c.put(accessToken, url.Path(authenticationConfigPath), url.Param("realm", realmName), url.Param("id", configID), body.JSON(config))
 }
 
 // DeleteAuthenticatorConfig deletes the authenticator configuration.
 func (c *Client) DeleteAuthenticatorConfig(accessToken string, realmName, configID string) error {
-	return c.delete(accessToken, url.Path(authenticationManagementPath+"/config/:id"), url.Param("realm", realmName), url.Param("id", configID))
+	return c.delete(accessToken, url.Path(authenticationConfigPath), url.Param("realm", realmName), url.Param("id", configID))
 }
 
 // CreateAuthenticationExecution add new authentication execution
@@ -167,25 +170,25 @@ func (c *Client) RegisterRequiredAction(accessToken string, realmName, providerI
 // GetRequiredActions returns a list of required actions.
 func (c *Client) GetRequiredActions(accessToken string, realmName string) ([]keycloak.RequiredActionProviderRepresentation, error) {
 	var resp = []keycloak.RequiredActionProviderRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/required-actions"), url.Param("realm", realmName))
+	var err = c.get(accessToken, &resp, url.Path(authenticationRequiredActionsPath), url.Param("realm", realmName))
 	return resp, err
 }
 
 // GetRequiredAction returns the required action for the alias.
 func (c *Client) GetRequiredAction(accessToken string, realmName, actionAlias string) (keycloak.RequiredActionProviderRepresentation, error) {
 	var resp = keycloak.RequiredActionProviderRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/required-actions/:alias"), url.Param("realm", realmName), url.Param("alias", actionAlias))
+	var err = c.get(accessToken, &resp, url.Path(authenticationRequiredActionPath), url.Param("realm", realmName), url.Param("alias", actionAlias))
 	return resp, err
 }
 
 // UpdateRequiredAction updates the required action.
 func (c *Client) UpdateRequiredAction(accessToken string, realmName, actionAlias string, action keycloak.RequiredActionProviderRepresentation) error {
-	return c.put(accessToken, url.Path(authenticationManagementPath+"/required-actions/:alias"), url.Param("realm", realmName), url.Param("alias", actionAlias), body.JSON(action))
+	return c.put(accessToken, url.Path(authenticationRequiredActionPath), url.Param("realm", realmName), url.Param("alias", actionAlias), body.JSON(action))
 }
 
 // DeleteRequiredAction deletes the required action.
 func (c *Client) DeleteRequiredAction(accessToken string, realmName, actionAlias string) error {
-	return c.delete(accessToken, url.Path(authenticationManagementPath+"/required-actions/:alias"), url.Param("realm", realmName), url.Param("alias", actionAlias))
+	return c.delete(accessToken, url.Path(authenticationRequiredActionPath), url.Param("realm", realmName), url.Param("alias", actionAlias))
 }
 
 // GetUnregisteredRequiredActions returns a list of unregistered required actions.
