@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"regexp"
 
@@ -120,13 +119,13 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 }
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
-func (c *Client) VerifyToken(ctx context.Context, realmName string, accessToken string) error {
-	issuer, err := c.issuerManager.GetIssuer(ctx)
+func (c *Client) VerifyToken(issuer string, realmName string, accessToken string) error {
+	oidcVerifierProvider, err := c.issuerManager.GetIssuer(issuer)
 	if err != nil {
 		return err
 	}
 
-	verifier, err := issuer.GetOidcVerifier(realmName)
+	verifier, err := oidcVerifierProvider.GetOidcVerifier(realmName)
 	if err != nil {
 		return err
 	}

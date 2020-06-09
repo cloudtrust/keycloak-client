@@ -1,7 +1,6 @@
 package toolbox
 
 import (
-	"context"
 	"errors"
 	"net/url"
 	"regexp"
@@ -13,7 +12,7 @@ import (
 
 // IssuerManager provides URL according to a given context
 type IssuerManager interface {
-	GetIssuer(ctx context.Context) (OidcVerifierProvider, error)
+	GetIssuer(issuer string) (OidcVerifierProvider, error)
 }
 
 type issuerManager struct {
@@ -60,13 +59,10 @@ func NewIssuerManager(config keycloak.Config, keyContextIssuerDomain interface{}
 	}, nil
 }
 
-func (im *issuerManager) GetIssuer(ctx context.Context) (OidcVerifierProvider, error) {
-	if rawValue := ctx.Value(im.keyContextIssuerDomain); rawValue != nil {
-		// The issuer domain has been found in the context
-		issuerDomain := getProtocolAndDomain(rawValue.(string))
-		if issuer, ok := im.domainToIssuer[issuerDomain]; ok {
-			return issuer, nil
-		}
+func (im *issuerManager) GetIssuer(issuer string) (OidcVerifierProvider, error) {
+	issuerDomain := getProtocolAndDomain(issuer)
+	if issuer, ok := im.domainToIssuer[issuerDomain]; ok {
+		return issuer, nil
 	}
 	return nil, errors.New("Unknown issuer")
 }
