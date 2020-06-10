@@ -34,11 +34,11 @@ type AccountClient struct {
 }
 
 // New returns a keycloak client.
-func New(config keycloak.Config, keyContextIssuerDomain interface{}) (*Client, error) {
+func New(config keycloak.Config) (*Client, error) {
 	var issuerMgr toolbox.IssuerManager
 	{
 		var err error
-		issuerMgr, err = toolbox.NewIssuerManager(config, keyContextIssuerDomain)
+		issuerMgr, err = toolbox.NewIssuerManager(config)
 		if err != nil {
 			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenProviderURL)
 		}
@@ -120,7 +120,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
 func (c *Client) VerifyToken(issuer string, realmName string, accessToken string) error {
-	oidcVerifierProvider, err := c.issuerManager.GetIssuer(issuer)
+	oidcVerifierProvider, err := c.issuerManager.GetOidcVerifierProvider(issuer)
 	if err != nil {
 		return err
 	}

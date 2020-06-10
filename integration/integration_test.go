@@ -17,13 +17,11 @@ const (
 	tstRealm = "__internal"
 	reqRealm = "master"
 	user     = "version"
-
-	keyContextIssuerDomain keyContext = iota
 )
 
 func main() {
 	var conf = getKeycloakConfig()
-	var client, err = api.New(*conf, keyContextIssuerDomain)
+	var client, err = api.New(*conf)
 	if err != nil {
 		log.Fatalf("could not create keycloak client: %v", err)
 	}
