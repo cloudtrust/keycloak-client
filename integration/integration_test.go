@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -18,13 +17,11 @@ const (
 	tstRealm = "__internal"
 	reqRealm = "master"
 	user     = "version"
-
-	keyContextIssuerDomain keyContext = iota
 )
 
 func main() {
 	var conf = getKeycloakConfig()
-	var client, err = api.New(*conf, keyContextIssuerDomain)
+	var client, err = api.New(*conf)
 	if err != nil {
 		log.Fatalf("could not create keycloak client: %v", err)
 	}
@@ -35,7 +32,7 @@ func main() {
 		log.Fatalf("could not get access token: %v", err)
 	}
 
-	err = client.VerifyToken(context.Background(), "master", accessToken)
+	err = client.VerifyToken("issuer", "master", accessToken)
 	if err != nil {
 		log.Fatalf("could not validate access token: %v", err)
 	}

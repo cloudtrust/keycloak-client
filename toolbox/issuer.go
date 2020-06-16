@@ -1,7 +1,6 @@
 package toolbox
 
 import (
-	"context"
 	"errors"
 	"net/url"
 	"regexp"
@@ -13,12 +12,11 @@ import (
 
 // IssuerManager provides URL according to a given context
 type IssuerManager interface {
-	GetIssuer(ctx context.Context) (OidcVerifierProvider, error)
+	GetOidcVerifierProvider(issuer string) (OidcVerifierProvider, error)
 }
 
 type issuerManager struct {
-	domainToIssuer         map[string]OidcVerifierProvider
-	keyContextIssuerDomain interface{}
+	domainToVerifier map[string]OidcVerifierProvider
 }
 
 func getProtocolAndDomain(URL string) string {
@@ -32,7 +30,7 @@ func getProtocolAndDomain(URL string) string {
 }
 
 // NewIssuerManager creates a new URLProvider
-func NewIssuerManager(config keycloak.Config, keyContextIssuerDomain interface{}) (IssuerManager, error) {
+func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
 	URLs := config.AddrTokenProvider
 	// Use default values when clients are not initializing these values
 	cacheTTL := config.CacheTTL
@@ -44,29 +42,25 @@ func NewIssuerManager(config keycloak.Config, keyContextIssuerDomain interface{}
 		errTolerance = time.Minute
 	}
 
-	var domainToIssuer = make(map[string]OidcVerifierProvider)
+	var domainToVerifier = make(map[string]OidcVerifierProvider)
 
 	for _, value := range strings.Split(URLs, " ") {
 		uToken, err := url.Parse(value)
 		if err != nil {
 			return nil, err
 		}
-		issuer := NewVerifierCache(uToken, cacheTTL, errTolerance)
-		domainToIssuer[getProtocolAndDomain(value)] = issuer
+		verifier := NewVerifierCache(uToken, cacheTTL, errTolerance)
+		domainToVerifier[getProtocolAndDomain(value)] = verifier
 	}
 	return &issuerManager{
-		domainToIssuer:         domainToIssuer,
-		keyContextIssuerDomain: keyContextIssuerDomain,
+		domainToVerifier: domainToVerifier,
 	}, nil
 }
 
-func (im *issuerManager) GetIssuer(ctx context.Context) (OidcVerifierProvider, error) {
-	if rawValue := ctx.Value(im.keyContextIssuerDomain); rawValue != nil {
-		// The issuer domain has been found in the context
-		issuerDomain := getProtocolAndDomain(rawValue.(string))
-		if issuer, ok := im.domainToIssuer[issuerDomain]; ok {
-			return issuer, nil
-		}
+func (im *issuerManager) GetOidcVerifierProvider(issuer string) (OidcVerifierProvider, error) {
+	issuerDomain := getProtocolAndDomain(issuer)
+	if verifier, ok := im.domainToVerifier[issuerDomain]; ok {
+		return verifier, nil
 	}
 	return nil, errors.New("Unknown issuer")
 }
