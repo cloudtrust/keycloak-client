@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:fcbbb02d897902b3460476fcc6723f21a1674c0b6bd4a5579de11d53983d3d70"
+  digest = "1:2c7abdf1364ef3db046635ca5bb2cc26838ccb45a2b6608849e7b7fc6493423d"
   name = "github.com/cloudtrust/common-service"
   packages = ["errors"]
   pruneopts = ""
-  revision = "0dac96e146315562f548272f90e3f0ccf9ea7ddb"
-  version = "v2.2.0"
+  revision = "c9a387c12b76cd979ddf8be40168f3e19f643184"
+  version = "v2.2.1"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
