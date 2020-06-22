@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/cloudtrust/keycloak-client"
+	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
@@ -33,6 +34,11 @@ func (c *Client) GetClient(accessToken string, realmName, idClient string) (keyc
 	var resp = keycloak.ClientRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(clientIDPath), url.Param("realm", realmName), url.Param("id", idClient))
 	return resp, err
+}
+
+// UpdateClient updates the client. idClient is the id of client (not client-id).
+func (c *Client) UpdateClient(accessToken string, realmName, idClient string, clientRep keycloak.ClientRepresentation) error {
+	return c.put(accessToken, url.Path(clientIDPath), url.Param("realm", realmName), url.Param("id", idClient), body.JSON(clientRep))
 }
 
 // GetClientMappers gets mappers of the client specified by id
