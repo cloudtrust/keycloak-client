@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:2c7abdf1364ef3db046635ca5bb2cc26838ccb45a2b6608849e7b7fc6493423d"
+  branch = "ct-2691"
+  digest = "1:0a1e3ebec4fd9f3091a3a7d9a64582e2f2a1be91f4883f5f00c1b7f0805e7f21"
   name = "github.com/cloudtrust/common-service"
   packages = ["errors"]
   pruneopts = ""
-  revision = "c9a387c12b76cd979ddf8be40168f3e19f643184"
-  version = "v2.2.1"
+  revision = "55a355692aa6f19dcd3de49bb2ab16f14d50b076"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -114,16 +114,16 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:9cc06d7468e429919ead45fc408b26838b4dfb12075f9756685ac6eae867b1a3"
+  digest = "1:83fd2513b9f6ae0997bf646db6b74e9e00131e31002116fda597175f25add42d"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = ""
-  revision = "004e3cb72213e5e727e4e08f668ee6c8f27e5d32"
-  version = "v1.6.0"
+  revision = "f654a9112bbeac49ca2cd45bfbe11533c4666cf8"
+  version = "v1.6.1"
 
 [[projects]]
   branch = "master"
-  digest = "1:90e0a5569023a45d6f5ba62cf7b250b89a4310107e42c45b76481f518bb09cc7"
+  digest = "1:69a98da9ff007d76f7297d7d3504164c9155f389958a71b4e8ec590762773c56"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -131,11 +131,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "279210d13fedf5be6d476bad5df6a015042bb905"
+  revision = "75b288015ac94e66e3d6715fb68a9b41bf046ec2"
 
 [[projects]]
   branch = "master"
-  digest = "1:7254fd3f1a6e5ae98ab721ce6f3f09a79a59d3a1426e045fabc2548101e37333"
+  digest = "1:7eda7d644a17fb7b92ee14148fa58ca0ce24ca42a35c0b67fb5a13745d13197e"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -144,7 +144,7 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "627f9648deb96c27737b83199d44bb5c1010cbcf"
+  revision = "4c5254603344ea4a8ae4bed7e296a9588303e14f"
 
 [[projects]]
   branch = "master"
@@ -158,7 +158,7 @@
   revision = "bf48bf16ab8d622ce64ec6ce98d2c98f916b6303"
 
 [[projects]]
-  digest = "1:740b51a55815493a8d0f2b1e0d0ae48fe48953bf7eaf3fcc4198823bf67768c0"
+  digest = "1:fccda34e4c58111b1908d8d69bf8d57c41c8e2542bc18ec8cd38c4fa21057f71"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -179,8 +179,8 @@
     "unicode/rangetable",
   ]
   pruneopts = ""
-  revision = "342b2e1fbaa52c93f31447ad2c6abc048c63e475"
-  version = "v0.3.2"
+  revision = "23ae387dee1f90d29a23c0e87ee0b46038fbed0e"
+  version = "v0.3.3"
 
 [[projects]]
   digest = "1:2724bc9a6f84121903b6e33edc295b8182a95bb36535244fe2477ae64ba17654"
@@ -199,7 +199,7 @@
   version = "v1.6.6"
 
 [[projects]]
-  digest = "1:7579d802036911f3a087652830860739fcd8a03967ad5a3531e190aefe647f9d"
+  digest = "1:0d049ff01749ce1d6092c85cb90a02dfdb3b401939b13415b7e608f36bc8ecee"
   name = "google.golang.org/protobuf"
   packages = [
     "encoding/prototext",
@@ -212,12 +212,11 @@
     "internal/encoding/tag",
     "internal/encoding/text",
     "internal/errors",
-    "internal/fieldnum",
     "internal/fieldsort",
     "internal/filedesc",
     "internal/filetype",
     "internal/flags",
-    "internal/genname",
+    "internal/genid",
     "internal/impl",
     "internal/mapsort",
     "internal/pragma",
@@ -231,8 +230,8 @@
     "runtime/protoimpl",
   ]
   pruneopts = ""
-  revision = "5c3dd7024aed895adfe053f26b5a479e991cbca9"
-  version = "v1.24.0"
+  revision = "3f7a61f89bb6813f89d981d1870ed68da0b3c3f1"
+  version = "v1.25.0"
 
 [[projects]]
   digest = "1:95fa5eae3b22887e8aea55ad4f93bc1374d586f7dd3504cf0010845ccc0a95a8"
@@ -271,11 +270,11 @@
 
 [[projects]]
   branch = "v3"
-  digest = "1:4eec9bf48dd37d5c72af308fb8609bb61ed7c18dc2677848ff1da45edb1dbbfd"
+  digest = "1:2e9c4d6def1d36dcd17730e00c06b49a2e97ea5e1e639bcd24fa60fa43e33ad6"
   name = "gopkg.in/yaml.v3"
   packages = ["."]
   pruneopts = ""
-  revision = "e3079894b1e86c57cd48ff0d67dfd45de276d131"
+  revision = "eeeca48fe7764f320e4870d231902bf9c1be2c08"
 
 [solve-meta]
   analyzer-name = "dep"
