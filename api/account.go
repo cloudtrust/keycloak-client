@@ -2,14 +2,17 @@ package api
 
 import (
 	"github.com/cloudtrust/keycloak-client"
+	"gopkg.in/h2non/gentleman.v2/plugin"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/headers"
+	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
 const (
 	accountExtensionAPIPath            = "/auth/realms/master/api/account/realms/:realm"
 	accountExecuteActionsEmail         = accountExtensionAPIPath + "/execute-actions-email"
+	accountSendEmail                   = accountExtensionAPIPath + "/send-email"
 	accountCredentialsPath             = accountExtensionAPIPath + "/credentials"
 	accountPasswordPath                = accountCredentialsPath + "/password"
 	accountCredentialsRegistratorsPath = accountCredentialsPath + "/registrators"
@@ -80,12 +83,25 @@ func (c *AccountClient) UpdateAccount(accessToken string, realm string, user key
 	return err
 }
 
-// DeleteAccount delete current user
+// DeleteAccount deletes current user
 func (c *AccountClient) DeleteAccount(accessToken string, realmName string) error {
 	return c.client.delete(accessToken, url.Path(accountExtensionAPIPath), url.Param("realm", realmName), hdrAcceptJSON)
 }
 
-// ExecuteActionsEmail send an email with required actions to the user
+// ExecuteActionsEmail sends an email with required actions to the user
 func (c *AccountClient) ExecuteActionsEmail(accessToken string, realmName string, actions []string) error {
 	return c.client.put(accessToken, url.Path(accountExecuteActionsEmail), url.Param("realm", realmName), body.JSON(actions))
+}
+
+// SendEmail sends an email
+func (c *AccountClient) SendEmail(accessToken, realmName, template, subject string, recipient *string, attributes map[string]string) error {
+	var plugins []plugin.Plugin
+	plugins = append(plugins, url.Path(accountSendEmail), url.Param("realm", realmName))
+	plugins = append(plugins, query.Add("template", template), query.Add("subject", subject))
+	if recipient != nil && len(*recipient) >= 0 {
+		plugins = append(plugins, query.Add("recipient", *recipient))
+	}
+	plugins = append(plugins, body.JSON(attributes))
+	_, err := c.client.post(accessToken, nil, plugins...)
+	return err
 }
