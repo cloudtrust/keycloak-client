@@ -14,6 +14,8 @@ const (
 	labelPath            = credentialIDPath + "/label"
 	moveFirstPath        = credentialIDPath + "/moveToFirst"
 	moveAfterPath        = credentialIDPath + "/moveAfter/:previousCredentialID"
+	// Paper card API
+	resetFailuresPath = "/auth/realms/:realm/papercard/users/:userId/credentials/:credentialId/resetFailures"
 )
 
 // ResetPassword resets password of the user.
@@ -63,4 +65,9 @@ func (c *Client) MoveAfter(accessToken string, realmName string, userID string, 
 func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword, confirmPassword string) (string, error) {
 	var m = map[string]string{"currentPassword": currentPassword, "newPassword": newPassword, "confirmation": confirmPassword}
 	return c.post(accessToken, nil, url.Path(accountPasswordPath), url.Param("realm", realm), body.JSON(m))
+}
+
+// ResetPapercardFailures reset failures information in a paper card credential
+func (c *Client) ResetPapercardFailures(accessToken, realmName, userID, credentialID string) error {
+	return c.put(accessToken, url.Path(resetFailuresPath), url.Param("realm", realmName), url.Param("userId", userID), url.Param("credentialId", credentialID))
 }
