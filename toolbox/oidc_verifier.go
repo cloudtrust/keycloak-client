@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"sync"
 	"time"
 
 	"github.com/cloudtrust/keycloak-client"
@@ -26,6 +27,7 @@ type verifierCache struct {
 	errorTolerance time.Duration
 	tokenURL       *url.URL
 	verifiers      map[string]cachedVerifier
+	verifiersMutex sync.RWMutex
 }
 
 type cachedVerifier struct {
@@ -42,11 +44,14 @@ func NewVerifierCache(tokenURL *url.URL, timeToLive time.Duration, errorToleranc
 		errorTolerance: errorTolerance,
 		tokenURL:       tokenURL,
 		verifiers:      make(map[string]cachedVerifier),
+		verifiersMutex: sync.RWMutex{},
 	}
 }
 
 func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
+	vc.verifiersMutex.RLock()
 	v, ok := vc.verifiers[realm]
+	vc.verifiersMutex.RUnlock()
 	if ok && v.isValid() {
 		return &v, nil
 	}
@@ -67,7 +72,9 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 		invalidateOnErrorAt: time.Now().Add(vc.errorTolerance),
 		verifier:            ov,
 	}
+	vc.verifiersMutex.Lock()
 	vc.verifiers[realm] = res
+	vc.verifiersMutex.Unlock()
 
 	return &res, nil
 }
