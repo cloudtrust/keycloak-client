@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strconv"
+
 	"github.com/cloudtrust/keycloak-client"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
@@ -15,7 +17,9 @@ const (
 	moveFirstPath        = credentialIDPath + "/moveToFirst"
 	moveAfterPath        = credentialIDPath + "/moveAfter/:previousCredentialID"
 	// Paper card API
-	resetFailuresPath = "/auth/realms/:realm/papercard/users/:userId/credentials/:credentialId/resetFailures"
+	papercardPath               = "/auth/realms/:realm/papercard"
+	resetFailuresPath           = papercardPath + "/users/:userId/credentials/:credentialId/resetFailures"
+	sendPaperCardsRemindersPath = papercardPath + "/expiryReminders"
 )
 
 // ResetPassword resets password of the user.
@@ -70,4 +74,26 @@ func (c *Client) UpdatePassword(accessToken, realm, currentPassword, newPassword
 // ResetPapercardFailures reset failures information in a paper card credential
 func (c *Client) ResetPapercardFailures(accessToken, realmName, userID, credentialID string) error {
 	return c.put(accessToken, url.Path(resetFailuresPath), url.Param("realm", realmName), url.Param("userId", userID), url.Param("credentialId", credentialID))
+}
+
+// RemindersResponse struct
+type RemindersResponse struct {
+	Partial bool `json:"partial"`
+}
+
+// SendPaperCardsReminders sends reminders to users of paper cards which will soon be expired
+func (c *Client) SendPaperCardsReminders(accessToken, realmName string, firstReminderDays, nextReminderDays, maxCount int) (bool, error) {
+	var paramKV = []string{
+		"firstReminderDays", strconv.Itoa(firstReminderDays),
+		"nextReminderDays", strconv.Itoa(nextReminderDays),
+		"maxCount", strconv.Itoa(maxCount),
+	}
+
+	var resp RemindersResponse
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendPaperCardsRemindersPath), url.Param("realm", realmName))
+	var _, err = c.post(accessToken, &resp, plugins...)
+	if err != nil {
+		return false, err
+	}
+	return resp.Partial, err
 }
