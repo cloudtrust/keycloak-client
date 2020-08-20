@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:c3f573bbf2ab26cdf2bdc8a4080e1a876927b7746992b36426f833567a569eae"
+  branch = "ct-2293"
+  digest = "1:a4e87a944fbc9b115f564c533d77453f323e5015f78a559d14fbc953ee424d6b"
   name = "github.com/cloudtrust/common-service"
   packages = ["errors"]
   pruneopts = ""
-  revision = "22a293b4b2de317dd0260d47c62b862101551597"
-  version = "v2.2.2"
+  revision = "f42191f3be964aaefc742e4d223d1982f2dc7722"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -55,12 +55,12 @@
   version = "v0.5.0"
 
 [[projects]]
-  digest = "1:03f8f40437ef8b7a1c7aed0ab000474245559153639ee44d6d43ec8eb9e24eda"
+  digest = "1:bc24d32292c699c0cc375ae09fef8340c37360f46ec60cad98312b699c039422"
   name = "github.com/golang/mock"
   packages = ["gomock"]
   pruneopts = ""
-  revision = "3a35fb6e3e18b9dbfee291262260dee7372d2a92"
-  version = "v1.4.3"
+  revision = "f7b1909c82a8958747e5c87c6a5c3b2eaed8a33d"
+  version = "v1.4.4"
 
 [[projects]]
   digest = "1:02c7a8570f619bdb5620e8f6a16407455c8e63433d8a9e829f618813dc7f89a5"
@@ -71,12 +71,12 @@
   version = "v1.4.2"
 
 [[projects]]
-  digest = "1:fbab76ba211c99fcd45a481a32530efc229f3510fd94889f361dcaf13ff05fe0"
+  digest = "1:20e3b61797cba6a42b110320b703a0b86e2771f324411e75557c2acbc819b1b5"
   name = "github.com/gorilla/mux"
   packages = ["."]
   pruneopts = ""
-  revision = "75dcda0896e109a2a22c9315bca3bb21b87b2ba5"
-  version = "v1.7.4"
+  revision = "98cb6bf42e086f6af920b965c38cacc07402d51b"
+  version = "v1.8.0"
 
 [[projects]]
   digest = "1:1d7e1867c49a6dd9856598ef7c3123604ea3daabf5b83f303ff457bcbc410b1d"
@@ -96,14 +96,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:de5481dda0c081b66450e391bbb1a5c4435b13e3c0bbf0133ba1a5baeda7b7af"
+  digest = "1:031ad18b91524104af81d35ff8a49467b9ae67e1bc3a5d7a81e4ad97ab0d046f"
   name = "github.com/pquerna/cachecontrol"
   packages = [
     ".",
     "cacheobject",
   ]
   pruneopts = ""
-  revision = "1555304b9b35fdd2b425bccf1a5613677705e7d0"
+  revision = "67c6ae64274f94504771263b85e5a38700cbf31e"
 
 [[projects]]
   digest = "1:688428eeb1ca80d92599eb3254bdf91b51d7e232fead3a73844c1f201a281e51"
@@ -123,7 +123,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2b1ff27f17455187b412669f2aa359be51dc79661bd34cf8f54fa67e1ea106d0"
+  digest = "1:678eb8275bb8e3394737d136f55da106956c699fb4ccc3e72aa115123cd28d0d"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -131,11 +131,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "ab33eee955e00ff7c973405b2780aca48d293014"
+  revision = "5c72a883971a4325f8c62bf07b6d38c20ea47a6a"
 
 [[projects]]
   branch = "master"
-  digest = "1:92cf07fb2067987a7b46e1f63aa50ccde3ee8a7315ffca3e4e8a3a147ac9a717"
+  digest = "1:6328971ba64f6476ca35920ff04f1be7f04c35ce450d0fbe8f65f82c1cd2c6ab"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -144,18 +144,18 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "ab34263943818b32f575efc978a3d24e80b04bd7"
+  revision = "62affa334b73ec65ed44a326519ac12c421905e3"
 
 [[projects]]
   branch = "master"
-  digest = "1:571c7f844acf3c916ac5997f82f227c49a38490f1fca65afd47d64d188ced96e"
+  digest = "1:db6b3ebfd8658790fcd62d57df504d212b97048ddd6f3da525200e2030f91f70"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = ""
-  revision = "bf48bf16ab8d622ce64ec6ce98d2c98f916b6303"
+  revision = "5d25da1a8d43b66f2898c444f899c7bcfd6a407e"
 
 [[projects]]
   digest = "1:fccda34e4c58111b1908d8d69bf8d57c41c8e2542bc18ec8cd38c4fa21057f71"
