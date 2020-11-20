@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:20690205a93404efad5860668c0b6cf7cdc9679989458cd87a3e0b9f0b5d5704"
+  branch = "new-flow"
+  digest = "1:06f8bdf68c695b9a9f0cd4107269ec3142f492a90423acc75c19e83fa70e061c"
   name = "github.com/cloudtrust/common-service"
   packages = ["errors"]
   pruneopts = ""
-  revision = "aff8ca00d4492ff31a45b1dcefd52741b710e36b"
-  version = "2.2.4"
+  revision = "f81e61739fc11a0f14b47e32a098e04a38dba3c8"
 
 [[projects]]
   digest = "1:bb7f91ab4d1c44a3bb2651c613463c134165bda0282fca891a63b88d1b501997"
@@ -123,7 +123,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:2fa141193d48eaf88d36ca91bffbc8902c9155e55cf103ec6f51532ba6c4fa37"
+  digest = "1:4762d0c6f1cf2379bbf8d4b88423fe7a1f44f87c966605d11bccb62568136c61"
   name = "golang.org/x/crypto"
   packages = [
     "ed25519",
@@ -131,11 +131,11 @@
     "pbkdf2",
   ]
   pruneopts = ""
-  revision = "84dcc777aaee85807c99afb056f496a3a8b3d8de"
+  revision = "c1f2f97bffc9c53fc40a1a28a5b460094c0050d9"
 
 [[projects]]
   branch = "master"
-  digest = "1:5453f914eb6e6469edf6699be760a363ad72c7a580ca2fcef5e957efa72492b6"
+  digest = "1:e2d09f7d43399e5611a0d127fc2941c0bbb208b0701de6ee4ab4f249805fe31f"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -144,21 +144,21 @@
     "publicsuffix",
   ]
   pruneopts = ""
-  revision = "4f7140c49acb4c7e276e0b67dea953d5344ae064"
+  revision = "69a78807bb2bb6d1599c68698c6b009505012083"
 
 [[projects]]
   branch = "master"
-  digest = "1:db6b3ebfd8658790fcd62d57df504d212b97048ddd6f3da525200e2030f91f70"
+  digest = "1:9b49b9b6d5e9cef317ee86a02f8112d5d03413b7baeaa539d81703f415793f72"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = ""
-  revision = "5d25da1a8d43b66f2898c444f899c7bcfd6a407e"
+  revision = "9fd604954f58d391cab0f7f49affb0a6aa864086"
 
 [[projects]]
-  digest = "1:fccda34e4c58111b1908d8d69bf8d57c41c8e2542bc18ec8cd38c4fa21057f71"
+  digest = "1:fddc0a63dca46ccbb24699dad1f8a9ac28ebe295c8826f7c251cd86b385ebd39"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -179,8 +179,8 @@
     "unicode/rangetable",
   ]
   pruneopts = ""
-  revision = "23ae387dee1f90d29a23c0e87ee0b46038fbed0e"
-  version = "v0.3.3"
+  revision = "22f1617af38ed4cd65b3b96e02bab267e560155c"
+  version = "v0.3.4"
 
 [[projects]]
   digest = "1:13ee408d4cf721c5b576dbaff8d88ced35aadc9675274cc6b4ad009ac0372955"

@@ -752,3 +752,8 @@ type StatisticsUsersRepresentation struct {
 type RecoveryCodeRepresentation struct {
 	Code *string `json:"code,omitempty"`
 }
+
+// ActivationCodeRepresentation struct
+type ActivationCodeRepresentation struct {
+	Code *string `json:"code,omitempty"`
+}
