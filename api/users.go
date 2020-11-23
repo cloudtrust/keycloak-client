@@ -18,7 +18,7 @@ const (
 	executeActionsEmailPath    = userIDPath + "/execute-actions-email"
 	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                     = "/auth/realms/:realm/smsApi"
-	sendNewEnrolmentCode       = smsAPI + "/sendNewCode"
+	sendSmsCode                = smsAPI + "/sendNewCode"
 	shadowUser                 = userIDPath + "/federated-identity/:provider"
 )
 
@@ -94,11 +94,11 @@ func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userI
 	return c.put(accessToken, plugins...)
 }
 
-// SendNewEnrolmentCode sends a new enrolment code and return it
-func (c *Client) SendNewEnrolmentCode(accessToken string, realmName string, userID string) (keycloak.SmsCodeRepresentation, error) {
+// SendSmsCode sends a SMS code and return it
+func (c *Client) SendSmsCode(accessToken string, realmName string, userID string) (keycloak.SmsCodeRepresentation, error) {
 	var paramKV []string
 	paramKV = append(paramKV, "userid", userID)
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendNewEnrolmentCode), url.Param("realm", realmName))
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(sendSmsCode), url.Param("realm", realmName))
 	var resp = keycloak.SmsCodeRepresentation{}
 
 	_, err := c.post(accessToken, &resp, plugins...)
