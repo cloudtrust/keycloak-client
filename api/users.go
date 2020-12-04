@@ -9,17 +9,20 @@ import (
 )
 
 const (
-	userPath                   = "/auth/admin/realms/:realm/users"
-	usersAdminExtensionAPIPath = "/auth/realms/:realmReq/api/admin/realms/:realm/users"
-	userCountPath              = userPath + "/count"
-	userIDPath                 = userPath + "/:id"
-	userGroupsPath             = userIDPath + "/groups"
-	userGroupIDPath            = userGroupsPath + "/:groupId"
-	executeActionsEmailPath    = userIDPath + "/execute-actions-email"
-	sendReminderEmailPath      = "/auth/realms/:realm/onboarding/sendReminderEmail"
-	smsAPI                     = "/auth/realms/:realm/smsApi"
-	sendSmsCode                = smsAPI + "/sendNewCode"
-	shadowUser                 = userIDPath + "/federated-identity/:provider"
+	userPath                       = "/auth/admin/realms/:realm/users"
+	adminExtensionAPIPath          = "/auth/realms/:realmReq/api/admin/realms/:realm"
+	usersAdminExtensionAPIPath     = adminExtensionAPIPath + "/users"
+	sendEmailAdminExtensionAPIPath = adminExtensionAPIPath + "/send-email"
+	userCountPath                  = userPath + "/count"
+	userIDPath                     = userPath + "/:id"
+	userGroupsPath                 = userIDPath + "/groups"
+	userGroupIDPath                = userGroupsPath + "/:groupId"
+	executeActionsEmailPath        = userIDPath + "/execute-actions-email"
+	sendReminderEmailPath          = "/auth/realms/:realm/onboarding/sendReminderEmail"
+	smsAPI                         = "/auth/realms/:realm/smsApi"
+	sendSmsCode                    = smsAPI + "/sendNewCode"
+	sendSMSPath                    = smsAPI + "/sendSms"
+	shadowUser                     = userIDPath + "/federated-identity/:provider"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -122,5 +125,17 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 // LinkShadowUser links shadow user to a realm in the context of brokering
 func (c *Client) LinkShadowUser(accessToken string, reqRealmName string, userID string, provider string, fedIDKC keycloak.FederatedIdentityRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(shadowUser), url.Param("realm", reqRealmName), url.Param("id", userID), url.Param("provider", provider), body.JSON(fedIDKC))
+	return err
+}
+
+// SendEmail sends an email to a user
+func (c *Client) SendEmail(accessToken string, reqRealmName string, realmName string, emailRep keycloak.EmailRepresentation) error {
+	_, err := c.post(accessToken, nil, url.Path(sendEmailAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), body.JSON(emailRep))
+	return err
+}
+
+// SendSMS sends an SMS to a user
+func (c *Client) SendSMS(accessToken string, realmName string, smsRep keycloak.SMSRepresentation) error {
+	_, err := c.post(accessToken, nil, url.Path(sendSMSPath), url.Param("realm", realmName), body.JSON(smsRep))
 	return err
 }
