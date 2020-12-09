@@ -19,7 +19,7 @@ pipeline {
           if (!env.CHANGE_ID) {
             isBranch = " || true"
           }
-          withCredentials([usernamePassword(credentialsId: 'sonarqube', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+          withCredentials([usernamePassword(credentialsId: 'cloudtrust-cicd-sonarqube', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
             sh """
               set -eo pipefail
 

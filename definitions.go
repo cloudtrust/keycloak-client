@@ -752,3 +752,44 @@ type StatisticsUsersRepresentation struct {
 type RecoveryCodeRepresentation struct {
 	Code *string `json:"code,omitempty"`
 }
+
+// ActivationCodeRepresentation struct
+type ActivationCodeRepresentation struct {
+	Code *string `json:"code,omitempty"`
+}
+
+// EmailRepresentation struct
+type EmailRepresentation struct {
+	Recipient   *string                      `json:"recipient,omitempty"`
+	Theming     *EmailThemingRepresentation  `json:"theming,omitempty"`
+	Attachments *[]AttachementRepresentation `json:"attachments,omitempty"`
+}
+
+// EmailThemingRepresentation struct
+type EmailThemingRepresentation struct {
+	SubjectKey         *string            `json:"subjectKey,omitempty"`
+	SubjectParameters  *[]string          `json:"subjectParameters,omitempty"`
+	Template           *string            `json:"template,omitempty"`
+	TemplateParameters *map[string]string `json:"templateParameters,omitempty"`
+	Locale             *string            `json:"locale,omitempty"`
+}
+
+// AttachementRepresentation struct
+type AttachementRepresentation struct {
+	Filename    *string `json:"filename,omitempty"`
+	ContentType *string `json:"contentType,omitempty"`
+	Content     *string `json:"content,omitempty"`
+}
+
+// SMSRepresentation struct
+type SMSRepresentation struct {
+	MSISDN  *string                   `json:"msisdn,omitempty"`
+	Theming *SMSThemingRepresentation `json:"theming,omitempty"`
+}
+
+// SMSThemingRepresentation struct
+type SMSThemingRepresentation struct {
+	MessageKey        *string   `json:"messageKey,omitempty"`
+	MessageParameters *[]string `json:"messageParameters,omitempty"`
+	Locale            *string   `json:"locale,omitempty"`
+}
