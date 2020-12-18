@@ -517,6 +517,14 @@ type RealmRepresentation struct {
 	WaitIncrementSeconds                *int32                                  `json:"waitIncrementSeconds,omitempty"`
 }
 
+// AccountRealmRepresentation struct
+type AccountRealmRepresentation struct {
+	ID               *string   `json:"id,omitempty"`
+	DisplayName      *string   `json:"displayName,omitempty"`
+	DefaultLocale    *string   `json:"defaultLocale,omitempty"`
+	SupportedLocales *[]string `json:"supportedLocales,omitempty"`
+}
+
 // RequiredActionProviderRepresentation struct
 type RequiredActionProviderRepresentation struct {
 	Alias         *string                 `json:"alias,omitempty"`

@@ -105,3 +105,18 @@ func (c *AccountClient) SendEmail(accessToken, realmName, template, subject stri
 	_, err := c.client.post(accessToken, nil, plugins...)
 	return err
 }
+
+// GetRealm get the top level represention of the realm. Nested information like users are
+// not included.
+func (c *AccountClient) GetRealm(accessToken string, realmName string) (keycloak.AccountRealmRepresentation, error) {
+	var conf = keycloak.RealmRepresentation{}
+	if err := c.client.get(accessToken, &conf, url.Path(realmPath), url.Param("realm", realmName)); err != nil {
+		return keycloak.AccountRealmRepresentation{}, err
+	}
+	return keycloak.AccountRealmRepresentation{
+		ID:               conf.ID,
+		DisplayName:      conf.DisplayName,
+		DefaultLocale:    conf.DefaultLocale,
+		SupportedLocales: conf.SupportedLocales,
+	}, nil
+}
