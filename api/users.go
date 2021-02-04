@@ -17,7 +17,7 @@ const (
 	userIDPath                     = userPath + "/:id"
 	userGroupsPath                 = userIDPath + "/groups"
 	userGroupIDPath                = userGroupsPath + "/:groupId"
-	executeActionsEmailPath        = userIDPath + "/execute-actions-email"
+	executeActionsEmailPath        = usersAdminExtensionAPIPath + "/:id/execute-actions-email"
 	sendReminderEmailPath          = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                         = "/auth/realms/:realm/smsApi"
 	sendSmsCode                    = smsAPI + "/sendNewCode"
@@ -87,12 +87,13 @@ func (c *Client) DeleteUser(accessToken string, realmName, userID string) error 
 }
 
 // ExecuteActionsEmail sends an update account email to the user. An email contains a link the user can click to perform a set of required actions.
-func (c *Client) ExecuteActionsEmail(accessToken string, realmName string, userID string, actions []string, paramKV ...string) error {
+func (c *Client) ExecuteActionsEmail(accessToken string, reqRealmName string, targetRealmName string, userID string, actions []string, paramKV ...string) error {
 	if len(paramKV)%2 != 0 {
 		return errors.New(keycloak.MsgErrInvalidParam + "." + keycloak.EvenParams)
 	}
 
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(executeActionsEmailPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(actions))
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(executeActionsEmailPath), url.Param("realmReq", reqRealmName),
+		url.Param("realm", targetRealmName), url.Param("id", userID), body.JSON(actions))
 
 	return c.put(accessToken, plugins...)
 }
