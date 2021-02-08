@@ -63,7 +63,7 @@ func NewOidcTokenProvider(config keycloak.Config, realm, username, password, cli
 }
 
 func (o *oidcTokenProvider) ProvideToken(ctx context.Context) (string, error) {
-	if o.validUntil+maxProcessingDelay > time.Now().Unix() {
+	if time.Now().Unix()+maxProcessingDelay < o.validUntil {
 		return o.oidcToken.AccessToken, nil
 	}
 
