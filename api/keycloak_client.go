@@ -161,6 +161,8 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
 		case resp.StatusCode >= 400:
 			return treatErrorStatus(resp)
+		case resp.StatusCode == 204:
+			return nil
 		case resp.StatusCode >= 200:
 			switch resp.Header.Get("Content-Type") {
 			case "application/json":
