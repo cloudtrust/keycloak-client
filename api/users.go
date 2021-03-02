@@ -21,6 +21,8 @@ const (
 	sendReminderEmailPath          = "/auth/realms/:realm/onboarding/sendReminderEmail"
 	smsAPI                         = "/auth/realms/:realm/smsApi"
 	sendSmsCode                    = smsAPI + "/sendNewCode"
+	sendSmsConsentCode             = smsAPI + "/users/:userId/consent"
+	checkSmsConsentCode            = sendSmsConsentCode + "/:consent"
 	sendSMSPath                    = smsAPI + "/sendSms"
 	shadowUser                     = userIDPath + "/federated-identity/:provider"
 )
@@ -138,5 +140,16 @@ func (c *Client) SendEmail(accessToken string, reqRealmName string, realmName st
 // SendSMS sends an SMS to a user
 func (c *Client) SendSMS(accessToken string, realmName string, smsRep keycloak.SMSRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(sendSMSPath), url.Param("realm", realmName), body.JSON(smsRep))
+	return err
+}
+
+// CheckConsentCodeSMS checks a consent code previously sent by SMS to a user
+func (c *Client) CheckConsentCodeSMS(accessToken string, realmName string, userID string, consentCode string) error {
+	return c.get(accessToken, nil, url.Path(checkSmsConsentCode), url.Param("realm", realmName), url.Param("userId", userID), url.Param("consent", consentCode))
+}
+
+// SendConsentCodeSMS sends an SMS to a user with a consent code
+func (c *Client) SendConsentCodeSMS(accessToken string, realmName string, userID string) error {
+	_, err := c.post(accessToken, nil, url.Path(sendSmsConsentCode), url.Param("realm", realmName), url.Param("userId", userID))
 	return err
 }
