@@ -397,7 +397,7 @@ func whitelistErrors(statusCode int, message string) error {
 			Message: "keycloak." + errorMessages[message],
 		}
 	default:
-		return keycloak.HTTPError{
+		return keycloak.ClientDetailedError{
 			HTTPStatus: statusCode,
 			Message:    message,
 		}
