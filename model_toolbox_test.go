@@ -101,6 +101,15 @@ func TestUserRepresentationAttributes(t *testing.T) {
 		assert.Nil(t, err)
 		assert.True(t, *res)
 	})
+
+	t.Run("Remove attribute", func(t *testing.T) {
+		var keyAttrb = AttributeKey("anyAttribute")
+		assert.Nil(t, userRep.GetAttribute(keyAttrb))
+		userRep.SetAttributeString(keyAttrb, "a value")
+		assert.NotNil(t, userRep.GetAttribute(keyAttrb))
+		userRep.RemoveAttribute(keyAttrb)
+		assert.Nil(t, userRep.GetAttribute(keyAttrb))
+	})
 }
 
 func TestMergeAttributes(t *testing.T) {

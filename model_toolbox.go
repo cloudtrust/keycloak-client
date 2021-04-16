@@ -15,6 +15,11 @@ func (a Attributes) Set(key AttributeKey, value []string) {
 	a[key] = value
 }
 
+// Remove a given attribute
+func (a Attributes) Remove(key AttributeKey) {
+	delete(a, key)
+}
+
 // GetString gets the first value of a given attribute
 func (a Attributes) GetString(key AttributeKey) *string {
 	var attrbs = a[key]
@@ -161,6 +166,13 @@ func (a Attributes) Merge(others *Attributes) {
 		for key, attribute := range *others {
 			a[key] = attribute
 		}
+	}
+}
+
+// RemoveAttribute removes an attribute given its key
+func (u *UserRepresentation) RemoveAttribute(key AttributeKey) {
+	if u.Attributes != nil {
+		u.Attributes.Remove(key)
 	}
 }
 
