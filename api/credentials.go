@@ -16,6 +16,7 @@ const (
 	labelPath            = credentialIDPath + "/label"
 	moveFirstPath        = credentialIDPath + "/moveToFirst"
 	moveAfterPath        = credentialIDPath + "/moveAfter/:previousCredentialID"
+	logoutPath           = userIDPath + "/logout"
 	// Paper card API
 	papercardPath               = "/auth/realms/:realm/papercard"
 	resetFailuresPath           = papercardPath + "/users/:userId/credentials/:credentialId/resetFailures"
@@ -25,6 +26,12 @@ const (
 // ResetPassword resets password of the user.
 func (c *Client) ResetPassword(accessToken string, realmName, userID string, cred keycloak.CredentialRepresentation) error {
 	return c.put(accessToken, url.Path(resetPasswordPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(cred))
+}
+
+// Logout all sessions of the user.
+func (c *Client) LogoutAllSessions(accessToken string, realmName, userID string) error {
+	var _, err = c.post(accessToken, nil, url.Path(logoutPath), url.Param("realm", realmName), url.Param("id", userID))
+	return err
 }
 
 // GetCredentials returns the list of credentials of the user

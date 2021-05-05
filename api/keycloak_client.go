@@ -96,8 +96,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 
 	var unmarshalledBody map[string]interface{}
 	{
-		var err error
-		err = resp.JSON(&unmarshalledBody)
+		var err = resp.JSON(&unmarshalledBody)
 		if err != nil {
 			return "", errors.Wrap(err, keycloak.MsgErrCannotUnmarshal+"."+keycloak.Response)
 		}
