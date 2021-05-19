@@ -6,7 +6,7 @@ import (
 
 // Config is the keycloak client http config.
 type Config struct {
-	AddrTokenProvider string
+	AddrTokenProvider []string
 	AddrAPI           string
 	Timeout           time.Duration
 	CacheTTL          time.Duration

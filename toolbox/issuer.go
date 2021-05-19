@@ -31,7 +31,9 @@ func getProtocolAndDomain(URL string) string {
 
 // NewIssuerManager creates a new URLProvider
 func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
-	URLs := config.AddrTokenProvider
+	if len(config.AddrTokenProvider) == 0 {
+		return nil, errors.New("AddrTokenProvider is empty")
+	}
 	// Use default values when clients are not initializing these values
 	cacheTTL := config.CacheTTL
 	if cacheTTL == 0 {
@@ -44,7 +46,7 @@ func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
 
 	var domainToVerifier = make(map[string]OidcVerifierProvider)
 
-	for _, value := range strings.Split(URLs, " ") {
+	for _, value := range config.AddrTokenProvider {
 		uToken, err := url.Parse(value)
 		if err != nil {
 			return nil, err
@@ -62,5 +64,5 @@ func (im *issuerManager) GetOidcVerifierProvider(issuer string) (OidcVerifierPro
 	if verifier, ok := im.domainToVerifier[issuerDomain]; ok {
 		return verifier, nil
 	}
-	return nil, errors.New("Unknown issuer")
+	return nil, errors.New("unknownIssuer")
 }

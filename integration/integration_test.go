@@ -356,7 +356,7 @@ func getKeycloakConfig() *keycloak.Config {
 	pflag.Parse()
 
 	return &keycloak.Config{
-		AddrTokenProvider: *tokenAddr,
+		AddrTokenProvider: strings.Split(*tokenAddr, " "),
 		AddrAPI:           *apiAddr,
 		Timeout:           10 * time.Second,
 	}

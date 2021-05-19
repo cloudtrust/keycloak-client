@@ -1,17 +1,10 @@
 package toolbox
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/cloudtrust/keycloak-client"
 	"github.com/stretchr/testify/assert"
-)
-
-type contextKey int
-
-const (
-	keyContextIssuerDomain contextKey = iota
 )
 
 func TestGetProtocolAndDomain(t *testing.T) {
@@ -22,14 +15,14 @@ func TestGetProtocolAndDomain(t *testing.T) {
 
 func TestNewIssuerManager(t *testing.T) {
 	t.Run("Invalid URL", func(t *testing.T) {
-		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: ":"})
+		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: []string{":"}})
 		assert.NotNil(t, err)
 	})
 
 	defaultPath := "http://default.domain.com:5555"
 	myDomainPath := "http://my.domain.com/path/to/somewhere"
 	otherDomainPath := "http://other.domain.com:2120/"
-	allDomains := fmt.Sprintf("%s %s %s", defaultPath, myDomainPath, otherDomainPath)
+	allDomains := []string{defaultPath, myDomainPath, otherDomainPath}
 
 	prov, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: allDomains})
 	assert.Nil(t, err)
@@ -48,4 +41,9 @@ func TestNewIssuerManager(t *testing.T) {
 	assert.NotEqual(t, issuerNoContext, issuerMyDomain)
 	assert.NotEqual(t, issuerNoContext, issuerOtherDomain)
 	assert.NotEqual(t, issuerMyDomain, issuerOtherDomain)
+
+	t.Run("Invalid construction", func(t *testing.T) {
+		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: []string{}})
+		assert.NotNil(t, err)
+	})
 }
