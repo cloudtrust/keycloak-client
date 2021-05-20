@@ -26,7 +26,7 @@
 
 [[constraint]]
   name = "github.com/pkg/errors"
-  version = "0.8.0"
+  version = "0.9.1"
 
 [[constraint]]
   name = "gopkg.in/h2non/gentleman.v2"
