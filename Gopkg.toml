@@ -22,8 +22,8 @@
 
 [[constraint]]
   name = "github.com/cloudtrust/common-service"
-#  version = "2.3.5"
-  branch = "Jwt-library-V3"
+  version = "2.4.0"
+#  branch = "Jwt-library-V3"
 
 [[constraint]]
   name = "github.com/pkg/errors"
@@ -35,4 +35,4 @@
 
 [[constraint]]
   name = "github.com/gbrlsnchs/jwt"
-  version = "3.0.0"
+  version = "2.0.0"
