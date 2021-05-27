@@ -8,6 +8,7 @@ import (
 
 	"github.com/cloudtrust/keycloak-client"
 	api "github.com/cloudtrust/keycloak-client/api"
+	"github.com/cloudtrust/keycloak-client/toolbox"
 	"github.com/spf13/pflag"
 )
 
@@ -355,8 +356,9 @@ func getKeycloakConfig() *keycloak.Config {
 	var tokenAddr = pflag.String("url", "http://localhost:8080", "token address")
 	pflag.Parse()
 
+	var atp, _ = toolbox.NewKeycloakURIProviderFromArray(strings.Split(*tokenAddr, " "))
 	return &keycloak.Config{
-		AddrTokenProvider: strings.Split(*tokenAddr, " "),
+		AddrTokenProvider: atp,
 		AddrAPI:           *apiAddr,
 		Timeout:           10 * time.Second,
 	}

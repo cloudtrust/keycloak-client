@@ -60,48 +60,48 @@ func TestCreateToken(t *testing.T) {
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
-	var addrTokenProvider = []string{ts.URL}
-	var addrTokenProviderSecond = ts.URL + "/second"
-	var invalidAddrTokenProvider = []string{ts.URL + "0"}
+	var uriProvider, _ = NewKeycloakURIProviderFromArray([]string{ts.URL})
+	var invalidURIProvider, _ = NewKeycloakURIProviderFromArray([]string{ts.URL + "0"})
+	var ctx = context.TODO()
 
 	t.Run("No body in HTTP response", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: addrTokenProvider}, "nobody", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(context.TODO())
+		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "nobody", "user", "passwd", "clientID", mockLogger)
+		var _, err = p.ProvideToken(ctx)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Invalid credentials", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: addrTokenProvider}, "invalid", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(context.TODO())
+		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "invalid", "user", "passwd", "clientID", mockLogger)
+		var _, err = p.ProvideToken(ctx)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Invalid JSON", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: addrTokenProvider}, "bad-json", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(context.TODO())
+		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "bad-json", "user", "passwd", "clientID", mockLogger)
+		var _, err = p.ProvideToken(ctx)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("No HTTP response", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: invalidAddrTokenProvider}, "bad-json", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(context.TODO())
+		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: invalidURIProvider}, "bad-json", "user", "passwd", "clientID", mockLogger)
+		var _, err = p.ProvideToken(ctx)
 		assert.NotNil(t, err)
 	})
 
 	t.Run("Valid credentials", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{AddrTokenProvider: addrTokenProvider}, "valid", "user", "passwd", "clientID", mockLogger)
+		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "valid", "user", "passwd", "clientID", mockLogger)
 
 		var timeStart = time.Now()
 
 		// First call
-		var token, err = p.ProvideToken(context.TODO())
+		var token, err = p.ProvideToken(ctx)
 		assert.Nil(t, err)
 		assert.NotEqual(t, "", token)
 
 		var timeAfterFirstCall = time.Now()
 
 		// Second call
-		token, err = p.ProvideToken(context.TODO())
+		token, err = p.ProvideToken(ctx)
 		assert.Nil(t, err)
 		assert.NotEqual(t, "", token)
 
@@ -116,29 +116,26 @@ func TestCreateToken(t *testing.T) {
 		assert.True(t, duration2 < withoutHTTPDuration, msg)
 	})
 
-	t.Run("Multiple issuers with invalid default realm", func(t *testing.T) {
-		var targets = map[string]string{"*": addrTokenProvider[0]}
-		var p = NewOidcTokenProviderMap(targets, "not-configured-default-realm", time.Second, "valid", "user", "passwd", "clientID", mockLogger)
-
-		var _, err = p.ProvideTokenForRealm(context.TODO(), "any")
-		assert.NotNil(t, err)
-	})
-
 	t.Run("Multiple issuers", func(t *testing.T) {
 		var anotherIssuer = "second"
-		var targets = map[string]string{"*": addrTokenProvider[0], anotherIssuer: addrTokenProviderSecond}
-		var p = NewOidcTokenProviderMap(targets, "*", time.Second, "valid", "user", "passwd", "clientID", mockLogger)
+		var targets = map[string]string{"*": ts.URL, anotherIssuer: ts.URL + "/second"}
+		var kup, _ = NewKeycloakURIProvider(targets, "*")
+		var cfg = keycloak.Config{
+			URIProvider: kup,
+			Timeout:     time.Second,
+		}
+		var p = NewOidcTokenProvider(cfg, "valid", "user", "passwd", "clientID", mockLogger)
 
-		var token1, err = p.ProvideTokenForRealm(context.TODO(), "any")
+		var token1, err = p.ProvideTokenForRealm(ctx, "any")
 		assert.Nil(t, err)
 		assert.NotEqual(t, "", token1)
 
 		var token2 string
-		token2, err = p.ProvideTokenForRealm(context.TODO(), "another")
+		token2, err = p.ProvideTokenForRealm(ctx, "another")
 		assert.Nil(t, err)
 		assert.Equal(t, token1, token2)
 
-		token2, err = p.ProvideTokenForRealm(context.TODO(), anotherIssuer)
+		token2, err = p.ProvideTokenForRealm(ctx, anotherIssuer)
 		assert.Nil(t, err)
 		assert.NotEqual(t, token1, token2)
 	})

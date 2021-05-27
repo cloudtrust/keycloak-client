@@ -14,6 +14,10 @@ func TestGetProtocolAndDomain(t *testing.T) {
 }
 
 func TestNewIssuerManager(t *testing.T) {
+	t.Run("Empty config", func(t *testing.T) {
+		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: nil})
+		assert.NotNil(t, err)
+	})
 	t.Run("Invalid URL", func(t *testing.T) {
 		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: []string{":"}})
 		assert.NotNil(t, err)
@@ -41,9 +45,4 @@ func TestNewIssuerManager(t *testing.T) {
 	assert.NotEqual(t, issuerNoContext, issuerMyDomain)
 	assert.NotEqual(t, issuerNoContext, issuerOtherDomain)
 	assert.NotEqual(t, issuerMyDomain, issuerOtherDomain)
-
-	t.Run("Invalid construction", func(t *testing.T) {
-		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: []string{}})
-		assert.NotNil(t, err)
-	})
 }

@@ -52,29 +52,23 @@ const (
 
 // NewOidcTokenProvider creates an OidcTokenProvider
 func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
-	var key = "__default__"
-	var targets = map[string]string{key: config.AddrTokenProvider[0]}
-	return NewOidcTokenProviderMap(targets, key, config.Timeout, realm, username, password, clientID, logger)
-}
-
-// NewOidcTokenProviderMap creates an OidcTokenProvider with possible multiple targets
-func NewOidcTokenProviderMap(targets map[string]string, defaultKey string, timeout time.Duration, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
 	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
-	for targetRealm, keycloakURL := range targets {
-		perRealmTokenInfo[strings.ToLower(targetRealm)] = &oidcTokenInfo{
-			url: fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", keycloakURL, realm),
+	_ = ImportLegacyAddrTokenProvider(&config)
+	config.URIProvider.ForEachTokenURI(func(targetRealm, tokenURI string) {
+		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
+			url: fmt.Sprintf(tokenURI, realm),
 		}
-	}
+	})
 
 	// If needed, can add &client_secret={secret}
 	var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
 		url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))
 
 	return &oidcTokenProvider{
-		timeout:           timeout,
+		timeout:           config.Timeout,
 		perRealmTokenInfo: perRealmTokenInfo,
 		reqBody:           body,
-		defaultKey:        defaultKey,
+		defaultKey:        config.URIProvider.GetDefaultKey(),
 		logger:            logger,
 	}
 }
