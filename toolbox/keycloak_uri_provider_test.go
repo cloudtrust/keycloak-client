@@ -28,6 +28,10 @@ func TestNewKeycloakURIProvider(t *testing.T) {
 		var uriProvider, err = NewKeycloakURIProvider(map[string]string{"one": one, "two": two}, "two")
 		assert.Nil(t, err)
 
+		assert.Equal(t, one, uriProvider.GetBaseURI("one"))
+		assert.Equal(t, two, uriProvider.GetBaseURI("two"))
+		assert.Equal(t, two, uriProvider.GetBaseURI("other"))
+
 		var allBaseURIs = uriProvider.GetAllBaseURIs()
 		assert.Equal(t, two, allBaseURIs[0])
 		assert.Equal(t, one, allBaseURIs[1])

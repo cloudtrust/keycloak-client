@@ -64,6 +64,13 @@ func (kup *kcURIProvider) GetAllBaseURIs() []string {
 	return res
 }
 
+func (kup *kcURIProvider) GetBaseURI(realmName string) string {
+	if value, ok := kup.entries[strings.ToLower(realmName)]; ok {
+		return value
+	}
+	return kup.entries[kup.defaultKey]
+}
+
 func (kup *kcURIProvider) ForEachTokenURI(callback func(realm, tokenURI string)) {
 	for realm, baseURI := range kup.entries {
 		callback(realm, baseURI+"/auth/realms/%s/protocol/openid-connect/token")
