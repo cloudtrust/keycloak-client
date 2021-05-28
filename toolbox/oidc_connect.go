@@ -17,6 +17,7 @@ import (
 // OidcTokenProvider provides OIDC tokens
 type OidcTokenProvider interface {
 	ProvideToken(ctx context.Context) (string, error)
+	ProvideTokenForRealm(ctx context.Context, realm string) (string, error)
 }
 
 type oidcToken struct {
@@ -31,10 +32,15 @@ type oidcToken struct {
 }
 
 type oidcTokenProvider struct {
-	timeout    time.Duration
-	tokenURL   string
-	reqBody    string
-	logger     Logger
+	timeout           time.Duration
+	perRealmTokenInfo map[string]*oidcTokenInfo
+	reqBody           string
+	defaultKey        string
+	logger            Logger
+}
+
+type oidcTokenInfo struct {
+	url        string
 	oidcToken  oidcToken
 	validUntil int64
 }
@@ -46,32 +52,49 @@ const (
 
 // NewOidcTokenProvider creates an OidcTokenProvider
 func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
-	var urls = strings.Split(config.AddrTokenProvider, " ")
-	var keycloakPublicURL = urls[0]
+	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
+	_ = ImportLegacyAddrTokenProvider(&config)
+	config.URIProvider.ForEachTokenURI(func(targetRealm, tokenURI string) {
+		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
+			url: fmt.Sprintf(tokenURI, realm),
+		}
+	})
 
-	var tokenURL = fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", keycloakPublicURL, realm)
 	// If needed, can add &client_secret={secret}
 	var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
 		url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))
 
 	return &oidcTokenProvider{
-		timeout:  config.Timeout,
-		tokenURL: tokenURL,
-		reqBody:  body,
-		logger:   logger,
+		timeout:           config.Timeout,
+		perRealmTokenInfo: perRealmTokenInfo,
+		reqBody:           body,
+		defaultKey:        config.URIProvider.GetDefaultKey(),
+		logger:            logger,
 	}
 }
 
 func (o *oidcTokenProvider) ProvideToken(ctx context.Context) (string, error) {
-	if time.Now().Unix()+maxProcessingDelay < o.validUntil {
-		return o.oidcToken.AccessToken, nil
+	return o.ProvideTokenForRealm(ctx, o.defaultKey)
+}
+
+func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm string) (string, error) {
+	var oti *oidcTokenInfo
+	var ok bool
+	if oti, ok = o.perRealmTokenInfo[strings.ToLower(realm)]; !ok {
+		if realm == o.defaultKey {
+			return "", errorhandler.CreateInternalServerError("unknownRealm")
+		}
+		return o.ProvideTokenForRealm(ctx, o.defaultKey)
+	}
+	if time.Now().Unix()+maxProcessingDelay < oti.validUntil {
+		return oti.oidcToken.AccessToken, nil
 	}
 
 	var mimeType = "application/x-www-form-urlencoded"
 	var httpClient = http.Client{
 		Timeout: o.timeout,
 	}
-	var resp, err = httpClient.Post(o.tokenURL, mimeType, strings.NewReader(o.reqBody))
+	var resp, err = httpClient.Post(oti.url, mimeType, strings.NewReader(o.reqBody))
 	if err != nil {
 		o.logger.Warn(ctx, "msg", err.Error())
 		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
@@ -91,12 +114,12 @@ func (o *oidcTokenProvider) ProvideToken(ctx context.Context) (string, error) {
 	buf := new(bytes.Buffer)
 	_, _ = buf.ReadFrom(resp.Body)
 
-	err = json.Unmarshal(buf.Bytes(), &o.oidcToken)
+	err = json.Unmarshal(buf.Bytes(), &oti.oidcToken)
 	if err != nil {
 		o.logger.Warn(ctx, "msg", fmt.Sprintf("Can't deserialize token. JSON: %s", buf.String()))
 		return "", errorhandler.CreateInternalServerError("unexpected.oidcToken")
 	}
-	o.validUntil = time.Now().Unix() + o.oidcToken.ExpiresIn
+	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn
 
-	return o.oidcToken.AccessToken, nil
+	return oti.oidcToken.AccessToken, nil
 }
