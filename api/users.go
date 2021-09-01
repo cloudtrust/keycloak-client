@@ -30,7 +30,9 @@ const (
 // GetUsers returns a list of users, filtered according to the query parameters.
 // Parameters: email, first (paging offset, int), firstName, lastName, username,
 // max (maximum result size, default = 100),
-// search (string contained in username, firstname, lastname or email)
+// search (string contained in username, firstname, lastname or email. by default,
+// value is searched with a like -%value%- but you can introduce your own % symbol
+// or you can use =value to search an exact value)
 func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName string, paramKV ...string) (keycloak.UsersPageRepresentation, error) {
 	var resp keycloak.UsersPageRepresentation
 	if len(paramKV)%2 != 0 {
