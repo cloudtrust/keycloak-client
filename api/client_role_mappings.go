@@ -35,3 +35,14 @@ func (c *Client) GetRealmLevelRoleMappings(accessToken string, realmName, userID
 	var err = c.get(accessToken, &resp, url.Path(realmRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
+
+// AddRealmLevelRoleMappings gets realm level role mappings
+func (c *Client) AddRealmLevelRoleMappings(accessToken string, realmName, userID string, roles []keycloak.RoleRepresentation) error {
+	var _, err = c.post(accessToken, nil, url.Path(realmRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(roles))
+	return err
+}
+
+// DeleteRealmLevelRoleMappings gets realm level role mappings
+func (c *Client) DeleteRealmLevelRoleMappings(accessToken string, realmName, userID string, roles []keycloak.RoleRepresentation) error {
+	return c.delete(accessToken, url.Path(realmRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(roles))
+}
