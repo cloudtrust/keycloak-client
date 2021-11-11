@@ -793,3 +793,11 @@ type SMSThemingRepresentation struct {
 	MessageParameters *[]string `json:"messageParameters,omitempty"`
 	Locale            *string   `json:"locale,omitempty"`
 }
+
+// DeletableUserRepresentation struct
+type DeletableUserRepresentation struct {
+	RealmID   string `json:"realmId,omitempty"`
+	RealmName string `json:"realmName,omitempty"`
+	UserID    string `json:"userId,omitempty"`
+	Username  string `json:"username,omitempty"`
+}
