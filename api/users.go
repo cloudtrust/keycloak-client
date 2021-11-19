@@ -25,6 +25,7 @@ const (
 	checkSmsConsentCode            = sendSmsConsentCode + "/:consent"
 	sendSMSPath                    = smsAPI + "/sendSms"
 	shadowUser                     = userIDPath + "/federated-identity/:provider"
+	expiredToUAcceptancePath       = "/auth/realms/:realmReq/api/admin/expired-tou-acceptance"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -154,4 +155,12 @@ func (c *Client) CheckConsentCodeSMS(accessToken string, realmName string, userI
 func (c *Client) SendConsentCodeSMS(accessToken string, realmName string, userID string) error {
 	_, err := c.post(accessToken, nil, url.Path(sendSmsConsentCode), url.Param("realm", realmName), url.Param("userId", userID))
 	return err
+}
+
+// GetExpiredTermsOfUseAcceptance gets the list of users created for a
+// long time (configured in Keycloak) who declined the terms of use
+func (c *Client) GetExpiredTermsOfUseAcceptance(accessToken string) ([]keycloak.DeletableUserRepresentation, error) {
+	var deletableUsers []keycloak.DeletableUserRepresentation
+	err := c.get(accessToken, &deletableUsers, url.Path(expiredToUAcceptancePath), url.Param("realmReq", "master"))
+	return deletableUsers, err
 }
