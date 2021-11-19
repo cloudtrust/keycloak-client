@@ -21,3 +21,6 @@ bin/*
 **/debug
 **/.coverprofile
 mock/
+
+# Activate vendoring
+!vendor/modules.txt
