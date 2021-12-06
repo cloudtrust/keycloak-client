@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cloudtrust/keycloak-client"
-	api "github.com/cloudtrust/keycloak-client/api"
-	"github.com/cloudtrust/keycloak-client/toolbox"
+	"github.com/cloudtrust/keycloak-client/v2"
+	api "github.com/cloudtrust/keycloak-client/v2/api"
+	"github.com/cloudtrust/keycloak-client/v2/toolbox"
 	"github.com/spf13/pflag"
 )
 

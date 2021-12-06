@@ -3,7 +3,7 @@ package toolbox
 import (
 	"testing"
 
-	"github.com/cloudtrust/keycloak-client"
+	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/stretchr/testify/assert"
 )
 
