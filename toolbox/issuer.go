@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/cloudtrust/keycloak-client"
 )
@@ -31,16 +30,6 @@ func getProtocolAndDomain(URL string) string {
 
 // NewIssuerManager creates a new URLProvider
 func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
-	// Use default values when clients are not initializing these values
-	cacheTTL := config.CacheTTL
-	if cacheTTL == 0 {
-		cacheTTL = 15 * time.Minute
-	}
-	errTolerance := config.ErrorTolerance
-	if errTolerance == 0 {
-		errTolerance = time.Minute
-	}
-
 	if err := ImportLegacyAddrTokenProvider(&config); err != nil {
 		return nil, err
 	}
@@ -51,7 +40,7 @@ func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
 		if err != nil {
 			return nil, err
 		}
-		verifier := NewVerifierCache(uToken, cacheTTL, errTolerance)
+		verifier := NewVerifierCache(uToken)
 		domainToVerifier[getProtocolAndDomain(value)] = verifier
 	}
 	return &issuerManager{

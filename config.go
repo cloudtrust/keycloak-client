@@ -18,6 +18,4 @@ type Config struct {
 	URIProvider       KeycloakURIProvider
 	AddrAPI           string
 	Timeout           time.Duration
-	CacheTTL          time.Duration
-	ErrorTolerance    time.Duration
 }
