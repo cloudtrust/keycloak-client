@@ -23,25 +23,19 @@ type OidcVerifier interface {
 }
 
 type verifierCache struct {
-	duration       time.Duration
-	errorTolerance time.Duration
 	tokenURL       *url.URL
 	verifiers      map[string]cachedVerifier
 	verifiersMutex sync.RWMutex
 }
 
 type cachedVerifier struct {
-	verifier            *oidc.IDTokenVerifier
-	createdAt           time.Time
-	expireAt            time.Time
-	invalidateOnErrorAt time.Time
+	verifier  *oidc.IDTokenVerifier
+	createdAt time.Time
 }
 
 // NewVerifierCache create an instance of OIDC verifier cache
-func NewVerifierCache(tokenURL *url.URL, timeToLive time.Duration, errorTolerance time.Duration) OidcVerifierProvider {
+func NewVerifierCache(tokenURL *url.URL) OidcVerifierProvider {
 	return &verifierCache{
-		duration:       timeToLive,
-		errorTolerance: errorTolerance,
 		tokenURL:       tokenURL,
 		verifiers:      make(map[string]cachedVerifier),
 		verifiersMutex: sync.RWMutex{},
@@ -52,7 +46,7 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 	vc.verifiersMutex.RLock()
 	v, ok := vc.verifiers[realm]
 	vc.verifiersMutex.RUnlock()
-	if ok && v.isValid() {
+	if ok {
 		return &v, nil
 	}
 	var oidcProvider *oidc.Provider
@@ -67,10 +61,8 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 
 	ov := oidcProvider.Verifier(&oidc.Config{SkipClientIDCheck: true})
 	res := cachedVerifier{
-		createdAt:           time.Now(),
-		expireAt:            time.Now().Add(vc.duration),
-		invalidateOnErrorAt: time.Now().Add(vc.errorTolerance),
-		verifier:            ov,
+		createdAt: time.Now(),
+		verifier:  ov,
 	}
 	vc.verifiersMutex.Lock()
 	vc.verifiers[realm] = res
@@ -79,16 +71,7 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 	return &res, nil
 }
 
-func (cv *cachedVerifier) isValid() bool {
-	return time.Now().Before(cv.expireAt)
-}
-
 func (cv *cachedVerifier) Verify(accessToken string) error {
 	_, err := cv.verifier.Verify(context.Background(), accessToken)
-	if err != nil && time.Now().After(cv.invalidateOnErrorAt) {
-		// An error occured and current time is after invalidateOnErrorAt
-		// Let's make this verifier expire
-		cv.expireAt = cv.createdAt
-	}
 	return err
 }

@@ -8,7 +8,6 @@ import (
 	"net/url"
 	"strings"
 	"testing"
-	"time"
 
 	http_transport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
@@ -66,47 +65,32 @@ func TestGetOidcVerifier(t *testing.T) {
 
 	{
 		// First test with a verifier which hardly expires
-		verifier := NewVerifierCache(url, time.Minute, 10*time.Minute)
+		verifier := NewVerifierCache(url)
 
-		{
-			// Unknown realm: can't get verifier
+		t.Run("Unknown realm: can't get verifier", func(t *testing.T) {
 			_, err := verifier.GetOidcVerifier("unknown")
 			assert.NotNil(t, err)
-		}
+		})
 
-		v1, e := verifier.GetOidcVerifier("realm1")
-		assert.Nil(t, e)
-		{
-			// Ask for the same realm before its verifier expires
-			v2, _ := verifier.GetOidcVerifier("realm1")
+		var v1 OidcVerifier
+		t.Run("Ask for a verifier for realm1", func(t *testing.T) {
+			var e error
+			v1, e = verifier.GetOidcVerifier("realm1")
+			assert.Nil(t, e)
+		})
+
+		var v2 OidcVerifier
+		t.Run("Ask for the same realm", func(t *testing.T) {
+			v2, _ = verifier.GetOidcVerifier("realm1")
 			assert.Equal(t, v1, v2)
-		}
-		{
-			// Ask for a different verifier
-			v3, _ := verifier.GetOidcVerifier("realm2")
+		})
+
+		var v3 OidcVerifier
+		t.Run("Ask for a different verifier", func(t *testing.T) {
+			v3, _ = verifier.GetOidcVerifier("realm2")
 			assert.NotEqual(t, v1, v3)
-		}
+		})
 
-		time.Sleep(100 * time.Millisecond)
 		assert.NotNil(t, v1.Verify("abcdef"))
-	}
-
-	{
-		// Now, test with a verifier which quickly expires on error
-		verifier := NewVerifierCache(url, time.Minute, time.Millisecond)
-		v1, _ := verifier.GetOidcVerifier("realm1")
-		time.Sleep(100 * time.Millisecond)
-		{
-			// Ask for the same realm before its verifier expires
-			v2, _ := verifier.GetOidcVerifier("realm1")
-			assert.Equal(t, v1, v2)
-		}
-		{
-			// Verify an invalid token
-			assert.NotNil(t, v1.Verify("abcdef"))
-			// Ask for the same realm before its verifier expires but after an error occured
-			v2, _ := verifier.GetOidcVerifier("realm1")
-			assert.NotEqual(t, v1, v2)
-		}
 	}
 }
