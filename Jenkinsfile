@@ -5,7 +5,7 @@ pipeline {
     timeout(time: 3600, unit: 'SECONDS')
   }
   environment{
-    BUILD_PATH="/home/jenkins/gopath/src/github.com/cloudtrust/keycloak-client"
+    BUILD_PATH="/home/jenkins/gopath/src/github.com/cloudtrust/keycloak-client/v2"
   }
   stages {
     stage('Build') {

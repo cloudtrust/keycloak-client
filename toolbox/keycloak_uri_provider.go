@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cloudtrust/keycloak-client"
+	"github.com/cloudtrust/keycloak-client/v2"
 )
 
 type kcURIProvider struct {

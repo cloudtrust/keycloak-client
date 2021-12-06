@@ -60,6 +60,9 @@ github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMn
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudtrust/common-service v1.2.6-0.20211110103624-faf08bf0ed05 h1:Enzm34NWdxOo5ut7k12BYS2l+ahTaqM03AAPF51bhpM=
 github.com/cloudtrust/common-service v1.2.6-0.20211110103624-faf08bf0ed05/go.mod h1:QI1WKCnr39+GmQKGlpYs3QRhFQ7Nmeo7kekC+ZJP0kg=
+github.com/cloudtrust/keycloak-client/v2 v1.3.1 h1:mPDfRkfLN+oIb8ieWcOjN5vk+y5OJyH+aGxFicUGFXU=
+github.com/cloudtrust/keycloak-client/v2 v2.4.4+incompatible h1:feRMMfSJGgH0goq80eRVg+GBTFCB7lBsT0aqttuqXbE=
+github.com/cloudtrust/keycloak-client/v2 v2.4.4+incompatible/go.mod h1:EZjvVOjfjY1n8UNIB2FlNDYqT2kzTPNXarlDfIRg53o=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/coreos/go-oidc v2.2.1+incompatible h1:mh48q/BqXqgjVHpy2ZY7WnWAbenxRjsz9N1i1YxjHAk=
 github.com/coreos/go-oidc v2.2.1+incompatible/go.mod h1:CgnwVTmzoESiwO9qyAFEMiHoZ1nMCKZlZ9V6mm3/LKc=

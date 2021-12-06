@@ -1,4 +1,4 @@
-module github.com/cloudtrust/keycloak-client
+module github.com/cloudtrust/keycloak-client/v2
 
 go 1.15
 

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/cloudtrust/keycloak-client"
+	"github.com/cloudtrust/keycloak-client/v2"
 	oidc "github.com/coreos/go-oidc"
 	"github.com/pkg/errors"
 )

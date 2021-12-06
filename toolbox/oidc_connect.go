@@ -11,7 +11,7 @@ import (
 	"time"
 
 	errorhandler "github.com/cloudtrust/common-service/errors"
-	"github.com/cloudtrust/keycloak-client"
+	"github.com/cloudtrust/keycloak-client/v2"
 )
 
 // OidcTokenProvider provides OIDC tokens
