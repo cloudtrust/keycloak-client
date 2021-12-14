@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	errorhandler "github.com/cloudtrust/common-service/errors"
+	errorhandler "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
 )
 

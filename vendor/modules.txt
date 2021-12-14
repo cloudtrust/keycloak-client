@@ -1,6 +1,6 @@
-# github.com/cloudtrust/common-service v1.2.6-0.20211110103624-faf08bf0ed05
+# github.com/cloudtrust/common-service/v2 v2.5.2
 ## explicit
-github.com/cloudtrust/common-service/errors
+github.com/cloudtrust/common-service/v2/errors
 # github.com/coreos/go-oidc v2.2.1+incompatible
 ## explicit
 github.com/coreos/go-oidc

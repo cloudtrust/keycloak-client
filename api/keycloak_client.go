@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	commonhttp "github.com/cloudtrust/common-service/errors"
+	commonhttp "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/cloudtrust/keycloak-client/v2/toolbox"
 	"github.com/pkg/errors"

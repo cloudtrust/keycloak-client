@@ -58,8 +58,11 @@ github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWR
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
+github.com/cloudtrust/common-service v1.2.5 h1:W+JhaC1LFynim34fFhOfwQnWLA55O/UR3lxRyZf82Nk=
 github.com/cloudtrust/common-service v1.2.6-0.20211110103624-faf08bf0ed05 h1:Enzm34NWdxOo5ut7k12BYS2l+ahTaqM03AAPF51bhpM=
 github.com/cloudtrust/common-service v1.2.6-0.20211110103624-faf08bf0ed05/go.mod h1:QI1WKCnr39+GmQKGlpYs3QRhFQ7Nmeo7kekC+ZJP0kg=
+github.com/cloudtrust/common-service/v2 v2.5.2 h1:Ch+/qCWMMPNnID5W3XcMfDNIMxwsv56s9438XdyW0No=
+github.com/cloudtrust/common-service/v2 v2.5.2/go.mod h1:Sz9LRqh5FIYedrIP7G7E5Fcu9H5xzZKNwdz4I3EXORg=
 github.com/cloudtrust/keycloak-client/v2 v1.3.1 h1:mPDfRkfLN+oIb8ieWcOjN5vk+y5OJyH+aGxFicUGFXU=
 github.com/cloudtrust/keycloak-client/v2 v2.4.4+incompatible h1:feRMMfSJGgH0goq80eRVg+GBTFCB7lBsT0aqttuqXbE=
 github.com/cloudtrust/keycloak-client/v2 v2.4.4+incompatible/go.mod h1:EZjvVOjfjY1n8UNIB2FlNDYqT2kzTPNXarlDfIRg53o=
