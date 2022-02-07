@@ -51,6 +51,11 @@ func (c *Client) CreateRole(accessToken string, realmName string, role keycloak.
 	return c.post(accessToken, nil, url.Path(rolePath), url.Param("realm", realmName), body.JSON(role))
 }
 
+// UpdateRole updates a role in a realm
+func (c *Client) UpdateRole(accessToken string, realmName string, roleID string, role keycloak.RoleRepresentation) error {
+	return c.put(accessToken, url.Path(roleByIDPath), url.Param("realm", realmName), url.Param("id", roleID), body.JSON(role))
+}
+
 // DeleteRole deletes a role in a realm
 func (c *Client) DeleteRole(accessToken string, realmName string, roleID string) error {
 	return c.delete(accessToken, url.Path(roleByIDPath), url.Param("realm", realmName), url.Param("id", roleID))
