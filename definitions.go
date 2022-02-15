@@ -802,3 +802,9 @@ type DeletableUserRepresentation struct {
 	UserID    string `json:"userId,omitempty"`
 	Username  string `json:"username,omitempty"`
 }
+
+// EmailInfoRepresentation struct
+type EmailInfoRepresentation struct {
+	RealmName    *string `json:"realm,omitempty"`
+	CreationDate *int64  `json:"creationDate,omitempty"`
+}
