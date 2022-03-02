@@ -5,12 +5,14 @@ import (
 
 	"github.com/cloudtrust/keycloak-client/v2"
 	"gopkg.in/h2non/gentleman.v2/plugins/body"
+	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/url"
 )
 
 const (
 	userPath                       = "/auth/admin/realms/:realm/users"
-	adminExtensionAPIPath          = "/auth/realms/:realmReq/api/admin/realms/:realm"
+	adminRootPath                  = "/auth/realms/:realmReq/api/admin"
+	adminExtensionAPIPath          = adminRootPath + "/realms/:realm"
 	usersAdminExtensionAPIPath     = adminExtensionAPIPath + "/users"
 	sendEmailAdminExtensionAPIPath = adminExtensionAPIPath + "/send-email"
 	userCountPath                  = userPath + "/count"
@@ -25,7 +27,8 @@ const (
 	checkSmsConsentCode            = sendSmsConsentCode + "/:consent"
 	sendSMSPath                    = smsAPI + "/sendSms"
 	shadowUser                     = userIDPath + "/federated-identity/:provider"
-	expiredToUAcceptancePath       = "/auth/realms/:realmReq/api/admin/expired-tou-acceptance"
+	expiredToUAcceptancePath       = adminRootPath + "/expired-tou-acceptance"
+	getSupportInfoPath             = adminRootPath + "/support-infos"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -163,4 +166,11 @@ func (c *Client) GetExpiredTermsOfUseAcceptance(accessToken string) ([]keycloak.
 	var deletableUsers []keycloak.DeletableUserRepresentation
 	err := c.get(accessToken, &deletableUsers, url.Path(expiredToUAcceptancePath), url.Param("realmReq", "master"))
 	return deletableUsers, err
+}
+
+// GetSupportInfo gets the list of accounts matching a given email address
+func (c *Client) GetSupportInfo(accessToken string, email string) ([]keycloak.EmailInfoRepresentation, error) {
+	var emailInfos []keycloak.EmailInfoRepresentation
+	err := c.get(accessToken, &emailInfos, url.Path(getSupportInfoPath), url.Param("realmReq", "master"), query.Add("email", email))
+	return emailInfos, err
 }
