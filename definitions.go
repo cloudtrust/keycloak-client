@@ -291,6 +291,7 @@ type IdentityProviderMapperRepresentation struct {
 type IdentityProviderRepresentation struct {
 	AddReadTokenRoleOnCreate  *bool                   `json:"addReadTokenRoleOnCreate,omitempty"`
 	Alias                     *string                 `json:"alias,omitempty"`
+	AuthenticateByDefault     *bool                   `json:"authenticateByDefault,omitempty"`
 	Config                    *map[string]interface{} `json:"config,omitempty"`
 	DisplayName               *string                 `json:"displayName,omitempty"`
 	Enabled                   *bool                   `json:"enabled,omitempty"`
