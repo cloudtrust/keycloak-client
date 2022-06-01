@@ -25,8 +25,8 @@ func (c *Client) GetClientRoleMappings(accessToken string, realmName, userID, cl
 }
 
 // DeleteClientRolesFromUserRoleMapping deletes client-level roles from user role mapping.
-func (c *Client) DeleteClientRolesFromUserRoleMapping(accessToken string, realmName, userID, clientID string) error {
-	return c.delete(accessToken, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("client", clientID))
+func (c *Client) DeleteClientRolesFromUserRoleMapping(accessToken string, realmName, userID, clientID string, roles []keycloak.RoleRepresentation) error {
+	return c.delete(accessToken, url.Path(clientRoleMappingPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("client", clientID), body.JSON(roles))
 }
 
 // GetRealmLevelRoleMappings gets realm level role mappings
