@@ -809,3 +809,7 @@ type EmailInfoRepresentation struct {
 	RealmName    *string `json:"realm,omitempty"`
 	CreationDate *int64  `json:"creationDate,omitempty"`
 }
+
+type TrustIDAuthTokenRepresentation struct {
+	Token *string `json:"token"`
+}
