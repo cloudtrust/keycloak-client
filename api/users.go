@@ -29,6 +29,7 @@ const (
 	shadowUser                     = userIDPath + "/federated-identity/:provider"
 	expiredToUAcceptancePath       = adminRootPath + "/expired-tou-acceptance"
 	getSupportInfoPath             = adminRootPath + "/support-infos"
+	generateTrustIDAuthToken       = "/auth/realms/:realmReq/trustid-auth-token/realms/:realm/users/:userId/generate"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -173,4 +174,10 @@ func (c *Client) GetSupportInfo(accessToken string, email string) ([]keycloak.Em
 	var emailInfos []keycloak.EmailInfoRepresentation
 	err := c.get(accessToken, &emailInfos, url.Path(getSupportInfoPath), url.Param("realmReq", "master"), query.Add("email", email))
 	return emailInfos, err
+}
+
+func (c *Client) GenerateTrustIDAuthToken(accessToken string, reqRealmName string, realmName string, userID string) (string, error) {
+	var token keycloak.TrustIDAuthTokenRepresentation
+	err := c.get(accessToken, &token, url.Path(generateTrustIDAuthToken), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), url.Param("userId", userID))
+	return *token.Token, err
 }
