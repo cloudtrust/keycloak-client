@@ -10,27 +10,28 @@ import (
 )
 
 const (
-	userPath                       = "/auth/admin/realms/:realm/users"
-	adminRootPath                  = "/auth/realms/:realmReq/api/admin"
-	adminExtensionAPIPath          = adminRootPath + "/realms/:realm"
-	usersAdminExtensionAPIPath     = adminExtensionAPIPath + "/users"
-	sendEmailAdminExtensionAPIPath = adminExtensionAPIPath + "/send-email"
-	userCountPath                  = userPath + "/count"
-	userIDPath                     = userPath + "/:id"
-	userGroupsPath                 = userIDPath + "/groups"
-	userGroupIDPath                = userGroupsPath + "/:groupId"
-	executeActionsEmailPath        = usersAdminExtensionAPIPath + "/:id/execute-actions-email"
-	sendReminderEmailPath          = "/auth/realms/:realm/onboarding/sendReminderEmail"
-	smsAPI                         = "/auth/realms/:realm/smsApi"
-	sendSmsCode                    = smsAPI + "/sendNewCode"
-	sendSmsConsentCode             = smsAPI + "/users/:userId/consent"
-	checkSmsConsentCode            = sendSmsConsentCode + "/:consent"
-	sendSMSPath                    = smsAPI + "/sendSms"
-	userFederationPath             = userIDPath + "/federated-identity"
-	shadowUser                     = userFederationPath + "/:provider"
-	expiredToUAcceptancePath       = adminRootPath + "/expired-tou-acceptance"
-	getSupportInfoPath             = adminRootPath + "/support-infos"
-	generateTrustIDAuthToken       = "/auth/realms/:realmReq/trustid-auth-token/realms/:realm/users/:userId/generate"
+	userPath                            = "/auth/admin/realms/:realm/users"
+	adminRootPath                       = "/auth/realms/:realmReq/api/admin"
+	adminExtensionAPIPath               = adminRootPath + "/realms/:realm"
+	usersAdminExtensionAPIPath          = adminExtensionAPIPath + "/users"
+	sendEmailAdminExtensionAPIPath      = adminExtensionAPIPath + "/send-email"
+	sendEmailUsersAdminExtensionAPIPath = usersAdminExtensionAPIPath + "/:userId/send-email"
+	userCountPath                       = userPath + "/count"
+	userIDPath                          = userPath + "/:id"
+	userGroupsPath                      = userIDPath + "/groups"
+	userGroupIDPath                     = userGroupsPath + "/:groupId"
+	executeActionsEmailPath             = usersAdminExtensionAPIPath + "/:id/execute-actions-email"
+	sendReminderEmailPath               = "/auth/realms/:realm/onboarding/sendReminderEmail"
+	smsAPI                              = "/auth/realms/:realm/smsApi"
+	sendSmsCode                         = smsAPI + "/sendNewCode"
+	sendSmsConsentCode                  = smsAPI + "/users/:userId/consent"
+	checkSmsConsentCode                 = sendSmsConsentCode + "/:consent"
+	sendSMSPath                         = smsAPI + "/sendSms"
+	userFederationPath                  = userIDPath + "/federated-identity"
+	shadowUser                          = userFederationPath + "/:provider"
+	expiredToUAcceptancePath            = adminRootPath + "/expired-tou-acceptance"
+	getSupportInfoPath                  = adminRootPath + "/support-infos"
+	generateTrustIDAuthToken            = "/auth/realms/:realmReq/trustid-auth-token/realms/:realm/users/:userId/generate"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -149,6 +150,12 @@ func (c *Client) LinkShadowUser(accessToken string, reqRealmName string, userID 
 // SendEmail sends an email to a user
 func (c *Client) SendEmail(accessToken string, reqRealmName string, realmName string, emailRep keycloak.EmailRepresentation) error {
 	_, err := c.post(accessToken, nil, url.Path(sendEmailAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), body.JSON(emailRep))
+	return err
+}
+
+// SendEmailToUser sends an email to the user specified by the UserID
+func (c *Client) SendEmailToUser(accessToken string, reqRealmName string, realmName string, userID string, emailRep keycloak.EmailRepresentation) error {
+	_, err := c.post(accessToken, nil, url.Path(sendEmailUsersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), url.Param("userId", userID), body.JSON(emailRep))
 	return err
 }
 

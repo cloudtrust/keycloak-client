@@ -774,6 +774,7 @@ type EmailThemingRepresentation struct {
 	Template           *string            `json:"template,omitempty"`
 	TemplateParameters *map[string]string `json:"templateParameters,omitempty"`
 	Locale             *string            `json:"locale,omitempty"`
+	ThemeRealmName     *string            `json:"themeRealmName,omitempty"`
 }
 
 // AttachementRepresentation struct
