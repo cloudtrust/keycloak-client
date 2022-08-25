@@ -26,7 +26,8 @@ const (
 	sendSmsConsentCode             = smsAPI + "/users/:userId/consent"
 	checkSmsConsentCode            = sendSmsConsentCode + "/:consent"
 	sendSMSPath                    = smsAPI + "/sendSms"
-	shadowUser                     = userIDPath + "/federated-identity/:provider"
+	userFederationPath             = userIDPath + "/federated-identity"
+	shadowUser                     = userFederationPath + "/:provider"
 	expiredToUAcceptancePath       = adminRootPath + "/expired-tou-acceptance"
 	getSupportInfoPath             = adminRootPath + "/support-infos"
 	generateTrustIDAuthToken       = "/auth/realms/:realmReq/trustid-auth-token/realms/:realm/users/:userId/generate"
@@ -130,6 +131,13 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 
 	_, err := c.post(accessToken, nil, plugins...)
 	return err
+}
+
+// GetFederatedIdentities gets the federated identities of a user in the given realm
+func (c *Client) GetFederatedIdentities(accessToken string, realmName string, userID string) ([]keycloak.FederatedIdentityRepresentation, error) {
+	var res []keycloak.FederatedIdentityRepresentation
+	var err = c.get(accessToken, &res, url.Path(userFederationPath), url.Param("realm", realmName), url.Param("id", userID))
+	return res, err
 }
 
 // LinkShadowUser links shadow user to a realm in the context of brokering
