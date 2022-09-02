@@ -3,6 +3,8 @@ package keycloak
 import (
 	"strconv"
 	"time"
+
+	"github.com/cloudtrust/common-service/v2/fields"
 )
 
 // Get a given attribute
@@ -174,6 +176,51 @@ func (u *UserRepresentation) RemoveAttribute(key AttributeKey) {
 	if u.Attributes != nil {
 		u.Attributes.Remove(key)
 	}
+}
+
+// GetFieldValues returns a field value
+func (u *UserRepresentation) GetFieldValues(field fields.Field) []string {
+	switch field {
+	case fields.Email:
+		return toSlice(u.Email)
+	case fields.FirstName:
+		return toSlice(u.FirstName)
+	case fields.LastName:
+		return toSlice(u.LastName)
+	}
+	return u.GetAttribute(AttributeKey(field.AttributeName()))
+}
+
+func toSlice(value *string) []string {
+	if value == nil {
+		return nil
+	}
+	return []string{*value}
+}
+
+// SetFieldValues sets a field value
+func (u *UserRepresentation) SetFieldValues(field fields.Field, values []string) {
+	switch field {
+	case fields.Email:
+		u.Email = toSingleString(values)
+	case fields.FirstName:
+		u.FirstName = toSingleString(values)
+	case fields.LastName:
+		u.LastName = toSingleString(values)
+	default:
+		if len(values) == 0 {
+			u.RemoveAttribute(AttributeKey(field.AttributeName()))
+		} else {
+			u.SetAttribute(AttributeKey(field.AttributeName()), values)
+		}
+	}
+}
+
+func toSingleString(values []string) *string {
+	if len(values) == 1 {
+		return &values[0]
+	}
+	return nil
 }
 
 // GetAttribute returns an attribute given its key
