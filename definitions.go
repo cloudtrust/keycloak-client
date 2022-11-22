@@ -1,5 +1,9 @@
 package keycloak
 
+import (
+	"strings"
+)
+
 // AdminEventRepresentation struct
 type AdminEventRepresentation struct {
 	AuthDetails    *AuthDetailsRepresentation `json:"authDetails,omitempty"`
@@ -442,7 +446,7 @@ type RealmRepresentation struct {
 	AdminEventsDetailsEnabled           *bool                                   `json:"adminEventsDetailsEnabled,omitempty"`
 	AdminEventsEnabled                  *bool                                   `json:"adminEventsEnabled,omitempty"`
 	AdminTheme                          *string                                 `json:"adminTheme,omitempty"`
-	Attributes                          *map[string]interface{}                 `json:"attributes,omitempty"`
+	Attributes                          *map[string]*string                     `json:"attributes,omitempty"`
 	AuthenticationFlows                 *[]AuthenticationFlowRepresentation     `json:"authenticationFlows,omitempty"`
 	AuthenticatorConfig                 *[]AuthenticatorConfigRepresentation    `json:"authenticatorConfig,omitempty"`
 	BrowserFlow                         *string                                 `json:"browserFlow,omitempty"`
@@ -811,6 +815,17 @@ type EmailInfoRepresentation struct {
 	CreationDate *int64  `json:"creationDate,omitempty"`
 }
 
+// TrustIDAuthTokenRepresentation struct
 type TrustIDAuthTokenRepresentation struct {
 	Token *string `json:"token"`
+}
+
+// IsUserProfileEnabled tells if user profile is enabled for the given realm
+func (r *RealmRepresentation) IsUserProfileEnabled() bool {
+	if r.Attributes != nil && *r.Attributes != nil {
+		if v, ok := (*r.Attributes)["userProfileEnabled"]; ok {
+			return v != nil && strings.EqualFold(*v, "true")
+		}
+	}
+	return false
 }

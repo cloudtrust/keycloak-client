@@ -32,6 +32,7 @@ const (
 	expiredToUAcceptancePath            = adminRootPath + "/expired-tou-acceptance"
 	getSupportInfoPath                  = adminRootPath + "/support-infos"
 	generateTrustIDAuthToken            = "/auth/realms/:realmReq/trustid-auth-token/realms/:realm/users/:userId/generate"
+	profilePath                         = userPath + "/profile"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
@@ -191,8 +192,16 @@ func (c *Client) GetSupportInfo(accessToken string, email string) ([]keycloak.Em
 	return emailInfos, err
 }
 
+// GenerateTrustIDAuthToken generates a TrustID auth token
 func (c *Client) GenerateTrustIDAuthToken(accessToken string, reqRealmName string, realmName string, userID string) (string, error) {
 	var token keycloak.TrustIDAuthTokenRepresentation
 	err := c.get(accessToken, &token, url.Path(generateTrustIDAuthToken), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), url.Param("userId", userID))
 	return *token.Token, err
+}
+
+// GetUserProfile gets the configuration of attribute management
+func (c *Client) GetUserProfile(accessToken string, realmName string) (keycloak.UserProfileRepresentation, error) {
+	var profile keycloak.UserProfileRepresentation
+	err := c.get(accessToken, &profile, url.Path(profilePath), url.Param("realm", realmName))
+	return profile, err
 }

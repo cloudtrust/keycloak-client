@@ -28,7 +28,7 @@ func (c *Client) ResetPassword(accessToken string, realmName, userID string, cre
 	return c.put(accessToken, url.Path(resetPasswordPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(cred))
 }
 
-// Logout all sessions of the user.
+// LogoutAllSessions of the user.
 func (c *Client) LogoutAllSessions(accessToken string, realmName, userID string) error {
 	var _, err = c.post(accessToken, nil, url.Path(logoutPath), url.Param("realm", realmName), url.Param("id", userID))
 	return err

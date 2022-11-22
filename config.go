@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// KeycloakURIProvider interface
 type KeycloakURIProvider interface {
 	GetDefaultKey() string
 	GetAllBaseURIs() []string
