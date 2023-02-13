@@ -13,6 +13,7 @@ type kcURIProvider struct {
 	entries    map[string]string
 }
 
+// NewKeycloakURIProviderFromArray creates a Keycloak URI provider
 func NewKeycloakURIProviderFromArray(uris []string) (keycloak.KeycloakURIProvider, error) {
 	var entries = make(map[string]string)
 	var defaultKey = "default"
@@ -26,6 +27,7 @@ func NewKeycloakURIProviderFromArray(uris []string) (keycloak.KeycloakURIProvide
 	return NewKeycloakURIProvider(entries, defaultKey)
 }
 
+// NewKeycloakURIProvider creates a Keycloak URI provider
 func NewKeycloakURIProvider(entries map[string]string, defaultKey string) (keycloak.KeycloakURIProvider, error) {
 	if len(entries) == 0 {
 		return nil, errors.New("entries should not be empty")
@@ -77,6 +79,7 @@ func (kup *kcURIProvider) ForEachTokenURI(callback func(realm, tokenURI string))
 	}
 }
 
+// ImportLegacyAddrTokenProvider
 func ImportLegacyAddrTokenProvider(c *keycloak.Config) error {
 	if c.URIProvider != nil {
 		return nil

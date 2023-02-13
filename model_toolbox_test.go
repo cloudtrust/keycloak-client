@@ -10,6 +10,23 @@ var (
 	supportedDateLayouts = []string{"02.01.2006", "2006/01/02"}
 )
 
+func TestAttributes(t *testing.T) {
+	var attrbs = Attributes{}
+	var key AttributeKey = "key"
+
+	t.Run("key does not exist", func(t *testing.T) {
+		assert.Nil(t, attrbs.GetString(key))
+	})
+	t.Run("key exists with empty value", func(t *testing.T) {
+		attrbs[key] = []string{}
+		assert.Nil(t, attrbs.GetString(key))
+	})
+	t.Run("key exists with non empty value", func(t *testing.T) {
+		attrbs[key] = []string{"abc", "def"}
+		assert.Equal(t, "abc", *attrbs.GetString(key))
+	})
+}
+
 func TestUserRepresentationAttributes(t *testing.T) {
 	var userRep UserRepresentation
 

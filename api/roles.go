@@ -32,7 +32,7 @@ func (c *Client) GetRoles(accessToken string, realmName string) ([]keycloak.Role
 	return resp, err
 }
 
-// GetRoles gets all roles for the realm or client with their attributes
+// GetRolesWithAttributes gets all roles for the realm or client with their attributes
 func (c *Client) GetRolesWithAttributes(accessToken string, realmName string) ([]keycloak.RoleRepresentation, error) {
 	var resp = []keycloak.RoleRepresentation{}
 	var err = c.get(accessToken, &resp, url.Path(rolePath), url.Param("realm", realmName), query.Add("briefRepresentation", "false"))
