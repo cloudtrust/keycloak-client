@@ -1,0 +1,1 @@
+goLibBuildPipeline('back-keycloak-client', true, 'ssh://git@github.com/cloudtrust/keycloak-client')
