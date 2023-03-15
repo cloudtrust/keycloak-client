@@ -18,6 +18,7 @@ const (
 	sendEmailUsersAdminExtensionAPIPath = usersAdminExtensionAPIPath + "/:userId/send-email"
 	userCountPath                       = userPath + "/count"
 	userIDPath                          = userPath + "/:id"
+	getUserPath                         = usersAdminExtensionAPIPath + "/:id"
 	userGroupsPath                      = userIDPath + "/groups"
 	userGroupIDPath                     = userGroupsPath + "/:groupId"
 	executeActionsEmailPath             = usersAdminExtensionAPIPath + "/:id/execute-actions-email"
@@ -53,8 +54,12 @@ func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName stri
 }
 
 // CreateUser creates the user from its UserRepresentation. The username must be unique.
-func (c *Client) CreateUser(accessToken string, reqRealmName, targetRealmName string, user keycloak.UserRepresentation) (string, error) {
-	return c.post(accessToken, nil, url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
+func (c *Client) CreateUser(accessToken string, reqRealmName, targetRealmName string, user keycloak.UserRepresentation, paramKV ...string) (string, error) {
+	if len(paramKV)%2 != 0 {
+		return "", errors.New(keycloak.MsgErrInvalidParam + "." + keycloak.EvenParams)
+	}
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(usersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
+	return c.post(accessToken, nil, plugins...)
 }
 
 // CountUsers returns the number of users in the realm.
@@ -67,7 +72,7 @@ func (c *Client) CountUsers(accessToken string, realmName string) (int, error) {
 // GetUser gets the represention of the user.
 func (c *Client) GetUser(accessToken string, realmName, userID string) (keycloak.UserRepresentation, error) {
 	var resp = keycloak.UserRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(userIDPath), url.Param("realm", realmName), url.Param("id", userID))
+	var err = c.get(accessToken, &resp, url.Path(getUserPath), url.Param("realmReq", realmName), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
 
