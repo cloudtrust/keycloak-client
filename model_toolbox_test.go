@@ -21,6 +21,10 @@ func TestAttributes(t *testing.T) {
 		attrbs[key] = []string{}
 		assert.Nil(t, attrbs.GetString(key))
 	})
+	t.Run("key exists with empty string", func(t *testing.T) {
+		attrbs[key] = []string{""}
+		assert.Nil(t, attrbs.GetString(key))
+	})
 	t.Run("key exists with non empty value", func(t *testing.T) {
 		attrbs[key] = []string{"abc", "def"}
 		assert.Equal(t, "abc", *attrbs.GetString(key))

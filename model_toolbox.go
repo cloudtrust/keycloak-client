@@ -25,6 +25,10 @@ func (a Attributes) Remove(key AttributeKey) {
 // GetString gets the first value of a given attribute
 func (a Attributes) GetString(key AttributeKey) *string {
 	var attrbs = a[key]
+	if len(attrbs) == 1 && attrbs[0] == "" {
+		// User profile sometimes sets a default empty value
+		return nil
+	}
 	if len(attrbs) > 0 {
 		return &attrbs[0]
 	}
@@ -38,9 +42,9 @@ func (a Attributes) SetString(key AttributeKey, value string) {
 
 // GetInt gets the first value of a given attribute
 func (a Attributes) GetInt(key AttributeKey) (*int, error) {
-	var attrbs = a[key]
-	if len(attrbs) > 0 {
-		var res64, err = strconv.ParseInt(attrbs[0], 0, 0)
+	var attrb = a.GetString(key)
+	if attrb != nil {
+		var res64, err = strconv.ParseInt(*attrb, 0, 0)
 		var res = int(res64)
 		return &res, err
 	}
@@ -54,9 +58,9 @@ func (a Attributes) SetInt(key AttributeKey, value int) {
 
 // GetBool gets the first value of a given attribute
 func (a Attributes) GetBool(key AttributeKey) (*bool, error) {
-	var attrbs = a[key]
-	if len(attrbs) > 0 {
-		var res, err = strconv.ParseBool(attrbs[0])
+	var attrb = a.GetString(key)
+	if attrb != nil {
+		var res, err = strconv.ParseBool(*attrb)
 		return &res, err
 	}
 	return nil, nil
