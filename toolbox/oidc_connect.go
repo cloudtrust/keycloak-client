@@ -82,6 +82,7 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 	var ok bool
 	if oti, ok = o.perRealmTokenInfo[strings.ToLower(realm)]; !ok {
 		if realm == o.defaultKey {
+			o.logger.Warn(ctx, "msg", "unknownRealm")
 			return "", errorhandler.CreateInternalServerError("unknownRealm")
 		}
 		return o.ProvideTokenForRealm(ctx, o.defaultKey)
@@ -119,6 +120,10 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		o.logger.Warn(ctx, "msg", fmt.Sprintf("Can't deserialize token. JSON: %s", buf.String()))
 		return "", errorhandler.CreateInternalServerError("unexpected.oidcToken")
 	}
+
+	o.logger.Info(ctx, "msg", oti.oidcToken.ExpiresIn, "type", "DEBUG")
+	o.logger.Info(ctx, "msg", time.Now().Unix(), "type", "DEBUG")
+	o.logger.Info(ctx, "msg", oti.oidcToken.AccessToken, "type", "DEBUG")
 	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn
 
 	return oti.oidcToken.AccessToken, nil
