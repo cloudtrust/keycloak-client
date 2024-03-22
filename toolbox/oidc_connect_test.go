@@ -24,11 +24,29 @@ type TestResponse struct {
 }
 
 func (t *TestResponse) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(t.StatusCode)
 	if !t.NoBody {
 		w.Write([]byte(t.ResponseBody))
 	}
 	time.Sleep(20 * time.Millisecond)
+}
+
+func createTechnicalUser(realm string, user string, password string, clientID string) OAuth2Config {
+	return OAuth2Config{
+		Realm:    &realm,
+		Username: &user,
+		Password: &password,
+		ClientID: &clientID,
+	}
+}
+
+func createServiceAccount(realm string, clientID string, clientSecret string) OAuth2Config {
+	return OAuth2Config{
+		Realm:        &realm,
+		ClientID:     &clientID,
+		ClientSecret: &clientSecret,
+	}
 }
 
 func TestCreateToken(t *testing.T) {
@@ -64,79 +82,100 @@ func TestCreateToken(t *testing.T) {
 	var invalidURIProvider, _ = NewKeycloakURIProviderFromArray([]string{ts.URL + "0"})
 	var ctx = context.TODO()
 
+	var runFailingTest = func(t *testing.T, uriProvider keycloak.KeycloakURIProvider, realm string) {
+		t.Run("Technical user", func(t *testing.T) {
+			var creds = createTechnicalUser(realm, "user", "passwd", "clientID")
+			var p = NewOAuth2TokenProvider(keycloak.Config{URIProvider: uriProvider}, creds, mockLogger)
+			var _, err = p.ProvideToken(ctx)
+			assert.NotNil(t, err)
+		})
+		t.Run("Service account", func(t *testing.T) {
+			var creds = createServiceAccount(realm, "clientID", "client-secret")
+			var p = NewOAuth2TokenProvider(keycloak.Config{URIProvider: uriProvider}, creds, mockLogger)
+			var _, err = p.ProvideToken(ctx)
+			assert.NotNil(t, err)
+		})
+	}
+
 	t.Run("No body in HTTP response", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "nobody", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(ctx)
-		assert.NotNil(t, err)
+		runFailingTest(t, uriProvider, "nobody")
 	})
-
 	t.Run("Invalid credentials", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "invalid", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(ctx)
-		assert.NotNil(t, err)
+		runFailingTest(t, uriProvider, "invalid")
 	})
-
 	t.Run("Invalid JSON", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "bad-json", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(ctx)
-		assert.NotNil(t, err)
+		runFailingTest(t, uriProvider, "bad-json")
 	})
-
 	t.Run("No HTTP response", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: invalidURIProvider}, "bad-json", "user", "passwd", "clientID", mockLogger)
-		var _, err = p.ProvideToken(ctx)
-		assert.NotNil(t, err)
+		runFailingTest(t, invalidURIProvider, "bad-json")
 	})
 
 	t.Run("Valid credentials", func(t *testing.T) {
-		var p = NewOidcTokenProvider(keycloak.Config{URIProvider: uriProvider}, "valid", "user", "passwd", "clientID", mockLogger)
+		var runValidCredentialsTest = func(t *testing.T, uriProvider keycloak.KeycloakURIProvider, creds OAuth2Config, logger Logger) {
+			var p = NewOAuth2TokenProvider(keycloak.Config{URIProvider: uriProvider}, creds, logger)
 
-		var timeStart = time.Now()
+			var timeStart = time.Now()
 
-		// First call
-		var token, err = p.ProvideToken(ctx)
-		assert.Nil(t, err)
-		assert.NotEqual(t, "", token)
+			// First call
+			var token, err = p.ProvideToken(ctx)
+			assert.Nil(t, err)
+			assert.NotEqual(t, "", token)
 
-		var timeAfterFirstCall = time.Now()
+			var timeAfterFirstCall = time.Now()
 
-		// Second call
-		token, err = p.ProvideToken(ctx)
-		assert.Nil(t, err)
-		assert.NotEqual(t, "", token)
+			// Second call
+			token, err = p.ProvideToken(ctx)
+			assert.Nil(t, err)
+			assert.NotEqual(t, "", token)
 
-		var timeAfterSecondCall = time.Now()
+			var timeAfterSecondCall = time.Now()
 
-		var withHTTPDuration = int64(20 * time.Millisecond)
-		var withoutHTTPDuration = int64(5 * time.Millisecond)
-		var duration1 = timeAfterFirstCall.Sub(timeStart).Nanoseconds()
-		var duration2 = timeAfterSecondCall.Sub(timeAfterFirstCall).Nanoseconds()
-		var msg = fmt.Sprintf("Durations: no valid token loaded yet:%d (expected > %d), token not expired:%d (expected < %d)", duration1, withHTTPDuration, duration2, withoutHTTPDuration)
-		assert.True(t, duration1 > withHTTPDuration, msg)
-		assert.True(t, duration2 < withoutHTTPDuration, msg)
+			var withHTTPDuration = int64(20 * time.Millisecond)
+			var withoutHTTPDuration = int64(5 * time.Millisecond)
+			var duration1 = timeAfterFirstCall.Sub(timeStart).Nanoseconds()
+			var duration2 = timeAfterSecondCall.Sub(timeAfterFirstCall).Nanoseconds()
+			var msg = fmt.Sprintf("Durations: no valid token loaded yet:%d (expected > %d), token not expired:%d (expected < %d)", duration1, withHTTPDuration, duration2, withoutHTTPDuration)
+			assert.True(t, duration1 > withHTTPDuration, msg)
+			assert.True(t, duration2 < withoutHTTPDuration, msg)
+		}
+
+		t.Run("Technical user", func(t *testing.T) {
+			runValidCredentialsTest(t, uriProvider, createTechnicalUser("valid", "user", "passwd", "clientID"), mockLogger)
+		})
+		t.Run("Service account", func(t *testing.T) {
+			runValidCredentialsTest(t, uriProvider, createServiceAccount("valid", "clientID", "client-secret"), mockLogger)
+		})
 	})
 
 	t.Run("Multiple issuers", func(t *testing.T) {
-		var anotherIssuer = "second"
-		var targets = map[string]string{"*": ts.URL, anotherIssuer: ts.URL + "/second"}
-		var kup, _ = NewKeycloakURIProvider(targets, "*")
-		var cfg = keycloak.Config{
-			URIProvider: kup,
-			Timeout:     time.Second,
+		var runMultipleIssuersTest = func(t *testing.T, creds OAuth2Config) {
+			var anotherIssuer = "second"
+			var targets = map[string]string{"*": ts.URL, anotherIssuer: ts.URL + "/second"}
+			var kup, _ = NewKeycloakURIProvider(targets, "*")
+			var cfg = keycloak.Config{
+				URIProvider: kup,
+				Timeout:     time.Second,
+			}
+			var p = NewOAuth2TokenProvider(cfg, creds, mockLogger)
+
+			var token1, err = p.ProvideTokenForRealm(ctx, "any")
+			assert.Nil(t, err)
+			assert.NotEqual(t, "", token1)
+
+			var token2 string
+			token2, err = p.ProvideTokenForRealm(ctx, "another")
+			assert.Nil(t, err)
+			assert.Equal(t, token1, token2)
+
+			token2, err = p.ProvideTokenForRealm(ctx, anotherIssuer)
+			assert.Nil(t, err)
+			assert.NotEqual(t, token1, token2)
 		}
-		var p = NewOidcTokenProvider(cfg, "valid", "user", "passwd", "clientID", mockLogger)
-
-		var token1, err = p.ProvideTokenForRealm(ctx, "any")
-		assert.Nil(t, err)
-		assert.NotEqual(t, "", token1)
-
-		var token2 string
-		token2, err = p.ProvideTokenForRealm(ctx, "another")
-		assert.Nil(t, err)
-		assert.Equal(t, token1, token2)
-
-		token2, err = p.ProvideTokenForRealm(ctx, anotherIssuer)
-		assert.Nil(t, err)
-		assert.NotEqual(t, token1, token2)
+		t.Run("Technical user", func(t *testing.T) {
+			runMultipleIssuersTest(t, createTechnicalUser("valid", "user", "passwd", "clientID"))
+		})
+		t.Run("Service account", func(t *testing.T) {
+			runMultipleIssuersTest(t, createServiceAccount("valid", "clientID", "client-secret"))
+		})
 	})
 }
