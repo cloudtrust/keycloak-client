@@ -61,6 +61,7 @@ golang.org/x/net/publicsuffix
 # golang.org/x/oauth2 v0.14.0
 ## explicit; go 1.18
 golang.org/x/oauth2
+golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
 # google.golang.org/appengine v1.6.8
 ## explicit; go 1.11
