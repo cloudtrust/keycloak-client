@@ -99,7 +99,7 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		o.logger.Warn(ctx, "msg", err.Error())
 		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
 	}
-	if err == nil && resp.StatusCode == http.StatusUnauthorized {
+	if resp.StatusCode == http.StatusUnauthorized {
 		o.logger.Warn(ctx, "msg", "Technical user credentials are invalid")
 		return "", errorhandler.Error{
 			Status:  http.StatusUnauthorized,
