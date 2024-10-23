@@ -7,8 +7,8 @@ import (
 
 	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/cloudtrust/keycloak-client/v2/toolbox/mock"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 const (

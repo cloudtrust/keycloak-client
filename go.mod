@@ -1,6 +1,8 @@
 module github.com/cloudtrust/keycloak-client/v2
 
-go 1.17
+go 1.22
+
+toolchain go1.23.2
 
 require (
 	github.com/cloudtrust/common-service/v2 v2.6.14
@@ -11,7 +13,9 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
+	go.uber.org/mock v0.5.0
+	golang.org/x/oauth2 v0.14.0
 	gopkg.in/h2non/gentleman.v2 v2.0.5
 )
 
@@ -22,10 +26,8 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/oauth2 v0.14.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.34.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
