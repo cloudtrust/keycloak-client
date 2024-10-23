@@ -1,5 +1,5 @@
-# github.com/cloudtrust/common-service/v2 v2.6.14
-## explicit; go 1.17
+# github.com/cloudtrust/common-service/v2 v2.7.0
+## explicit; go 1.21.0
 github.com/cloudtrust/common-service/v2/errors
 github.com/cloudtrust/common-service/v2/fields
 github.com/cloudtrust/common-service/v2/json
