@@ -1,0 +1,3 @@
+{
+    "extends": ["local>CLOUDTRUST/configuration-renovate-github:back"]
+}
