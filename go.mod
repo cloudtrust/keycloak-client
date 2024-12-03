@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/cloudtrust/common-service/v2 v2.8.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/gbrlsnchs/jwt/v2 v2.0.0
+	github.com/gbrlsnchs/jwt/v3 v3.0.1
 	github.com/go-kit/kit v0.13.0
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.1
