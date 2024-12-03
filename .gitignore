@@ -6,7 +6,6 @@
 
 # Test binary, build with `go test -c`
 *.test
-mock/
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -20,7 +19,6 @@ vendor/*
 bin/*
 **/debug
 **/.coverprofile
-mock/
 
 # Activate vendoring
 !vendor/modules.txt
