@@ -17,6 +17,7 @@ const (
 	MsgErrUnknownResponseStatusCode = "unknownResponseStatusCode"
 	MsgErrExistingValue             = "existing"
 	MsgErrReadOnly                  = "readOnlyValue"
+	MsgErrCannotGetIssuer           = "cannotGetIssuer"
 
 	EvenParams       = "key/valParametersShouldBeEven"
 	TokenProviderURL = "tokenProviderURL"
