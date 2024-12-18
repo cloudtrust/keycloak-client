@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	v2 "github.com/cloudtrust/keycloak-client/v2"
+	keycloak "github.com/cloudtrust/keycloak-client/v2"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -42,10 +42,10 @@ func (m *ProfileRetriever) EXPECT() *ProfileRetrieverMockRecorder {
 }
 
 // GetRealm mocks base method.
-func (m *ProfileRetriever) GetRealm(accessToken, realmName string) (v2.RealmRepresentation, error) {
+func (m *ProfileRetriever) GetRealm(accessToken, realmName string) (keycloak.RealmRepresentation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRealm", accessToken, realmName)
-	ret0, _ := ret[0].(v2.RealmRepresentation)
+	ret0, _ := ret[0].(keycloak.RealmRepresentation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -57,10 +57,10 @@ func (mr *ProfileRetrieverMockRecorder) GetRealm(accessToken, realmName any) *go
 }
 
 // GetUserProfile mocks base method.
-func (m *ProfileRetriever) GetUserProfile(accessToken, realmName string) (v2.UserProfileRepresentation, error) {
+func (m *ProfileRetriever) GetUserProfile(accessToken, realmName string) (keycloak.UserProfileRepresentation, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserProfile", accessToken, realmName)
-	ret0, _ := ret[0].(v2.UserProfileRepresentation)
+	ret0, _ := ret[0].(keycloak.UserProfileRepresentation)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

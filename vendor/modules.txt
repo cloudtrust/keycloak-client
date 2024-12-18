@@ -11,7 +11,6 @@ github.com/coreos/go-oidc
 github.com/davecgh/go-spew/spew
 # github.com/gbrlsnchs/jwt/v2 v2.0.0
 ## explicit
-github.com/gbrlsnchs/jwt/v2
 # github.com/go-kit/kit v0.13.0
 ## explicit; go 1.17
 github.com/go-kit/kit/endpoint
@@ -23,6 +22,9 @@ github.com/go-kit/log
 # github.com/go-logfmt/logfmt v0.6.0
 ## explicit; go 1.17
 github.com/go-logfmt/logfmt
+# github.com/golang-jwt/jwt/v5 v5.2.1
+## explicit; go 1.18
+github.com/golang-jwt/jwt/v5
 # github.com/golang/mock v1.6.0
 ## explicit; go 1.11
 github.com/golang/mock/mockgen/model

@@ -11,13 +11,12 @@ import (
 	commonhttp "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/cloudtrust/keycloak-client/v2/toolbox"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
 	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/timeout"
-
-	jwt "github.com/gbrlsnchs/jwt/v2"
 )
 
 // Client is the keycloak client.
@@ -330,20 +329,18 @@ func extractHostFromToken(token string) (string, error) {
 	return u.Host, nil
 }
 
-func extractIssuerFromToken(token string) (string, error) {
-	payload, _, err := jwt.Parse(token)
-
+func extractIssuerFromToken(tokenStr string) (string, error) {
+	token, _, err := jwt.NewParser().ParseUnverified(tokenStr, jwt.MapClaims{})
 	if err != nil {
 		return "", errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenMsg)
 	}
 
-	var jot Token
-
-	if err = jwt.Unmarshal(payload, &jot); err != nil {
-		return "", errors.Wrap(err, keycloak.MsgErrCannotUnmarshal+"."+keycloak.TokenMsg)
+	issuer, err := token.Claims.GetIssuer()
+	if err != nil {
+		return "", errors.Wrap(err, keycloak.MsgErrCannotGetIssuer+"."+keycloak.TokenMsg)
 	}
 
-	return jot.Issuer, nil
+	return issuer, nil
 }
 
 // createQueryPlugins create query parameters with the key values paramKV.
