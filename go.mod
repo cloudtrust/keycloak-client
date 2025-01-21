@@ -3,7 +3,7 @@ module github.com/cloudtrust/keycloak-client/v2
 go 1.22
 
 require (
-	github.com/cloudtrust/common-service/v2 v2.8.6
+	github.com/cloudtrust/common-service/v2 v2.8.7
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/go-kit/kit v0.13.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
