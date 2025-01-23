@@ -3,7 +3,7 @@
 github.com/cloudtrust/common-service/v2/errors
 github.com/cloudtrust/common-service/v2/fields
 github.com/cloudtrust/common-service/v2/json
-# github.com/coreos/go-oidc v2.2.1+incompatible
+# github.com/coreos/go-oidc v2.3.0+incompatible
 ## explicit
 github.com/coreos/go-oidc
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
@@ -61,6 +61,11 @@ golang.org/x/net/publicsuffix
 golang.org/x/oauth2
 golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
+# gopkg.in/go-jose/go-jose.v2 v2.6.3
+## explicit
+gopkg.in/go-jose/go-jose.v2
+gopkg.in/go-jose/go-jose.v2/cipher
+gopkg.in/go-jose/go-jose.v2/json
 # gopkg.in/h2non/gentleman.v2 v2.0.5
 ## explicit
 gopkg.in/h2non/gentleman.v2
@@ -77,11 +82,6 @@ gopkg.in/h2non/gentleman.v2/plugins/query
 gopkg.in/h2non/gentleman.v2/plugins/timeout
 gopkg.in/h2non/gentleman.v2/plugins/url
 gopkg.in/h2non/gentleman.v2/utils
-# gopkg.in/square/go-jose.v2 v2.6.0
-## explicit
-gopkg.in/square/go-jose.v2
-gopkg.in/square/go-jose.v2/cipher
-gopkg.in/square/go-jose.v2/json
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
