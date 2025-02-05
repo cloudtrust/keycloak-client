@@ -39,10 +39,10 @@ const (
 	ctSendSMSPath         = ctSmsAPI + "/sendSms"
 
 	// API keycloak-custom-flows Onboarding
-	ctSendReminderEmailPath = "/auth/realms/:realm/onboarding/sendReminderEmail"
+	ctSendReminderEmailPath = "/auth/realms/:realm/ctcustom/sendReminderEmail"
 
 	// API keycloak-custom-flows TrustID auth token
-	ctGenerateTrustIDAuthToken = "/auth/realms/:realmReq/trustid-auth-token/realms/:realm/users/:userId/generate"
+	ctGenerateTrustIDAuthToken = "/auth/realms/:realmReq/ctcustom/realms/:realm/users/:userId/generate-trustid-auth-token"
 )
 
 // GetUsers returns a list of users, filtered according to the query parameters.
