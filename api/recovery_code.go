@@ -8,8 +8,8 @@ import (
 
 const (
 	// API keycloak-custom-flows
-	ctRecoveryCodePath   = "/auth/realms/:realm/recovery-code"
-	ctActivationCodePath = "/auth/realms/:realm/activation-code"
+	ctRecoveryCodePath   = "/auth/realms/:realm/ctcustom/recovery-code"
+	ctActivationCodePath = "/auth/realms/:realm/ctcustom/activation-code"
 )
 
 // CreateRecoveryCode creates a new recovery code authenticator and returns the code.

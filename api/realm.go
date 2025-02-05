@@ -45,14 +45,6 @@ func (c *Client) DeleteRealm(accessToken string, realmName string) error {
 	return c.delete(accessToken, url.Path(kcRealmPath), url.Param("realm", realmName))
 }
 
-// ExportRealm recovers the full realm.
-/* ABANDONNED
-func (c *Client) ExportRealm(accessToken string, realmName string) (keycloak.RealmRepresentation, error) {
-	var resp = keycloak.RealmRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(ctExportRealmPath), url.Param("realm", realmName))
-	return resp, err
-}*/
-
 // GetRealmCredentialRegistrators returns list of credentials types available for the realm
 func (c *Client) GetRealmCredentialRegistrators(accessToken string, realmName string) ([]string, error) {
 	var resp = []string{}
