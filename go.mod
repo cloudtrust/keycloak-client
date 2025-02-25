@@ -1,6 +1,8 @@
 module github.com/cloudtrust/keycloak-client/v2
 
-go 1.22
+go 1.23.0
+
+toolchain go1.24.0
 
 require (
 	github.com/cloudtrust/common-service/v2 v2.8.7
@@ -13,7 +15,7 @@ require (
 	github.com/spf13/pflag v1.0.6
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.0
-	golang.org/x/oauth2 v0.26.0
+	golang.org/x/oauth2 v0.27.0
 	gopkg.in/h2non/gentleman.v2 v2.0.5
 )
 
