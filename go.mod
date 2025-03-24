@@ -2,7 +2,7 @@ module github.com/cloudtrust/keycloak-client/v2
 
 go 1.23.0
 
-toolchain go1.24.0
+toolchain go1.24.1
 
 require (
 	github.com/cloudtrust/common-service/v2 v2.8.9
