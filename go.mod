@@ -1,11 +1,9 @@
 module github.com/cloudtrust/keycloak-client/v2
 
-go 1.23.0
-
-toolchain go1.24.0
+go 1.24.1
 
 require (
-	github.com/cloudtrust/common-service/v2 v2.8.9
+	github.com/cloudtrust/common-service/v2 v2.9.0
 	github.com/coreos/go-oidc v2.3.0+incompatible
 	github.com/go-kit/kit v0.13.0
 	github.com/golang-jwt/jwt/v5 v5.2.2
