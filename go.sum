@@ -1,5 +1,5 @@
-github.com/cloudtrust/common-service/v2 v2.8.9 h1:jsbYQz8Re9YyYfPaPrPWUNQkQWPxQGs82JOxnODZKKA=
-github.com/cloudtrust/common-service/v2 v2.8.9/go.mod h1:l8tMto4+t9uG7O7dqE/waBziVwrpmX9sqwUU3MC5sww=
+github.com/cloudtrust/common-service/v2 v2.9.0 h1:8eQGz+za7zBjY0HnQNlRAP8TIe13LTVBxfZbwKpReFY=
+github.com/cloudtrust/common-service/v2 v2.9.0/go.mod h1:f8KrunuW3acSIkRxT32MElzZLCkFEblNKqiB/c3Qgy4=
 github.com/coreos/go-oidc v2.3.0+incompatible h1:+5vEsrgprdLjjQ9FzIKAzQz1wwPD+83hQRfUIPh7rO0=
 github.com/coreos/go-oidc v2.3.0+incompatible/go.mod h1:CgnwVTmzoESiwO9qyAFEMiHoZ1nMCKZlZ9V6mm3/LKc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
