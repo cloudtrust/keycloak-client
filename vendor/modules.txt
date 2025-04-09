@@ -56,7 +56,7 @@ golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.38.0
 ## explicit; go 1.23.0
 golang.org/x/net/publicsuffix
-# golang.org/x/oauth2 v0.28.0
+# golang.org/x/oauth2 v0.29.0
 ## explicit; go 1.23.0
 golang.org/x/oauth2
 golang.org/x/oauth2/clientcredentials
