@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	clientsPath       = "/auth/admin/realms/:realm/clients"
-	clientIDPath      = clientsPath + "/:id"
-	clientSecret      = clientsPath + "/client-secret"
-	clientMappersPath = clientIDPath + "/evaluate-scopes/protocol-mappers"
+	// API Keycloak out-of-the-box
+	kcClientsPath       = "/auth/admin/realms/:realm/clients"
+	kcClientIDPath      = kcClientsPath + "/:id"
+	kcClientSecret      = kcClientsPath + "/client-secret"
+	kcClientMappersPath = kcClientIDPath + "/evaluate-scopes/protocol-mappers"
 )
 
 // GetClients returns a list of clients belonging to the realm.
@@ -24,7 +25,7 @@ func (c *Client) GetClients(accessToken string, realmName string, paramKV ...str
 	}
 
 	var resp = []keycloak.ClientRepresentation{}
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(clientsPath), url.Param("realm", realmName))
+	var plugins = append(createQueryPlugins(paramKV...), url.Path(kcClientsPath), url.Param("realm", realmName))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
 }
@@ -32,25 +33,25 @@ func (c *Client) GetClients(accessToken string, realmName string, paramKV ...str
 // GetClient get the representation of the client. idClient is the id of client (not client-id).
 func (c *Client) GetClient(accessToken string, realmName, idClient string) (keycloak.ClientRepresentation, error) {
 	var resp = keycloak.ClientRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(clientIDPath), url.Param("realm", realmName), url.Param("id", idClient))
+	var err = c.get(accessToken, &resp, url.Path(kcClientIDPath), url.Param("realm", realmName), url.Param("id", idClient))
 	return resp, err
 }
 
 // UpdateClient updates the client. idClient is the id of client (not client-id).
 func (c *Client) UpdateClient(accessToken string, realmName, idClient string, clientRep keycloak.ClientRepresentation) error {
-	return c.put(accessToken, url.Path(clientIDPath), url.Param("realm", realmName), url.Param("id", idClient), body.JSON(clientRep))
+	return c.put(accessToken, url.Path(kcClientIDPath), url.Param("realm", realmName), url.Param("id", idClient), body.JSON(clientRep))
 }
 
 // GetClientMappers gets mappers of the client specified by id
 func (c *Client) GetClientMappers(accessToke string, realmName, idClient string) ([]keycloak.ClientMapperRepresentation, error) {
 	var resp = []keycloak.ClientMapperRepresentation{}
-	var err = c.get(accessToke, &resp, url.Path(clientMappersPath), url.Param("realm", realmName), url.Param("id", idClient))
+	var err = c.get(accessToke, &resp, url.Path(kcClientMappersPath), url.Param("realm", realmName), url.Param("id", idClient))
 	return resp, err
 }
 
 // GetSecret get the client secret. idClient is the id of client (not client-id).
 func (c *Client) GetSecret(accessToken string, realmName, idClient string) (keycloak.CredentialRepresentation, error) {
 	var resp = keycloak.CredentialRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(clientSecret), url.Param("realm", realmName), url.Param("id", idClient))
+	var err = c.get(accessToken, &resp, url.Path(kcClientSecret), url.Param("realm", realmName), url.Param("id", idClient))
 	return resp, err
 }
