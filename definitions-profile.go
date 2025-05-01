@@ -34,7 +34,8 @@ type ProfileAttrbRepresentation struct {
 // - person-name-prohibited-characters: error-message (string)
 type ProfileAttrbValidationRepresentation map[string]ProfileAttrValidatorRepresentation
 
-type ProfileAttrValidatorRepresentation map[string]interface{}
+// ProfileAttrValidatorRepresentation type
+type ProfileAttrValidatorRepresentation map[string]any
 
 // ProfileAttrbRequiredRepresentation struct
 type ProfileAttrbRequiredRepresentation struct {

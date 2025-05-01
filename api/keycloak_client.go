@@ -93,7 +93,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 	}
 	defer resp.Close()
 
-	var unmarshalledBody map[string]interface{}
+	var unmarshalledBody map[string]any
 	{
 		var err = resp.JSON(&unmarshalledBody)
 		if err != nil {
@@ -101,7 +101,7 @@ func (c *Client) GetToken(realm string, username string, password string) (strin
 		}
 	}
 
-	var accessToken interface{}
+	var accessToken any
 	{
 		var ok bool
 		accessToken, ok = unmarshalledBody["access_token"]
@@ -136,7 +136,7 @@ func (c *Client) AccountClient() *AccountClient {
 }
 
 // get is a HTTP get method.
-func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plugin) error {
+func (c *Client) get(accessToken string, data any, plugins ...plugin.Plugin) error {
 	var err error
 	var req = c.httpClient.Get()
 	req = applyPlugins(req, plugins...)
@@ -177,7 +177,7 @@ func (c *Client) get(accessToken string, data interface{}, plugins ...plugin.Plu
 	}
 }
 
-func (c *Client) post(accessToken string, data interface{}, plugins ...plugin.Plugin) (string, error) {
+func (c *Client) post(accessToken string, data any, plugins ...plugin.Plugin) (string, error) {
 	var err error
 	var req = c.httpClient.Post()
 	req = applyPlugins(req, plugins...)
@@ -355,7 +355,7 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 }
 
 func treatErrorStatus(resp *gentleman.Response) error {
-	var response map[string]interface{}
+	var response map[string]any
 	err := json.Unmarshal(resp.Bytes(), &response)
 	if message, ok := response["errorMessage"]; ok && err == nil {
 		return whitelistErrors(resp.StatusCode, message.(string))

@@ -14,15 +14,15 @@ const (
 )
 
 // GetAuthenticatorProviders returns a list of authenticator providers.
-func (c *Client) GetAuthenticatorProviders(accessToken string, realmName string) ([]map[string]interface{}, error) {
-	var resp = []map[string]interface{}{}
+func (c *Client) GetAuthenticatorProviders(accessToken string, realmName string) ([]map[string]any, error) {
+	var resp = []map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/authenticator-providers"), url.Param("realm", realmName))
 	return resp, err
 }
 
 // GetClientAuthenticatorProviders returns a list of client authenticator providers.
-func (c *Client) GetClientAuthenticatorProviders(accessToken string, realmName string) ([]map[string]interface{}, error) {
-	var resp = []map[string]interface{}{}
+func (c *Client) GetClientAuthenticatorProviders(accessToken string, realmName string) ([]map[string]any, error) {
+	var resp = []map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/client-authenticator-providers"), url.Param("realm", realmName))
 	return resp, err
 }
@@ -140,22 +140,22 @@ func (c *Client) DeleteAuthenticationFlow(accessToken string, realmName, flowID 
 }
 
 // GetFormActionProviders returns a list of form action providers.
-func (c *Client) GetFormActionProviders(accessToken string, realmName string) ([]map[string]interface{}, error) {
-	var resp = []map[string]interface{}{}
+func (c *Client) GetFormActionProviders(accessToken string, realmName string) ([]map[string]any, error) {
+	var resp = []map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/form-action-providers"), url.Param("realm", realmName))
 	return resp, err
 }
 
 // GetFormProviders returns a list of form providers.
-func (c *Client) GetFormProviders(accessToken string, realmName string) ([]map[string]interface{}, error) {
-	var resp = []map[string]interface{}{}
+func (c *Client) GetFormProviders(accessToken string, realmName string) ([]map[string]any, error) {
+	var resp = []map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/form-providers"), url.Param("realm", realmName))
 	return resp, err
 }
 
 // GetConfigDescriptionForClients returns the configuration descriptions for all clients.
-func (c *Client) GetConfigDescriptionForClients(accessToken string, realmName string) (map[string]interface{}, error) {
-	var resp = map[string]interface{}{}
+func (c *Client) GetConfigDescriptionForClients(accessToken string, realmName string) (map[string]any, error) {
+	var resp = map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/per-client-config-description"), url.Param("realm", realmName))
 	return resp, err
 }
@@ -192,8 +192,8 @@ func (c *Client) DeleteRequiredAction(accessToken string, realmName, actionAlias
 }
 
 // GetUnregisteredRequiredActions returns a list of unregistered required actions.
-func (c *Client) GetUnregisteredRequiredActions(accessToken string, realmName string) ([]map[string]interface{}, error) {
-	var resp = []map[string]interface{}{}
+func (c *Client) GetUnregisteredRequiredActions(accessToken string, realmName string) ([]map[string]any, error) {
+	var resp = []map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(authenticationManagementPath+"/unregistered-required-actions"), url.Param("realm", realmName))
 	return resp, err
 }
