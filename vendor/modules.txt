@@ -1,4 +1,4 @@
-# github.com/cloudtrust/common-service/v2 v2.9.2
+# github.com/cloudtrust/common-service/v2 v2.9.3
 ## explicit; go 1.24.1
 github.com/cloudtrust/common-service/v2/errors
 github.com/cloudtrust/common-service/v2/fields
@@ -49,11 +49,11 @@ github.com/stretchr/testify/assert/yaml
 # go.uber.org/mock v0.5.2
 ## explicit; go 1.23
 go.uber.org/mock/gomock
-# golang.org/x/crypto v0.36.0
+# golang.org/x/crypto v0.37.0
 ## explicit; go 1.23.0
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/pbkdf2
-# golang.org/x/net v0.38.0
+# golang.org/x/net v0.39.0
 ## explicit; go 1.23.0
 golang.org/x/net/publicsuffix
 # golang.org/x/oauth2 v0.29.0
