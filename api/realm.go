@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	// API Keycloak out-of-the-box
 	realmRootPath               = "/auth/admin/realms"
 	realmPath                   = realmRootPath + "/:realm"
 	realmCredentialRegistrators = realmPath + "/credential-registrators"

@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"regexp"
+	"strings"
 
 	"fmt"
 	"net/http"
@@ -31,6 +32,52 @@ type Client struct {
 type AccountClient struct {
 	client *Client
 }
+
+const (
+	msgErrUnkownHTTPContentType = "unkownHTTPContentType"
+)
+
+/*********************************************************/
+/*** START: copy of internal_response.go in httpclient ***/
+
+// Internal Response is the only way to let ReadContent be testable
+type internalResponse struct {
+	gentlemanResponse *gentleman.Response
+	bytes             []byte
+}
+
+func buildInternalResponse(resp *gentleman.Response) *internalResponse {
+	return &internalResponse{
+		gentlemanResponse: resp,
+		bytes:             nil,
+	}
+}
+
+func (ir *internalResponse) StatusCode() int {
+	return ir.gentlemanResponse.StatusCode
+}
+
+func (ir *internalResponse) GetHeader(name string) string {
+	return ir.gentlemanResponse.Header.Get(name)
+}
+
+func (ir *internalResponse) Bytes() []byte {
+	if ir.bytes == nil {
+		ir.bytes = ir.gentlemanResponse.Bytes()
+	}
+	return ir.bytes
+}
+
+func (ir *internalResponse) JSON(data any) error {
+	return json.Unmarshal(ir.Bytes(), data)
+}
+
+func (ir *internalResponse) String() string {
+	return string(ir.Bytes())
+}
+
+/*** END: copy of internal_response.go in httpclient ***/
+/*******************************************************/
 
 // New returns a keycloak client.
 func New(config keycloak.Config) (*Client, error) {
@@ -71,51 +118,6 @@ func New(config keycloak.Config) (*Client, error) {
 	return client, nil
 }
 
-// GetToken returns a valid token from keycloak
-func (c *Client) GetToken(realm string, username string, password string) (string, error) {
-	var req *gentleman.Request
-	{
-		var authPath = fmt.Sprintf("/auth/realms/%s/protocol/openid-connect/token", realm)
-		req = c.httpClient.Post()
-		req = req.SetHeader("Content-Type", "application/x-www-form-urlencoded")
-		req = req.Path(authPath)
-		req = req.Type("urlencoded")
-		req = req.BodyString(fmt.Sprintf("username=%s&password=%s&grant_type=password&client_id=admin-cli", username, password))
-	}
-
-	var resp *gentleman.Response
-	{
-		var err error
-		resp, err = req.Do()
-		if err != nil {
-			return "", errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.TokenMsg)
-		}
-	}
-	defer resp.Close()
-
-	var unmarshalledBody map[string]any
-	{
-		var err = resp.JSON(&unmarshalledBody)
-		if err != nil {
-			return "", errors.Wrap(err, keycloak.MsgErrCannotUnmarshal+"."+keycloak.Response)
-		}
-	}
-
-	var accessToken any
-	{
-		var ok bool
-		accessToken, ok = unmarshalledBody["access_token"]
-		if !ok {
-			return "", fmt.Errorf(keycloak.MsgErrMissingParam + "." + keycloak.AccessToken)
-		}
-	}
-
-	fmt.Printf("%s", accessToken.(string))
-	fmt.Println()
-
-	return accessToken.(string), nil
-}
-
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
 func (c *Client) VerifyToken(issuer string, realmName string, accessToken string) error {
 	oidcVerifierProvider, err := c.issuerManager.GetOidcVerifierProvider(issuer)
@@ -135,6 +137,48 @@ func (c *Client) AccountClient() *AccountClient {
 	return c.account
 }
 
+func (c *Client) checkError(resp *internalResponse) error {
+	switch {
+	case resp.StatusCode() == http.StatusUnauthorized:
+		return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
+	case resp.StatusCode() >= 400:
+		return treatErrorStatus(resp)
+	case resp.StatusCode() >= 200:
+		return nil
+	default:
+		return fmt.Errorf("%s.%v", keycloak.MsgErrUnknownResponseStatusCode, resp.StatusCode())
+	}
+}
+
+func (c *Client) readContent(resp *internalResponse, data any) (retError error) {
+	defer func() {
+		if err := recover(); err != nil {
+			retError = fmt.Errorf("Unexpected panic. Ensure data is declared with the expected type: %v", err)
+		}
+	}()
+	var hdr = resp.GetHeader("Content-Type")
+	switch strings.Split(hdr, ";")[0] {
+	case "application/json":
+		retError = resp.JSON(data)
+	case "text/plain":
+		*(data.(*string)) = resp.String()
+		retError = nil
+	case "text/html":
+		*(data.(*string)) = resp.String()
+		retError = nil
+	case "application/octet-stream", "application/zip", "application/pdf", "text/xml":
+		*(data.(*[]byte)) = resp.Bytes()
+		retError = nil
+	default:
+		if len(resp.Bytes()) == 0 {
+			retError = nil
+		} else {
+			retError = fmt.Errorf("%s.%v", msgErrUnkownHTTPContentType, hdr)
+		}
+	}
+	return retError
+}
+
 // get is a HTTP get method.
 func (c *Client) get(accessToken string, data any, plugins ...plugin.Plugin) error {
 	var err error
@@ -146,34 +190,20 @@ func (c *Client) get(accessToken string, data any, plugins ...plugin.Plugin) err
 		return err
 	}
 
-	var resp *gentleman.Response
+	var gresp *gentleman.Response
 	{
 		var err error
-		resp, err = req.Do()
+		gresp, err = req.Do()
 		if err != nil {
 			return errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
-		switch {
-		case resp.StatusCode == http.StatusUnauthorized:
-			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
-		case resp.StatusCode >= 400:
-			return treatErrorStatus(resp)
-		case resp.StatusCode == 204:
-			return nil
-		case resp.StatusCode >= 200:
-			switch resp.Header.Get("Content-Type") {
-			case "application/json":
-				return resp.JSON(data)
-			case "application/octet-stream":
-				data = resp.Bytes()
-				return nil
-			default:
-				return fmt.Errorf("%s.%v", keycloak.MsgErrUnkownHTTPContentType, resp.Header.Get("Content-Type"))
-			}
-		default:
-			return fmt.Errorf("%s.%v", keycloak.MsgErrUnknownResponseStatusCode, resp.StatusCode)
+		var resp = buildInternalResponse(gresp)
+		err = c.checkError(resp)
+		if err != nil {
+			return err
 		}
+		return c.readContent(resp, data)
 	}
 }
 
@@ -187,34 +217,20 @@ func (c *Client) post(accessToken string, data any, plugins ...plugin.Plugin) (s
 		return "", err
 	}
 
-	var resp *gentleman.Response
+	var gresp *gentleman.Response
 	{
 		var err error
-		resp, err = req.Do()
+		gresp, err = req.Do()
 		if err != nil {
 			return "", errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
+		var resp = buildInternalResponse(gresp)
 
-		switch {
-		case resp.StatusCode == http.StatusUnauthorized:
-			return "", keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
-		case resp.StatusCode >= 400:
-			return "", treatErrorStatus(resp)
-		case resp.StatusCode >= 200:
-			var location = resp.Header.Get("Location")
-
-			switch resp.Header.Get("Content-Type") {
-			case "application/json":
-				return location, resp.JSON(data)
-			case "application/octet-stream":
-				data = resp.Bytes()
-				return location, nil
-			default:
-				return location, nil
-			}
-		default:
-			return "", fmt.Errorf("%s.%v", keycloak.MsgErrUnknownResponseStatusCode, resp.StatusCode)
+		err = c.checkError(resp)
+		if err != nil {
+			return "", err
 		}
+		return resp.GetHeader("Location"), c.readContent(resp, data)
 	}
 }
 
@@ -236,19 +252,7 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 			return errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
-		switch {
-		case resp.StatusCode == http.StatusUnauthorized:
-			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
-		case resp.StatusCode >= 400:
-			return treatErrorStatus(resp)
-		case resp.StatusCode >= 200:
-			return nil
-		default:
-			return keycloak.HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
-		}
+		return c.checkError(buildInternalResponse(resp))
 	}
 }
 
@@ -270,19 +274,7 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 			return errors.Wrap(err, keycloak.MsgErrCannotObtain+"."+keycloak.Response)
 		}
 
-		switch {
-		case resp.StatusCode == http.StatusUnauthorized:
-			return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
-		case resp.StatusCode >= 400:
-			return treatErrorStatus(resp)
-		case resp.StatusCode >= 200:
-			return nil
-		default:
-			return keycloak.HTTPError{
-				HTTPStatus: resp.StatusCode,
-				Message:    string(resp.Bytes()),
-			}
-		}
+		return c.checkError(buildInternalResponse(resp))
 	}
 }
 
@@ -354,14 +346,14 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 	return plugins
 }
 
-func treatErrorStatus(resp *gentleman.Response) error {
+func treatErrorStatus(resp *internalResponse) error {
 	var response map[string]any
 	err := json.Unmarshal(resp.Bytes(), &response)
 	if message, ok := response["errorMessage"]; ok && err == nil {
-		return whitelistErrors(resp.StatusCode, message.(string))
+		return whitelistErrors(resp.StatusCode(), message.(string))
 	}
 	return keycloak.HTTPError{
-		HTTPStatus: resp.StatusCode,
+		HTTPStatus: resp.StatusCode(),
 		Message:    string(resp.Bytes()),
 	}
 }
