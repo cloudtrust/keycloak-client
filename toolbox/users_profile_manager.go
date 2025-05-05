@@ -24,6 +24,7 @@ type UserProfileCache struct {
 	defProfileProvider DefaultProfileProviderFunc
 }
 
+// NewUserProfileCache creates a UserProfileCache instance
 func NewUserProfileCache(retriever ProfileRetriever, tokenProvider OidcTokenProvider, defProfileProvider DefaultProfileProviderFunc) *UserProfileCache {
 	return &UserProfileCache{
 		tokenProvider:      tokenProvider,

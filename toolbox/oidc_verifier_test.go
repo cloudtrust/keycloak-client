@@ -14,12 +14,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func decodeRequest(_ context.Context, req *http.Request) (interface{}, error) {
+func decodeRequest(_ context.Context, req *http.Request) (any, error) {
 	res := map[string]string{"realm": mux.Vars(req)["realm"], "host": req.Host}
 	return res, nil
 }
 
-func encodeReply(_ context.Context, w http.ResponseWriter, rep interface{}) error {
+func encodeReply(_ context.Context, w http.ResponseWriter, rep any) error {
 	if rep == nil {
 		w.WriteHeader(404)
 		return nil
@@ -38,7 +38,7 @@ func errorHandler(_ context.Context, _ error, w http.ResponseWriter) {
 	w.WriteHeader(500)
 }
 
-func endpoint(_ context.Context, request interface{}) (response interface{}, err error) {
+func endpoint(_ context.Context, request any) (response any, err error) {
 	var query = request.(map[string]string)
 	if !strings.Contains(query["realm"], "realm") {
 		return nil, nil

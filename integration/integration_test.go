@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -20,6 +21,12 @@ const (
 	user     = "version"
 )
 
+// DummyLogger is a dummy logger
+type DummyLogger struct {
+}
+
+func (d *DummyLogger) Warn(ctx context.Context, keyvals ...any) {}
+
 func main() {
 	var conf = getKeycloakConfig()
 	var client, err = api.New(*conf)
@@ -27,8 +34,9 @@ func main() {
 		log.Fatalf("could not create keycloak client: %v", err)
 	}
 
+	var tokenProvider = toolbox.NewOidcTokenProvider(*conf, "master", "admin", "admin", "admin-cli", &DummyLogger{})
 	// Get access token
-	accessToken, err := client.GetToken("master", "admin", "admin")
+	accessToken, err := tokenProvider.ProvideToken(context.TODO())
 	if err != nil {
 		log.Fatalf("could not get access token: %v", err)
 	}

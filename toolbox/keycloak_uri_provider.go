@@ -79,7 +79,7 @@ func (kup *kcURIProvider) ForEachTokenURI(callback func(realm, tokenURI string))
 	}
 }
 
-// ImportLegacyAddrTokenProvider
+// ImportLegacyAddrTokenProvider sets URIProvider of given Config
 func ImportLegacyAddrTokenProvider(c *keycloak.Config) error {
 	if c.URIProvider != nil {
 		return nil

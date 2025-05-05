@@ -15,8 +15,8 @@ func (c *Client) ClearAllLoginFailures(accessToken string, realmName string) err
 }
 
 // GetAttackDetectionStatus gets the status of a username in brute force detection.
-func (c *Client) GetAttackDetectionStatus(accessToken string, realmName, userID string) (map[string]interface{}, error) {
-	var resp = map[string]interface{}{}
+func (c *Client) GetAttackDetectionStatus(accessToken string, realmName, userID string) (map[string]any, error) {
+	var resp = map[string]any{}
 	var err = c.get(accessToken, &resp, url.Path(attackDetectionIDPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
