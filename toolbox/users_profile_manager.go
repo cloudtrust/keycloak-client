@@ -13,24 +13,19 @@ type ProfileRetriever interface {
 	GetUserProfile(accessToken string, realmName string) (keycloak.UserProfileRepresentation, error)
 }
 
-// DefaultProfileProviderFunc function type
-type DefaultProfileProviderFunc func(realmName string) (keycloak.UserProfileRepresentation, error)
-
 // UserProfileCache struct
 type UserProfileCache struct {
-	tokenProvider      OidcTokenProvider
-	retriever          ProfileRetriever
-	cachedProfiles     map[string][]byte
-	defProfileProvider DefaultProfileProviderFunc
+	tokenProvider  OidcTokenProvider
+	retriever      ProfileRetriever
+	cachedProfiles map[string][]byte
 }
 
 // NewUserProfileCache creates a UserProfileCache instance
-func NewUserProfileCache(retriever ProfileRetriever, tokenProvider OidcTokenProvider, defProfileProvider DefaultProfileProviderFunc) *UserProfileCache {
+func NewUserProfileCache(retriever ProfileRetriever, tokenProvider OidcTokenProvider) *UserProfileCache {
 	return &UserProfileCache{
-		tokenProvider:      tokenProvider,
-		retriever:          retriever,
-		defProfileProvider: defProfileProvider,
-		cachedProfiles:     map[string][]byte{},
+		tokenProvider:  tokenProvider,
+		retriever:      retriever,
+		cachedProfiles: map[string][]byte{},
 	}
 }
 
@@ -58,15 +53,6 @@ func (upc *UserProfileCache) getRealmUserProfile(provideToken func() (string, er
 	var accessToken, err = provideToken()
 	if err != nil {
 		return keycloak.UserProfileRepresentation{}, err
-	}
-	// Is user profile enabled for this realm?
-	var realmRep keycloak.RealmRepresentation
-	realmRep, err = upc.retriever.GetRealm(accessToken, realmName)
-	if err != nil {
-		return keycloak.UserProfileRepresentation{}, err
-	}
-	if !realmRep.IsUserProfileEnabled() {
-		return upc.defProfileProvider(realmName)
 	}
 	// Retrieve the profile
 	var profile keycloak.UserProfileRepresentation
