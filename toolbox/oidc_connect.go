@@ -1,17 +1,15 @@
 package toolbox
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
 	errorhandler "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
+	"golang.org/x/oauth2"
 )
 
 // OidcTokenProvider provides OIDC tokens
@@ -34,15 +32,16 @@ type oidcToken struct {
 type oidcTokenProvider struct {
 	timeout           time.Duration
 	perRealmTokenInfo map[string]*oidcTokenInfo
-	reqBody           string
+	username          string
+	password          string
 	defaultKey        string
 	logger            Logger
 }
 
 type oidcTokenInfo struct {
-	url        string
-	oidcToken  oidcToken
-	validUntil int64
+	forwarded    string
+	oauth2Config *oauth2.Config
+	tokenSource  oauth2.TokenSource
 }
 
 const (
@@ -53,21 +52,22 @@ const (
 // NewOidcTokenProvider creates an OidcTokenProvider
 func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
 	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
-	_ = ImportLegacyAddrTokenProvider(&config)
-	config.URIProvider.ForEachTokenURI(func(targetRealm, tokenURI string) {
+	config.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
-			url: fmt.Sprintf(tokenURI, realm),
+			forwarded: fmt.Sprintf("host=%s;proto=https", host),
+			oauth2Config: &oauth2.Config{
+				ClientID: clientID,
+				Endpoint: oauth2.Endpoint{TokenURL: fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm)},
+			},
+			tokenSource: nil,
 		}
 	})
-
-	// If needed, can add &client_secret={secret}
-	var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
-		url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))
 
 	return &oidcTokenProvider{
 		timeout:           config.Timeout,
 		perRealmTokenInfo: perRealmTokenInfo,
-		reqBody:           body,
+		username:          username,
+		password:          password,
 		defaultKey:        config.URIProvider.GetDefaultKey(),
 		logger:            logger,
 	}
@@ -86,40 +86,27 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		}
 		return o.ProvideTokenForRealm(ctx, o.defaultKey)
 	}
-	if time.Now().Unix()+maxProcessingDelay < oti.validUntil {
-		return oti.oidcToken.AccessToken, nil
-	}
-
-	var mimeType = "application/x-www-form-urlencoded"
-	var httpClient = http.Client{
-		Timeout: o.timeout,
-	}
-	var resp, err = httpClient.Post(oti.url, mimeType, strings.NewReader(o.reqBody))
-	if err != nil {
-		o.logger.Warn(ctx, "msg", err.Error())
-		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
-	}
-	if resp.StatusCode == http.StatusUnauthorized {
-		o.logger.Warn(ctx, "msg", "Technical user credentials are invalid")
-		return "", errorhandler.Error{
-			Status:  http.StatusUnauthorized,
-			Message: errorhandler.GetEmitter() + ".unauthorized",
+	// First time we are requesting a token
+	if oti.tokenSource == nil {
+		client := &http.Client{
+			Transport: &customTransport{
+				base:          http.DefaultTransport,
+				forwardedHost: oti.forwarded,
+			},
+			Timeout: o.timeout,
 		}
+		var tokenCtx = context.WithValue(context.Background(), oauth2.HTTPClient, client)
+		var token, err = oti.oauth2Config.PasswordCredentialsToken(tokenCtx, o.username, o.password)
+		if err != nil {
+			return "", err
+		}
+		oti.tokenSource = oti.oauth2Config.TokenSource(ctx, token)
+		return token.AccessToken, nil
 	}
-	if resp.StatusCode >= 400 || resp.Body == http.NoBody || resp.Body == nil {
-		o.logger.Warn(ctx, "msg", fmt.Sprintf("Unexpected behavior: unexpected http status (%d) or response has no body", resp.StatusCode))
-		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
-	}
-
-	buf := new(bytes.Buffer)
-	_, _ = buf.ReadFrom(resp.Body)
-
-	err = json.Unmarshal(buf.Bytes(), &oti.oidcToken)
+	// A token has already been requested... Get it (automatically refresh it if needed)
+	var token, err = oti.tokenSource.Token()
 	if err != nil {
-		o.logger.Warn(ctx, "msg", fmt.Sprintf("Can't deserialize token. JSON: %s", buf.String()))
-		return "", errorhandler.CreateInternalServerError("unexpected.oidcToken")
+		return "", err
 	}
-	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn
-
-	return oti.oidcToken.AccessToken, nil
+	return token.AccessToken, nil
 }
