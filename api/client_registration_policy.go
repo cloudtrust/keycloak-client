@@ -13,6 +13,7 @@ const (
 // GetClientRegistrationPolicy is the base path to retrieve providers with the configProperties properly filled.
 func (c *Client) GetClientRegistrationPolicy(accessToken string, realmName, configID string) ([]keycloak.ComponentTypeRepresentation, error) {
 	var resp = []keycloak.ComponentTypeRepresentation{}
-	var err = c.get(accessToken, &resp, url.Path(kcClientRegistrationPolicyPath), url.Param("realm", realmName))
+	var err = c.forRealm(realmName).
+		get(accessToken, &resp, url.Path(kcClientRegistrationPolicyPath), url.Param("realm", realmName))
 	return resp, err
 }

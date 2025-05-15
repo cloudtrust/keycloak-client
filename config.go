@@ -9,7 +9,7 @@ type KeycloakURIProvider interface {
 	GetDefaultKey() string
 	GetAllBaseURIs() []string
 	GetBaseURI(realmName string) string
-	ForEachTokenURI(callback func(realm, tokenURI string))
+	ForEachContextURI(callback func(realm, host, baseURI string))
 }
 
 // Config is the keycloak client http config.

@@ -43,11 +43,11 @@ func NewOAuth2TokenProvider(kcConfig keycloak.Config, oauth2Config OAuth2Config,
 	}
 	var perRealmTokenInfo = make(map[string]*oauth2TokenInfo)
 	_ = ImportLegacyAddrTokenProvider(&kcConfig)
-	kcConfig.URIProvider.ForEachTokenURI(func(targetRealm, tokenURI string) {
+	kcConfig.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		var cfg = clientcredentials.Config{
 			ClientID:     *oauth2Config.ClientID,
 			ClientSecret: *oauth2Config.ClientSecret,
-			TokenURL:     fmt.Sprintf(tokenURI, *oauth2Config.Realm),
+			TokenURL:     fmt.Sprintf(kcConfig.AddrAPI+"/auth/realms/%s/protocol/openid-connect/token", *oauth2Config.Realm),
 		}
 		perRealmTokenInfo[targetRealm] = &oauth2TokenInfo{
 			tokenSource: cfg.TokenSource(context.Background()),

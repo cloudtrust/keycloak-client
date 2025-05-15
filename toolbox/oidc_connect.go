@@ -41,6 +41,7 @@ type oidcTokenProvider struct {
 
 type oidcTokenInfo struct {
 	url        string
+	forwarded  string
 	oidcToken  oidcToken
 	validUntil int64
 }
@@ -54,9 +55,11 @@ const (
 func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
 	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
 	_ = ImportLegacyAddrTokenProvider(&config)
-	config.URIProvider.ForEachTokenURI(func(targetRealm, tokenURI string) {
+	config.URIProvider.ForEachContextURI(func(targetRealm, host, baseURI string) {
+		// baseURI is ignored... We use internal API stored in config.AddrAPI
 		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
-			url: fmt.Sprintf(tokenURI, realm),
+			url:       fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrAPI, targetRealm),
+			forwarded: fmt.Sprintf("host=%s;proto=https", host),
 		}
 	})
 
@@ -94,7 +97,14 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 	var httpClient = http.Client{
 		Timeout: o.timeout,
 	}
-	var resp, err = httpClient.Post(oti.url, mimeType, strings.NewReader(o.reqBody))
+	var req, errReq = http.NewRequest("POST", oti.url, strings.NewReader(o.reqBody))
+	if errReq != nil {
+		o.logger.Warn(ctx, "msg", errReq.Error())
+		return "", errorhandler.CreateInternalServerError("unexpected.httpRequest")
+	}
+	req.Header.Set("Forwarded", oti.forwarded)
+	req.Header.Set("Content-Type", mimeType)
+	var resp, err = httpClient.Do(req)
 	if err != nil {
 		o.logger.Warn(ctx, "msg", err.Error())
 		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
