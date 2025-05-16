@@ -1,17 +1,15 @@
 package toolbox
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
 	errorhandler "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
+	"golang.org/x/oauth2"
 )
 
 // OidcTokenProvider provides OIDC tokens
@@ -34,16 +32,20 @@ type oidcToken struct {
 type oidcTokenProvider struct {
 	timeout           time.Duration
 	perRealmTokenInfo map[string]*oidcTokenInfo
-	reqBody           string
-	defaultKey        string
-	logger            Logger
+	//reqBody           string
+	username   string
+	password   string
+	defaultKey string
+	logger     Logger
 }
 
 type oidcTokenInfo struct {
-	url        string
-	forwarded  string
-	oidcToken  oidcToken
-	validUntil int64
+	//url         string
+	forwarded    string
+	oauth2Config *oauth2.Config
+	tokenSource  oauth2.TokenSource
+	//oidcToken  oidcToken
+	//validUntil int64
 }
 
 const (
@@ -56,21 +58,28 @@ func NewOidcTokenProvider(config keycloak.Config, realm, username, password, cli
 	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
 	config.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
-			url:       fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm),
+			//url:         fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm),
 			forwarded: fmt.Sprintf("host=%s;proto=https", host),
+			oauth2Config: &oauth2.Config{
+				ClientID: clientID,
+				Endpoint: oauth2.Endpoint{TokenURL: fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm)},
+			},
+			tokenSource: nil,
 		}
 	})
 
 	// If needed, can add &client_secret={secret}
-	var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
-		url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))
+	/*var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
+	url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))*/
 
 	return &oidcTokenProvider{
 		timeout:           config.Timeout,
 		perRealmTokenInfo: perRealmTokenInfo,
-		reqBody:           body,
-		defaultKey:        config.URIProvider.GetDefaultKey(),
-		logger:            logger,
+		//reqBody:           body,
+		username:   username,
+		password:   password,
+		defaultKey: config.URIProvider.GetDefaultKey(),
+		logger:     logger,
 	}
 }
 
@@ -87,7 +96,29 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		}
 		return o.ProvideTokenForRealm(ctx, o.defaultKey)
 	}
-	if time.Now().Unix()+maxProcessingDelay < oti.validUntil {
+	if oti.tokenSource == nil {
+		client := &http.Client{
+			Transport: &customTransport{
+				base:          http.DefaultTransport,
+				forwardedHost: oti.forwarded,
+			},
+			Timeout: o.timeout,
+		}
+		var tokenCtx = context.WithValue(context.Background(), oauth2.HTTPClient, client)
+		var token, err = oti.oauth2Config.PasswordCredentialsToken(tokenCtx, o.username, o.password)
+		if err != nil {
+			return "", err
+		}
+		oti.tokenSource = oti.oauth2Config.TokenSource(ctx, token)
+		return token.AccessToken, nil
+	}
+	var token, err = oti.tokenSource.Token()
+	if err != nil {
+		return "", err
+	}
+	return token.AccessToken, nil
+
+	/*if time.Now().Unix()+maxProcessingDelay < oti.validUntil {
 		return oti.oidcToken.AccessToken, nil
 	}
 
@@ -127,7 +158,7 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		o.logger.Warn(ctx, "msg", fmt.Sprintf("Can't deserialize token. JSON: %s", buf.String()))
 		return "", errorhandler.CreateInternalServerError("unexpected.oidcToken")
 	}
-	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn
+	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn*/
 
 	return oti.oidcToken.AccessToken, nil
 }

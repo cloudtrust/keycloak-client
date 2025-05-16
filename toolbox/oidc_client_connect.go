@@ -3,6 +3,7 @@ package toolbox
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"strings"
 
 	errorhandler "github.com/cloudtrust/common-service/v2/errors"
@@ -36,6 +37,17 @@ type oauth2TokenInfo struct {
 	token       *oauth2.Token
 }
 
+// customTransport used to force header Forwarded
+type customTransport struct {
+	base          http.RoundTripper
+	forwardedHost string
+}
+
+func (t *customTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set("Forwarded", fmt.Sprintf("host=%s;proto=https", t.forwardedHost))
+	return t.base.RoundTrip(req)
+}
+
 // NewOAuth2TokenProvider creates an OidcTokenProvider
 func NewOAuth2TokenProvider(kcConfig keycloak.Config, oauth2Config OAuth2Config, logger Logger) OidcTokenProvider {
 	if !oauth2Config.IsClientConfig() {
@@ -48,8 +60,15 @@ func NewOAuth2TokenProvider(kcConfig keycloak.Config, oauth2Config OAuth2Config,
 			ClientSecret: *oauth2Config.ClientSecret,
 			TokenURL:     fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", kcConfig.AddrInternalAPI, *oauth2Config.Realm),
 		}
+		var client = &http.Client{
+			Transport: &customTransport{
+				base:          http.DefaultTransport,
+				forwardedHost: host,
+			},
+		}
+		var ctx = context.WithValue(context.Background(), oauth2.HTTPClient, client)
 		perRealmTokenInfo[targetRealm] = &oauth2TokenInfo{
-			tokenSource: cfg.TokenSource(context.Background()),
+			tokenSource: cfg.TokenSource(ctx),
 		}
 	})
 
