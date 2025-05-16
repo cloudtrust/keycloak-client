@@ -56,7 +56,7 @@ func NewOidcTokenProvider(config keycloak.Config, realm, username, password, cli
 	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
 	config.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
-			url:       fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, targetRealm),
+			url:       fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm),
 			forwarded: fmt.Sprintf("host=%s;proto=https", host),
 		}
 	})
