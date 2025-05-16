@@ -15,8 +15,8 @@ type KeycloakURIProvider interface {
 // Config is the keycloak client http config.
 type Config struct {
 	// AddrTokenProvider is deprecated. Please prefer using URIProvider
-	AddrTokenProvider []string
-	URIProvider       KeycloakURIProvider
-	AddrAPI           string
-	Timeout           time.Duration
+	//AddrTokenProvider []string
+	URIProvider KeycloakURIProvider
+	AddrAPI     string
+	Timeout     time.Duration
 }

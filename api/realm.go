@@ -24,7 +24,7 @@ func (c *Client) GetRealms(accessToken string) ([]keycloak.RealmRepresentation, 
 
 // CreateRealm creates the realm from its RealmRepresentation.
 func (c *Client) CreateRealm(accessToken string, realm keycloak.RealmRepresentation) (string, error) {
-	return c.forRealm(*realm.ID).
+	return c.forRealm("master").
 		post(accessToken, nil, url.Path(kcRealmRootPath), body.JSON(realm))
 }
 
@@ -46,7 +46,7 @@ func (c *Client) UpdateRealm(accessToken string, realmName string, realm keycloa
 
 // DeleteRealm deletes the realm.
 func (c *Client) DeleteRealm(accessToken string, realmName string) error {
-	return c.forRealm(realmName).
+	return c.forRealm("master").
 		delete(accessToken, url.Path(kcRealmPath), url.Param("realm", realmName))
 }
 

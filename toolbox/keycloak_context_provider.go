@@ -116,13 +116,3 @@ func (kup *kcContextProvider) ForEachContextURI(callback func(realm, host, baseU
 		callback(realm, entry.host, entry.baseURI)
 	}
 }
-
-// ImportLegacyAddrTokenProvider sets URIProvider of given Config
-func ImportLegacyAddrTokenProvider(c *keycloak.Config) error {
-	if c.URIProvider != nil {
-		return nil
-	}
-	var err error
-	c.URIProvider, err = NewKeycloakURIProviderFromArray(c.AddrTokenProvider)
-	return err
-}

@@ -3,7 +3,6 @@ package toolbox
 import (
 	"testing"
 
-	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,20 +35,6 @@ func TestNewKeycloakURIProvider(t *testing.T) {
 		assert.Equal(t, two, allBaseURIs[0])
 		assert.Equal(t, one, allBaseURIs[1])
 	})
-}
-
-func TestImportLegacyAddrTokenProvider(t *testing.T) {
-	var cfg = keycloak.Config{AddrTokenProvider: []string{"http://localhost:8080", "http://127.0.0.1:8080"}}
-	assert.Nil(t, cfg.URIProvider)
-
-	var err = ImportLegacyAddrTokenProvider(&cfg)
-	assert.Nil(t, err)
-	assert.NotNil(t, cfg.URIProvider)
-
-	var uriProvider = cfg.URIProvider.(*kcContextProvider)
-	assert.Equal(t, "default", uriProvider.defaultKey)
-	assert.Equal(t, cfg.AddrTokenProvider[0], uriProvider.entries["default"])
-	assert.Equal(t, cfg.AddrTokenProvider[1], uriProvider.entries["entry-1"])
 }
 
 func TestExtractHostFromURL(t *testing.T) {

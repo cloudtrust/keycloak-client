@@ -221,7 +221,6 @@ func (c *Client) get(accessToken string, data any, plugins ...plugin.Plugin) err
 	req = c.applyPlugins(req, c.plugins...)
 	req = c.applyPlugins(req, plugins...)
 	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
-	req = req.SetHeader("X-Forwarded-Proto", "https")
 
 	var gresp *gentleman.Response
 	{
@@ -245,7 +244,6 @@ func (c *Client) post(accessToken string, data any, plugins ...plugin.Plugin) (s
 	req = c.applyPlugins(req, c.plugins...)
 	req = c.applyPlugins(req, plugins...)
 	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
-	req = req.SetHeader("X-Forwarded-Proto", "https")
 
 	var gresp *gentleman.Response
 	{
@@ -269,7 +267,6 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 	req = c.applyPlugins(req, c.plugins...)
 	req = c.applyPlugins(req, plugins...)
 	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
-	req = req.SetHeader("X-Forwarded-Proto", "https")
 
 	var resp *gentleman.Response
 	{
@@ -288,7 +285,6 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 	req = c.applyPlugins(req, c.plugins...)
 	req = c.applyPlugins(req, plugins...)
 	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
-	req = req.SetHeader("X-Forwarded-Proto", "https")
 
 	var resp *gentleman.Response
 	{

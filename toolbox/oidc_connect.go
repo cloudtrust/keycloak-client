@@ -54,9 +54,7 @@ const (
 // NewOidcTokenProvider creates an OidcTokenProvider
 func NewOidcTokenProvider(config keycloak.Config, realm, username, password, clientID string, logger Logger) OidcTokenProvider {
 	var perRealmTokenInfo = make(map[string]*oidcTokenInfo)
-	_ = ImportLegacyAddrTokenProvider(&config)
-	config.URIProvider.ForEachContextURI(func(targetRealm, host, baseURI string) {
-		// baseURI is ignored... We use internal API stored in config.AddrAPI
+	config.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
 			url:       fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrAPI, targetRealm),
 			forwarded: fmt.Sprintf("host=%s;proto=https", host),

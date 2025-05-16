@@ -42,7 +42,6 @@ func NewOAuth2TokenProvider(kcConfig keycloak.Config, oauth2Config OAuth2Config,
 		return NewOidcTokenProvider(kcConfig, *oauth2Config.Realm, *oauth2Config.Username, *oauth2Config.Password, *oauth2Config.ClientID, logger)
 	}
 	var perRealmTokenInfo = make(map[string]*oauth2TokenInfo)
-	_ = ImportLegacyAddrTokenProvider(&kcConfig)
 	kcConfig.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		var cfg = clientcredentials.Config{
 			ClientID:     *oauth2Config.ClientID,
