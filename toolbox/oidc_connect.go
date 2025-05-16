@@ -158,7 +158,7 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		o.logger.Warn(ctx, "msg", fmt.Sprintf("Can't deserialize token. JSON: %s", buf.String()))
 		return "", errorhandler.CreateInternalServerError("unexpected.oidcToken")
 	}
-	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn*/
+	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn
 
-	return oti.oidcToken.AccessToken, nil
+	return oti.oidcToken.AccessToken, nil*/
 }
