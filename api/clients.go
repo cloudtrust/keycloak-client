@@ -25,7 +25,7 @@ func (c *Client) GetClients(accessToken string, realmName string, paramKV ...str
 	}
 
 	var resp = []keycloak.ClientRepresentation{}
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(kcClientsPath), url.Param("realm", realmName))
+	var plugins = append(c.createQueryPlugins(paramKV...), url.Path(kcClientsPath), url.Param("realm", realmName))
 	var err = c.get(accessToken, &resp, plugins...)
 	return resp, err
 }

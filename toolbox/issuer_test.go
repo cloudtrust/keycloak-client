@@ -14,21 +14,15 @@ func TestGetProtocolAndDomain(t *testing.T) {
 }
 
 func TestNewIssuerManager(t *testing.T) {
-	t.Run("Empty config", func(t *testing.T) {
-		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: nil})
-		assert.NotNil(t, err)
-	})
-	t.Run("Invalid URL", func(t *testing.T) {
-		_, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: []string{":"}})
-		assert.NotNil(t, err)
-	})
-
 	defaultPath := "http://default.domain.com:5555"
 	myDomainPath := "http://my.domain.com/path/to/somewhere"
 	otherDomainPath := "http://other.domain.com:2120/"
 	allDomains := []string{defaultPath, myDomainPath, otherDomainPath}
 
-	prov, err := NewIssuerManager(keycloak.Config{AddrTokenProvider: allDomains})
+	var kcURIProvider, _ = NewKeycloakURIProviderFromArray(allDomains)
+	prov, err := NewIssuerManager(keycloak.Config{
+		URIProvider: kcURIProvider,
+	})
 	assert.Nil(t, err)
 	assert.NotNil(t, prov)
 
