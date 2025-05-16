@@ -12,7 +12,7 @@ type InternalConfig struct {
 	InternalURI    string            `mapstructure:"internal-uri"`
 	RealmPublicURI map[string]string `mapstructure:"realm-public-uri-map"`
 	DefaultKey     *string           `mapstructure:"default-key"`
-	Timeout        time.Duration     `mapstructure:"duration"`
+	Timeout        time.Duration     `mapstructure:"timeout"`
 }
 
 // ConfigurationProvider interface
