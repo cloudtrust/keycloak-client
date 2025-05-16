@@ -46,7 +46,7 @@ func NewOAuth2TokenProvider(kcConfig keycloak.Config, oauth2Config OAuth2Config,
 		var cfg = clientcredentials.Config{
 			ClientID:     *oauth2Config.ClientID,
 			ClientSecret: *oauth2Config.ClientSecret,
-			TokenURL:     fmt.Sprintf(kcConfig.AddrAPI+"/auth/realms/%s/protocol/openid-connect/token", *oauth2Config.Realm),
+			TokenURL:     fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", kcConfig.AddrInternalAPI, *oauth2Config.Realm),
 		}
 		perRealmTokenInfo[targetRealm] = &oauth2TokenInfo{
 			tokenSource: cfg.TokenSource(context.Background()),

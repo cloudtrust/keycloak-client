@@ -96,7 +96,7 @@ func New(config keycloak.Config) (*Client, error) {
 	var uAPI *url.URL
 	{
 		var err error
-		uAPI, err = url.Parse(config.AddrAPI)
+		uAPI, err = url.Parse(config.AddrInternalAPI)
 		if err != nil {
 			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.APIURL)
 		}

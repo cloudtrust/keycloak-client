@@ -35,8 +35,8 @@ func NewConfig(confUnmarshal ConfigurationProvider) (keycloak.Config, error) {
 		return keycloak.Config{}, err
 	}
 	return keycloak.Config{
-		URIProvider: uriProvider,
-		AddrAPI:     config.InternalURI,
-		Timeout:     config.Timeout,
+		URIProvider:     uriProvider,
+		AddrInternalAPI: config.InternalURI,
+		Timeout:         config.Timeout,
 	}, err
 }
