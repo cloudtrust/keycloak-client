@@ -366,9 +366,9 @@ func getKeycloakConfig() *keycloak.Config {
 
 	var atp, _ = toolbox.NewKeycloakURIProviderFromArray(strings.Split(*tokenAddr, " "))
 	return &keycloak.Config{
-		URIProvider: atp,
-		AddrAPI:     *apiAddr,
-		Timeout:     10 * time.Second,
+		URIProvider:     atp,
+		AddrInternalAPI: *apiAddr,
+		Timeout:         10 * time.Second,
 	}
 }
 

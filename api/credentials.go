@@ -98,7 +98,7 @@ func (c *Client) SendPaperCardsReminders(accessToken, realmName string, firstRem
 	}
 
 	var resp RemindersResponse
-	var plugins = append(createQueryPlugins(paramKV...), url.Path(ctSendPaperCardsRemindersPath), url.Param("realm", realmName))
+	var plugins = append(c.createQueryPlugins(paramKV...), url.Path(ctSendPaperCardsRemindersPath), url.Param("realm", realmName))
 	var _, err = c.post(accessToken, &resp, plugins...)
 	if err != nil {
 		return false, err

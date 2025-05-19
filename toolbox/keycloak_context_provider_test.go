@@ -3,7 +3,6 @@ package toolbox
 import (
 	"testing"
 
-	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,7 +15,7 @@ func TestNewKeycloakURIProvider(t *testing.T) {
 		var uriProvider, err = NewKeycloakURIProviderFromArray([]string{"http://localhost:8080", "http://127.0.0.1:8080"})
 		assert.Nil(t, err)
 		assert.NotNil(t, uriProvider)
-		assert.Len(t, uriProvider.(*kcURIProvider).entries, 2)
+		assert.Len(t, uriProvider.(*kcContextProvider).entries, 2)
 	})
 	t.Run("FromMap-Default key not exists", func(t *testing.T) {
 		var _, err = NewKeycloakURIProvider(map[string]string{"one": "http://localhost:8080", "two": "http://127.0.0.1:8080"}, "other-key")
@@ -38,16 +37,19 @@ func TestNewKeycloakURIProvider(t *testing.T) {
 	})
 }
 
-func TestImportLegacyAddrTokenProvider(t *testing.T) {
-	var cfg = keycloak.Config{AddrTokenProvider: []string{"http://localhost:8080", "http://127.0.0.1:8080"}}
-	assert.Nil(t, cfg.URIProvider)
-
-	var err = ImportLegacyAddrTokenProvider(&cfg)
-	assert.Nil(t, err)
-	assert.NotNil(t, cfg.URIProvider)
-
-	var uriProvider = cfg.URIProvider.(*kcURIProvider)
-	assert.Equal(t, "default", uriProvider.defaultKey)
-	assert.Equal(t, cfg.AddrTokenProvider[0], uriProvider.entries["default"])
-	assert.Equal(t, cfg.AddrTokenProvider[1], uriProvider.entries["entry-1"])
+func TestExtractHostFromURL(t *testing.T) {
+	t.Run("Can't parse URL", func(t *testing.T) {
+		var _, err = extractHostFromURL("AAABBBCCC")
+		assert.NotNil(t, err)
+	})
+	t.Run("Valid URL without path", func(t *testing.T) {
+		var issuer, err = extractHostFromURL("trustid://sample.com")
+		assert.Nil(t, err)
+		assert.Equal(t, "sample.com", issuer)
+	})
+	t.Run("Valid URL with path", func(t *testing.T) {
+		var issuer, err = extractHostFromURL("trustid://sample.com/path/to/target")
+		assert.Nil(t, err)
+		assert.Equal(t, "sample.com", issuer)
+	})
 }

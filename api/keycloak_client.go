@@ -12,20 +12,23 @@ import (
 	commonhttp "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/cloudtrust/keycloak-client/v2/toolbox"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
+	"gopkg.in/h2non/gentleman.v2/plugins/headers"
 	"gopkg.in/h2non/gentleman.v2/plugins/query"
 	"gopkg.in/h2non/gentleman.v2/plugins/timeout"
 )
 
 // Client is the keycloak client.
 type Client struct {
-	apiURL        *url.URL
-	httpClient    *gentleman.Client
-	account       *AccountClient
-	issuerManager toolbox.IssuerManager
+	apiURL          *url.URL
+	httpClient      *gentleman.Client
+	account         *AccountClient
+	issuerManager   toolbox.IssuerManager
+	plugins         []plugin.Plugin
+	perRealmClients map[string]*Client
+	perRealmDefKey  string
 }
 
 // AccountClient structure
@@ -93,7 +96,7 @@ func New(config keycloak.Config) (*Client, error) {
 	var uAPI *url.URL
 	{
 		var err error
-		uAPI, err = url.Parse(config.AddrAPI)
+		uAPI, err = url.Parse(config.AddrInternalAPI)
 		if err != nil {
 			return nil, errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.APIURL)
 		}
@@ -106,16 +109,49 @@ func New(config keycloak.Config) (*Client, error) {
 	}
 
 	var client = &Client{
-		apiURL:        uAPI,
-		httpClient:    httpClient,
-		issuerManager: issuerMgr,
+		apiURL:          uAPI,
+		httpClient:      httpClient,
+		issuerManager:   issuerMgr,
+		plugins:         []plugin.Plugin{},
+		perRealmClients: map[string]*Client{},
+		perRealmDefKey:  config.URIProvider.GetDefaultKey(),
 	}
 
 	client.account = &AccountClient{
 		client: client,
 	}
 
+	config.URIProvider.ForEachContextURI(func(realm, host, _ string) {
+		client.perRealmClients[realm] = client.WithPlugin(headers.Set("Forwarded", fmt.Sprintf("host=%s;proto=https", host)))
+	})
+
 	return client, nil
+}
+
+// WithPlugin returns a client configured with a specific plugin
+func (c *Client) WithPlugin(p plugin.Plugin) *Client {
+	var res = &Client{
+		apiURL:          c.apiURL,
+		httpClient:      c.httpClient,
+		account:         c.account,
+		issuerManager:   c.issuerManager,
+		perRealmClients: map[string]*Client{},
+		plugins:         append(c.plugins, p),
+	}
+	res.account = &AccountClient{
+		client: res,
+	}
+	return res
+}
+
+func (c *Client) forRealm(realmName string) *Client {
+	if res, ok := c.perRealmClients[realmName]; ok {
+		return res
+	}
+	if res, ok := c.perRealmClients[c.perRealmDefKey]; ok {
+		return res
+	}
+	return c
 }
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
@@ -142,7 +178,7 @@ func (c *Client) checkError(resp *internalResponse) error {
 	case resp.StatusCode() == http.StatusUnauthorized:
 		return keycloak.ClientDetailedError{HTTPStatus: http.StatusUnauthorized, Message: string(resp.Bytes())}
 	case resp.StatusCode() >= 400:
-		return treatErrorStatus(resp)
+		return c.treatErrorStatus(resp)
 	case resp.StatusCode() >= 200:
 		return nil
 	default:
@@ -181,14 +217,10 @@ func (c *Client) readContent(resp *internalResponse, data any) (retError error) 
 
 // get is a HTTP get method.
 func (c *Client) get(accessToken string, data any, plugins ...plugin.Plugin) error {
-	var err error
 	var req = c.httpClient.Get()
-	req = applyPlugins(req, plugins...)
-	req, err = setAuthorisationAndHostHeaders(req, accessToken)
-
-	if err != nil {
-		return err
-	}
+	req = c.applyPlugins(req, c.plugins...)
+	req = c.applyPlugins(req, plugins...)
+	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 
 	var gresp *gentleman.Response
 	{
@@ -208,14 +240,10 @@ func (c *Client) get(accessToken string, data any, plugins ...plugin.Plugin) err
 }
 
 func (c *Client) post(accessToken string, data any, plugins ...plugin.Plugin) (string, error) {
-	var err error
 	var req = c.httpClient.Post()
-	req = applyPlugins(req, plugins...)
-	req, err = setAuthorisationAndHostHeaders(req, accessToken)
-
-	if err != nil {
-		return "", err
-	}
+	req = c.applyPlugins(req, c.plugins...)
+	req = c.applyPlugins(req, plugins...)
+	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 
 	var gresp *gentleman.Response
 	{
@@ -235,14 +263,10 @@ func (c *Client) post(accessToken string, data any, plugins ...plugin.Plugin) (s
 }
 
 func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
-	var err error
 	var req = c.httpClient.Delete()
-	req = applyPlugins(req, plugins...)
-	req, err = setAuthorisationAndHostHeaders(req, accessToken)
-
-	if err != nil {
-		return err
-	}
+	req = c.applyPlugins(req, c.plugins...)
+	req = c.applyPlugins(req, plugins...)
+	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 
 	var resp *gentleman.Response
 	{
@@ -257,14 +281,10 @@ func (c *Client) delete(accessToken string, plugins ...plugin.Plugin) error {
 }
 
 func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
-	var err error
 	var req = c.httpClient.Put()
-	req = applyPlugins(req, plugins...)
-	req, err = setAuthorisationAndHostHeaders(req, accessToken)
-
-	if err != nil {
-		return err
-	}
+	req = c.applyPlugins(req, c.plugins...)
+	req = c.applyPlugins(req, plugins...)
+	req = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 
 	var resp *gentleman.Response
 	{
@@ -278,23 +298,8 @@ func (c *Client) put(accessToken string, plugins ...plugin.Plugin) error {
 	}
 }
 
-func setAuthorisationAndHostHeaders(req *gentleman.Request, accessToken string) (*gentleman.Request, error) {
-	host, err := extractHostFromToken(accessToken)
-
-	if err != nil {
-		return req, err
-	}
-
-	var r = req.SetHeader("Authorization", fmt.Sprintf("Bearer %s", accessToken))
-	r = r.SetHeader("X-Forwarded-Proto", "https")
-
-	r.Context.Request.Host = host
-
-	return r, nil
-}
-
 // applyPlugins apply all the plugins to the request req.
-func applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) *gentleman.Request {
+func (c *Client) applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) *gentleman.Request {
 	var r = req
 	for _, p := range plugins {
 		r = r.Use(p)
@@ -302,41 +307,8 @@ func applyPlugins(req *gentleman.Request, plugins ...plugin.Plugin) *gentleman.R
 	return r
 }
 
-func extractHostFromToken(token string) (string, error) {
-	issuer, err := extractIssuerFromToken(token)
-
-	if err != nil {
-		return "", err
-	}
-
-	var u *url.URL
-	{
-		var err error
-		u, err = url.Parse(issuer)
-		if err != nil {
-			return "", errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenProviderURL)
-		}
-	}
-
-	return u.Host, nil
-}
-
-func extractIssuerFromToken(tokenStr string) (string, error) {
-	token, _, err := jwt.NewParser().ParseUnverified(tokenStr, jwt.MapClaims{})
-	if err != nil {
-		return "", errors.Wrap(err, keycloak.MsgErrCannotParse+"."+keycloak.TokenMsg)
-	}
-
-	issuer, err := token.Claims.GetIssuer()
-	if err != nil {
-		return "", errors.Wrap(err, keycloak.MsgErrCannotGetIssuer+"."+keycloak.TokenMsg)
-	}
-
-	return issuer, nil
-}
-
 // createQueryPlugins create query parameters with the key values paramKV.
-func createQueryPlugins(paramKV ...string) []plugin.Plugin {
+func (c *Client) createQueryPlugins(paramKV ...string) []plugin.Plugin {
 	var plugins = []plugin.Plugin{}
 	for i := 0; i < len(paramKV); i += 2 {
 		var k = paramKV[i]
@@ -346,11 +318,11 @@ func createQueryPlugins(paramKV ...string) []plugin.Plugin {
 	return plugins
 }
 
-func treatErrorStatus(resp *internalResponse) error {
+func (c *Client) treatErrorStatus(resp *internalResponse) error {
 	var response map[string]any
 	err := json.Unmarshal(resp.Bytes(), &response)
 	if message, ok := response["errorMessage"]; ok && err == nil {
-		return whitelistErrors(resp.StatusCode(), message.(string))
+		return c.whitelistErrors(resp.StatusCode(), message.(string))
 	}
 	return keycloak.HTTPError{
 		HTTPStatus: resp.StatusCode(),
@@ -358,7 +330,7 @@ func treatErrorStatus(resp *internalResponse) error {
 	}
 }
 
-func whitelistErrors(statusCode int, message string) error {
+func (c *Client) whitelistErrors(statusCode int, message string) error {
 	// whitelist errors from Keycloak
 	reg := regexp.MustCompile("invalidPassword[a-zA-Z]*Message")
 	errorMessages := map[string]string{
@@ -390,25 +362,4 @@ func whitelistErrors(statusCode int, message string) error {
 			Message:    message,
 		}
 	}
-}
-
-// Token is JWT token.
-// We need to define our own structure as the library define aud as a string but it can also be a string array.
-// To fix this issue, we remove aud as we do not use it here.
-type Token struct {
-	hdr            *header
-	Issuer         string `json:"iss,omitempty"`
-	Subject        string `json:"sub,omitempty"`
-	ExpirationTime int64  `json:"exp,omitempty"`
-	NotBefore      int64  `json:"nbf,omitempty"`
-	IssuedAt       int64  `json:"iat,omitempty"`
-	ID             string `json:"jti,omitempty"`
-	Username       string `json:"preferred_username,omitempty"`
-}
-
-type header struct {
-	Algorithm   string `json:"alg,omitempty"`
-	KeyID       string `json:"kid,omitempty"`
-	Type        string `json:"typ,omitempty"`
-	ContentType string `json:"cty,omitempty"`
 }
