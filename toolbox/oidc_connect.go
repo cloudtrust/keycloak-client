@@ -1,15 +1,17 @@
 package toolbox
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
 	errorhandler "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
-	"golang.org/x/oauth2"
 )
 
 // OidcTokenProvider provides OIDC tokens
@@ -32,16 +34,20 @@ type oidcToken struct {
 type oidcTokenProvider struct {
 	timeout           time.Duration
 	perRealmTokenInfo map[string]*oidcTokenInfo
-	username          string
-	password          string
-	defaultKey        string
-	logger            Logger
+	reqBody           string // Added for fix CLOUDTRUST-6415
+	//username          string // Commented for fix CLOUDTRUST-6415
+	//password          string // Commented for fix CLOUDTRUST-6415
+	defaultKey string
+	logger     Logger
 }
 
 type oidcTokenInfo struct {
-	forwarded    string
-	oauth2Config *oauth2.Config
-	tokenSource  oauth2.TokenSource
+	url        string    // Added for fix CLOUDTRUST-6415
+	oidcToken  oidcToken // Added for fix CLOUDTRUST-6415
+	validUntil int64     // Added for fix CLOUDTRUST-6415
+	forwarded  string
+	//oauth2Config *oauth2.Config // Commented for fix CLOUDTRUST-6415
+	//tokenSource  oauth2.TokenSource // Commented for fix CLOUDTRUST-6415
 }
 
 const (
@@ -55,21 +61,30 @@ func NewOidcTokenProvider(config keycloak.Config, realm, username, password, cli
 	config.URIProvider.ForEachContextURI(func(targetRealm, host, _ string) {
 		perRealmTokenInfo[targetRealm] = &oidcTokenInfo{
 			forwarded: fmt.Sprintf("host=%s;proto=https", host),
+			/* Commented for fix CLOUDTRUST-6415
 			oauth2Config: &oauth2.Config{
 				ClientID: clientID,
 				Endpoint: oauth2.Endpoint{TokenURL: fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm)},
 			},
 			tokenSource: nil,
+			*/
+			// Added for fix CLOUDTRUST-6415
+			url: fmt.Sprintf("%s/auth/realms/%s/protocol/openid-connect/token", config.AddrInternalAPI, realm),
 		}
 	})
+
+	// If needed, can add &client_secret={secret}
+	var body = fmt.Sprintf("grant_type=password&client_id=%s&username=%s&password=%s",
+		url.QueryEscape(clientID), url.QueryEscape(username), url.QueryEscape(password))
 
 	return &oidcTokenProvider{
 		timeout:           config.Timeout,
 		perRealmTokenInfo: perRealmTokenInfo,
-		username:          username,
-		password:          password,
-		defaultKey:        config.URIProvider.GetDefaultKey(),
-		logger:            logger,
+		reqBody:           body, // Added for fix CLOUDTRUST-6415
+		//username:          username, // Commented for fix CLOUDTRUST-6415
+		//password:          password, // Commented for fix CLOUDTRUST-6415
+		defaultKey: config.URIProvider.GetDefaultKey(),
+		logger:     logger,
 	}
 }
 
@@ -86,8 +101,54 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 		}
 		return o.ProvideTokenForRealm(ctx, o.defaultKey)
 	}
+	// Added for fix CLOUDTRUST-6415
+	if time.Now().Unix()+maxProcessingDelay < oti.validUntil {
+		return oti.oidcToken.AccessToken, nil
+	}
+
+	var mimeType = "application/x-www-form-urlencoded"
+	var httpClient = http.Client{
+		Timeout: o.timeout,
+	}
+	//var req *http.Request
+	var req, err = http.NewRequest("POST", oti.url, strings.NewReader(o.reqBody))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", mimeType)
+	req.Header.Set("Forwarded", oti.forwarded)
+	var resp *http.Response
+	resp, err = httpClient.Do(req)
+	if err != nil {
+		o.logger.Warn(ctx, "msg", err.Error())
+		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
+	}
+	if resp.StatusCode == http.StatusUnauthorized {
+		o.logger.Warn(ctx, "msg", "Technical user credentials are invalid")
+		return "", errorhandler.Error{
+			Status:  http.StatusUnauthorized,
+			Message: errorhandler.GetEmitter() + ".unauthorized",
+		}
+	}
+	if resp.StatusCode >= 400 || resp.Body == http.NoBody || resp.Body == nil {
+		o.logger.Warn(ctx, "msg", fmt.Sprintf("Unexpected behavior: unexpected http status (%d) or response has no body", resp.StatusCode))
+		return "", errorhandler.CreateInternalServerError("unexpected.httpResponse")
+	}
+
+	buf := new(bytes.Buffer)
+	_, _ = buf.ReadFrom(resp.Body)
+
+	err = json.Unmarshal(buf.Bytes(), &oti.oidcToken)
+	if err != nil {
+		o.logger.Warn(ctx, "msg", fmt.Sprintf("Can't deserialize token. JSON: %s", buf.String()))
+		return "", errorhandler.CreateInternalServerError("unexpected.oidcToken")
+	}
+	oti.validUntil = time.Now().Unix() + oti.oidcToken.ExpiresIn
+
+	return oti.oidcToken.AccessToken, nil
 	// First time we are requesting a token
-	if oti.tokenSource == nil {
+	// Commented for fix CLOUDTRUST-6415
+	/*if oti.tokenSource == nil {
 		client := &http.Client{
 			Transport: &customTransport{
 				base:          http.DefaultTransport,
@@ -108,5 +169,5 @@ func (o *oidcTokenProvider) ProvideTokenForRealm(ctx context.Context, realm stri
 	if err != nil {
 		return "", err
 	}
-	return token.AccessToken, nil
+	return token.AccessToken, nil*/
 }
