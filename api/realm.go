@@ -17,14 +17,14 @@ const (
 // not included.
 func (c *Client) GetRealms(accessToken string) ([]keycloak.RealmRepresentation, error) {
 	var resp = []keycloak.RealmRepresentation{}
-	var err = c.forRealm("master").
+	var err = c.forRealm(accessToken, "master").
 		get(accessToken, &resp, url.Path(kcRealmRootPath))
 	return resp, err
 }
 
 // CreateRealm creates the realm from its RealmRepresentation.
 func (c *Client) CreateRealm(accessToken string, realm keycloak.RealmRepresentation) (string, error) {
-	return c.forRealm("master").
+	return c.forRealm(accessToken, "master").
 		post(accessToken, nil, url.Path(kcRealmRootPath), body.JSON(realm))
 }
 
@@ -32,7 +32,7 @@ func (c *Client) CreateRealm(accessToken string, realm keycloak.RealmRepresentat
 // not included.
 func (c *Client) GetRealm(accessToken string, realmName string) (keycloak.RealmRepresentation, error) {
 	var resp = keycloak.RealmRepresentation{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcRealmPath), url.Param("realm", realmName))
 	return resp, err
 }
@@ -40,20 +40,20 @@ func (c *Client) GetRealm(accessToken string, realmName string) (keycloak.RealmR
 // UpdateRealm update the top lovel information of the realm. Any user, role or client information
 // from the realm representation will be ignored.
 func (c *Client) UpdateRealm(accessToken string, realmName string, realm keycloak.RealmRepresentation) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		put(accessToken, url.Path(kcRealmPath), url.Param("realm", realmName), body.JSON(realm))
 }
 
 // DeleteRealm deletes the realm.
 func (c *Client) DeleteRealm(accessToken string, realmName string) error {
-	return c.forRealm("master").
+	return c.forRealm(accessToken, "master").
 		delete(accessToken, url.Path(kcRealmPath), url.Param("realm", realmName))
 }
 
 // GetRealmCredentialRegistrators returns list of credentials types available for the realm
 func (c *Client) GetRealmCredentialRegistrators(accessToken string, realmName string) ([]string, error) {
 	var resp = []string{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcRealmCredentialRegistrators), url.Param("realm", realmName), hdrAcceptJSON)
 	return resp, err
 }

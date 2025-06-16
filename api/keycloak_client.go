@@ -12,6 +12,7 @@ import (
 	commonhttp "github.com/cloudtrust/common-service/v2/errors"
 	"github.com/cloudtrust/keycloak-client/v2"
 	"github.com/cloudtrust/keycloak-client/v2/toolbox"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"gopkg.in/h2non/gentleman.v2"
 	"gopkg.in/h2non/gentleman.v2/plugin"
@@ -144,14 +145,34 @@ func (c *Client) WithPlugin(p plugin.Plugin) *Client {
 	return res
 }
 
-func (c *Client) forRealm(realmName string) *Client {
-	if res, ok := c.perRealmClients[realmName]; ok {
-		return res
+func (c *Client) forRealm(accessToken string, realmName string) *Client {
+	if !c.isIssuedByMaster(accessToken) {
+		if res, ok := c.perRealmClients[realmName]; ok {
+			return res
+		}
 	}
 	if res, ok := c.perRealmClients[c.perRealmDefKey]; ok {
 		return res
 	}
 	return c
+}
+
+func (c *Client) isIssuedByMaster(accessToken string) bool {
+	var token, _, err = jwt.NewParser().ParseUnverified(accessToken, jwt.MapClaims{})
+	if err != nil {
+		return false
+	}
+	var iss string
+	iss, err = token.Claims.GetIssuer()
+	if err != nil {
+		return false
+	}
+	return splitIssuer(iss) == "master"
+}
+
+func splitIssuer(issuer string) string {
+	var splitIssuer = strings.Split(issuer, "/realms/")
+	return splitIssuer[len(splitIssuer)-1]
 }
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
