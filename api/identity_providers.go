@@ -16,21 +16,21 @@ const (
 // GetIdps gets the list of identity providers
 func (c *Client) GetIdps(accessToken string, realmName string) ([]keycloak.IdentityProviderRepresentation, error) {
 	var resp = []keycloak.IdentityProviderRepresentation{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcIdpsPath), url.Param("realm", realmName))
 	return resp, err
 }
 
 // UpdateIdp updates the identity provider. idpAlias is the alias of identity provider.
 func (c *Client) UpdateIdp(accessToken string, realmName, idpAlias string, idpRep keycloak.IdentityProviderRepresentation) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		put(accessToken, url.Path(kcIdpAliasPath), url.Param("realm", realmName), url.Param("alias", idpAlias), body.JSON(idpRep))
 }
 
 // GetIdp gets an identity provider matching the given alias
 func (c *Client) GetIdp(accessToken string, realmName string, idpAlias string) (keycloak.IdentityProviderRepresentation, error) {
 	var resp = keycloak.IdentityProviderRepresentation{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcIdpAliasPath), url.Param("realm", realmName), url.Param("alias", idpAlias))
 	return resp, err
 }
@@ -38,7 +38,7 @@ func (c *Client) GetIdp(accessToken string, realmName string, idpAlias string) (
 // GetIdpMappers gets the mappers of the specified identity provider
 func (c *Client) GetIdpMappers(accessToken string, realmName string, idpAlias string) ([]keycloak.IdentityProviderMapperRepresentation, error) {
 	var resp = []keycloak.IdentityProviderMapperRepresentation{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcIdpMappersPath), url.Param("realm", realmName), url.Param("alias", idpAlias))
 	return resp, err
 }

@@ -58,7 +58,7 @@ func (c *Client) GetUsers(accessToken string, reqRealmName, targetRealmName stri
 	}
 
 	var plugins = append(c.createQueryPlugins(paramKV...), url.Path(ctUsersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName))
-	var err = c.forRealm(reqRealmName).
+	var err = c.forRealm(accessToken, reqRealmName).
 		get(accessToken, &resp, plugins...)
 	return resp, err
 }
@@ -69,14 +69,14 @@ func (c *Client) CreateUser(accessToken string, reqRealmName, targetRealmName st
 		return "", errors.New(keycloak.MsgErrInvalidParam + "." + keycloak.EvenParams)
 	}
 	var plugins = append(c.createQueryPlugins(paramKV...), url.Path(ctUsersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", targetRealmName), body.JSON(user))
-	return c.forRealm(reqRealmName).
+	return c.forRealm(accessToken, reqRealmName).
 		post(accessToken, nil, plugins...)
 }
 
 // CountUsers returns the number of users in the realm.
 func (c *Client) CountUsers(accessToken string, realmName string) (int, error) {
 	var resp = 0
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcUserCountPath), url.Param("realm", realmName))
 	return resp, err
 }
@@ -84,7 +84,7 @@ func (c *Client) CountUsers(accessToken string, realmName string) (int, error) {
 // GetUser gets the represention of the user.
 func (c *Client) GetUser(accessToken string, realmName, userID string) (keycloak.UserRepresentation, error) {
 	var resp = keycloak.UserRepresentation{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(ctGetUserPath), url.Param("realmReq", realmName), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
@@ -92,32 +92,32 @@ func (c *Client) GetUser(accessToken string, realmName, userID string) (keycloak
 // GetGroupsOfUser gets the groups of the user.
 func (c *Client) GetGroupsOfUser(accessToken string, realmName, userID string) ([]keycloak.GroupRepresentation, error) {
 	var resp = []keycloak.GroupRepresentation{}
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &resp, url.Path(kcUserGroupsPath), url.Param("realm", realmName), url.Param("id", userID))
 	return resp, err
 }
 
 // AddGroupToUser adds a group to the groups of the user.
 func (c *Client) AddGroupToUser(accessToken string, realmName, userID, groupID string) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		put(accessToken, url.Path(kcUserGroupIDPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("groupId", groupID))
 }
 
 // DeleteGroupFromUser adds a group to the groups of the user.
 func (c *Client) DeleteGroupFromUser(accessToken string, realmName, userID, groupID string) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		delete(accessToken, url.Path(kcUserGroupIDPath), url.Param("realm", realmName), url.Param("id", userID), url.Param("groupId", groupID))
 }
 
 // UpdateUser updates the user.
 func (c *Client) UpdateUser(accessToken string, realmName, userID string, user keycloak.UserRepresentation) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		put(accessToken, url.Path(kcUserIDPath), url.Param("realm", realmName), url.Param("id", userID), body.JSON(user))
 }
 
 // DeleteUser deletes the user.
 func (c *Client) DeleteUser(accessToken string, realmName, userID string) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		delete(accessToken, url.Path(kcUserIDPath), url.Param("realm", realmName), url.Param("id", userID))
 }
 
@@ -130,7 +130,7 @@ func (c *Client) ExecuteActionsEmail(accessToken string, reqRealmName string, ta
 	var plugins = append(c.createQueryPlugins(paramKV...), url.Path(ctExecuteActionsEmailPath), url.Param("realmReq", reqRealmName),
 		url.Param("realm", targetRealmName), url.Param("id", userID), body.JSON(actions))
 
-	return c.forRealm(reqRealmName).
+	return c.forRealm(accessToken, reqRealmName).
 		put(accessToken, plugins...)
 }
 
@@ -141,7 +141,7 @@ func (c *Client) SendSmsCode(accessToken string, realmName string, userID string
 	var plugins = append(c.createQueryPlugins(paramKV...), url.Path(ctSendSmsCode), url.Param("realm", realmName))
 	var resp = keycloak.SmsCodeRepresentation{}
 
-	_, err := c.forRealm(realmName).
+	_, err := c.forRealm(accessToken, realmName).
 		post(accessToken, &resp, plugins...)
 
 	return resp, err
@@ -156,7 +156,7 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 
 	var plugins = append(c.createQueryPlugins(newParamKV...), url.Path(ctSendReminderEmailPath), url.Param("realm", realmName))
 
-	_, err := c.forRealm(realmName).
+	_, err := c.forRealm(accessToken, realmName).
 		post(accessToken, nil, plugins...)
 	return err
 }
@@ -164,47 +164,47 @@ func (c *Client) SendReminderEmail(accessToken string, realmName string, userID 
 // GetFederatedIdentities gets the federated identities of a user in the given realm
 func (c *Client) GetFederatedIdentities(accessToken string, realmName string, userID string) ([]keycloak.FederatedIdentityRepresentation, error) {
 	var res []keycloak.FederatedIdentityRepresentation
-	var err = c.forRealm(realmName).
+	var err = c.forRealm(accessToken, realmName).
 		get(accessToken, &res, url.Path(kcUserFederationPath), url.Param("realm", realmName), url.Param("id", userID))
 	return res, err
 }
 
 // LinkShadowUser links shadow user to a realm in the context of brokering
 func (c *Client) LinkShadowUser(accessToken string, reqRealmName string, userID string, provider string, fedIDKC keycloak.FederatedIdentityRepresentation) error {
-	_, err := c.forRealm(reqRealmName).post(accessToken, nil, url.Path(kcShadowUser), url.Param("realm", reqRealmName), url.Param("id", userID), url.Param("provider", provider), body.JSON(fedIDKC))
+	_, err := c.forRealm(accessToken, reqRealmName).post(accessToken, nil, url.Path(kcShadowUser), url.Param("realm", reqRealmName), url.Param("id", userID), url.Param("provider", provider), body.JSON(fedIDKC))
 	return err
 }
 
 // SendEmail sends an email to a user
 func (c *Client) SendEmail(accessToken string, reqRealmName string, realmName string, emailRep keycloak.EmailRepresentation) error {
-	_, err := c.forRealm(reqRealmName).
+	_, err := c.forRealm(accessToken, reqRealmName).
 		post(accessToken, nil, url.Path(ctSendEmailAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), body.JSON(emailRep))
 	return err
 }
 
 // SendEmailToUser sends an email to the user specified by the UserID
 func (c *Client) SendEmailToUser(accessToken string, reqRealmName string, realmName string, userID string, emailRep keycloak.EmailRepresentation) error {
-	_, err := c.forRealm(reqRealmName).
+	_, err := c.forRealm(accessToken, reqRealmName).
 		post(accessToken, nil, url.Path(ctSendEmailUsersAdminExtensionAPIPath), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), url.Param("userId", userID), body.JSON(emailRep))
 	return err
 }
 
 // SendSMS sends an SMS to a user
 func (c *Client) SendSMS(accessToken string, realmName string, smsRep keycloak.SMSRepresentation) error {
-	_, err := c.forRealm(realmName).
+	_, err := c.forRealm(accessToken, realmName).
 		post(accessToken, nil, url.Path(ctSendSMSPath), url.Param("realm", realmName), body.JSON(smsRep))
 	return err
 }
 
 // CheckConsentCodeSMS checks a consent code previously sent by SMS to a user
 func (c *Client) CheckConsentCodeSMS(accessToken string, realmName string, userID string, consentCode string) error {
-	return c.forRealm(realmName).
+	return c.forRealm(accessToken, realmName).
 		get(accessToken, nil, url.Path(ctCheckSmsConsentCode), url.Param("realm", realmName), url.Param("userId", userID), url.Param("consent", consentCode))
 }
 
 // SendConsentCodeSMS sends an SMS to a user with a consent code
 func (c *Client) SendConsentCodeSMS(accessToken string, realmName string, userID string) error {
-	_, err := c.forRealm(realmName).
+	_, err := c.forRealm(accessToken, realmName).
 		post(accessToken, nil, url.Path(ctSendSmsConsentCode), url.Param("realm", realmName), url.Param("userId", userID))
 	return err
 }
@@ -214,7 +214,7 @@ func (c *Client) SendConsentCodeSMS(accessToken string, realmName string, userID
 func (c *Client) GetExpiredTermsOfUseAcceptance(accessToken string) ([]keycloak.DeletableUserRepresentation, error) {
 	var deletableUsers []keycloak.DeletableUserRepresentation
 	var realmName = "master"
-	err := c.forRealm(realmName).
+	err := c.forRealm(accessToken, realmName).
 		get(accessToken, &deletableUsers, url.Path(ctExpiredToUAcceptancePath), url.Param("realmReq", realmName))
 	return deletableUsers, err
 }
@@ -223,7 +223,7 @@ func (c *Client) GetExpiredTermsOfUseAcceptance(accessToken string) ([]keycloak.
 func (c *Client) GetSupportInfo(accessToken string, email string) ([]keycloak.EmailInfoRepresentation, error) {
 	var emailInfos []keycloak.EmailInfoRepresentation
 	var realmName = "master"
-	err := c.forRealm(realmName).
+	err := c.forRealm(accessToken, realmName).
 		get(accessToken, &emailInfos, url.Path(ctGetSupportInfoPath), url.Param("realmReq", realmName), query.Add("email", email))
 	return emailInfos, err
 }
@@ -231,7 +231,7 @@ func (c *Client) GetSupportInfo(accessToken string, email string) ([]keycloak.Em
 // GenerateTrustIDAuthToken generates a TrustID auth token
 func (c *Client) GenerateTrustIDAuthToken(accessToken string, reqRealmName string, realmName string, userID string) (string, error) {
 	var token keycloak.TrustIDAuthTokenRepresentation
-	err := c.forRealm(reqRealmName).
+	err := c.forRealm(accessToken, reqRealmName).
 		get(accessToken, &token, url.Path(ctGenerateTrustIDAuthToken), url.Param("realmReq", reqRealmName), url.Param("realm", realmName), url.Param("userId", userID))
 	return *token.Token, err
 }
@@ -239,7 +239,7 @@ func (c *Client) GenerateTrustIDAuthToken(accessToken string, reqRealmName strin
 // GetUserProfile gets the configuration of attribute management
 func (c *Client) GetUserProfile(accessToken string, realmName string) (keycloak.UserProfileRepresentation, error) {
 	var profile keycloak.UserProfileRepresentation
-	err := c.forRealm(realmName).
+	err := c.forRealm(accessToken, realmName).
 		get(accessToken, &profile, url.Path(kcProfilePath), url.Param("realm", realmName))
 	return profile, err
 }

@@ -16,7 +16,7 @@ const (
 func (c *Client) CreateRecoveryCode(accessToken string, realmName string, userID string) (keycloak.RecoveryCodeRepresentation, error) {
 	var resp = keycloak.RecoveryCodeRepresentation{}
 
-	_, err := c.forRealm(realmName).
+	_, err := c.forRealm(accessToken, realmName).
 		post(accessToken, &resp, query.Add("userId", userID), url.Path(ctRecoveryCodePath), url.Param("realm", realmName))
 	return resp, err
 }
@@ -25,7 +25,7 @@ func (c *Client) CreateRecoveryCode(accessToken string, realmName string, userID
 func (c *Client) CreateActivationCode(accessToken string, realmName string, userID string) (keycloak.ActivationCodeRepresentation, error) {
 	var resp = keycloak.ActivationCodeRepresentation{}
 
-	_, err := c.forRealm(realmName).
+	_, err := c.forRealm(accessToken, realmName).
 		post(accessToken, &resp, query.Add("userId", userID), url.Path(ctActivationCodePath), url.Param("realm", realmName))
 	return resp, err
 }
