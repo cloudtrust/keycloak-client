@@ -30,6 +30,7 @@ type Client struct {
 	plugins         []plugin.Plugin
 	perRealmClients map[string]*Client
 	perRealmDefKey  string
+	baseURL         string
 }
 
 // AccountClient structure
@@ -116,6 +117,7 @@ func New(config keycloak.Config) (*Client, error) {
 		plugins:         []plugin.Plugin{},
 		perRealmClients: map[string]*Client{},
 		perRealmDefKey:  config.URIProvider.GetDefaultKey(),
+		baseURL:         config.URIProvider.GetBaseURI(config.URIProvider.GetDefaultKey()),
 	}
 
 	client.account = &AccountClient{
@@ -124,6 +126,7 @@ func New(config keycloak.Config) (*Client, error) {
 
 	config.URIProvider.ForEachContextURI(func(realm, host, _ string) {
 		client.perRealmClients[realm] = client.WithPlugin(headers.Set("Forwarded", fmt.Sprintf("host=%s;proto=https", host)))
+		client.baseURL = config.URIProvider.GetBaseURI(realm)
 	})
 
 	return client, nil
@@ -146,7 +149,7 @@ func (c *Client) WithPlugin(p plugin.Plugin) *Client {
 }
 
 func (c *Client) forRealm(accessToken string, realmName string) *Client {
-	if !c.isIssuedByMaster(accessToken) {
+	if !c.isIssuedByDefaultMaster(accessToken) {
 		if res, ok := c.perRealmClients[realmName]; ok {
 			return res
 		}
@@ -157,7 +160,7 @@ func (c *Client) forRealm(accessToken string, realmName string) *Client {
 	return c
 }
 
-func (c *Client) isIssuedByMaster(accessToken string) bool {
+func (c *Client) isIssuedByDefaultMaster(accessToken string) bool {
 	var token, _, err = jwt.NewParser().ParseUnverified(accessToken, jwt.MapClaims{})
 	if err != nil {
 		return false
@@ -167,12 +170,13 @@ func (c *Client) isIssuedByMaster(accessToken string) bool {
 	if err != nil {
 		return false
 	}
-	return splitIssuer(iss) == "master"
+	var baseURL, realm = splitIssuer(iss)
+	return realm == "master" && strings.HasPrefix(baseURL, c.baseURL)
 }
 
-func splitIssuer(issuer string) string {
+func splitIssuer(issuer string) (string, string) {
 	var splitIssuer = strings.Split(issuer, "/realms/")
-	return splitIssuer[len(splitIssuer)-1]
+	return splitIssuer[0], splitIssuer[len(splitIssuer)-1]
 }
 
 // VerifyToken verifies a token. It returns an error it is malformed, expired,...
