@@ -126,7 +126,7 @@ func New(config keycloak.Config) (*Client, error) {
 
 	config.URIProvider.ForEachContextURI(func(realm, host, _ string) {
 		client.perRealmClients[realm] = client.WithPlugin(headers.Set("Forwarded", fmt.Sprintf("host=%s;proto=https", host)))
-		client.baseURL = config.URIProvider.GetBaseURI(realm)
+		client.perRealmClients[realm].baseURL = config.URIProvider.GetBaseURI(realm)
 	})
 
 	return client, nil
