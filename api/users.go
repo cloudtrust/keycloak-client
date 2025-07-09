@@ -175,6 +175,11 @@ func (c *Client) LinkShadowUser(accessToken string, reqRealmName string, userID 
 	return err
 }
 
+// UnlinkShadowUser unlinks shadow user to a realm in the context of brokering
+func (c *Client) UnlinkShadowUser(accessToken string, reqRealmName string, userID string, provider string) error {
+	return c.forRealm(accessToken, reqRealmName).delete(accessToken, url.Path(kcShadowUser), url.Param("realm", reqRealmName), url.Param("id", userID), url.Param("provider", provider))
+}
+
 // SendEmail sends an email to a user
 func (c *Client) SendEmail(accessToken string, reqRealmName string, realmName string, emailRep keycloak.EmailRepresentation) error {
 	_, err := c.forRealm(accessToken, reqRealmName).

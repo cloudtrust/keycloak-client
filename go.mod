@@ -3,7 +3,7 @@ module github.com/cloudtrust/keycloak-client/v2
 go 1.24.1
 
 require (
-	github.com/cloudtrust/common-service/v2 v2.10.0
+	github.com/cloudtrust/common-service/v2 v2.10.1-0.20250716105739-e6ecdbb2996c
 	github.com/coreos/go-oidc v2.3.0+incompatible
 	github.com/go-kit/kit v0.13.0
 	github.com/golang-jwt/jwt/v5 v5.2.3
@@ -24,8 +24,8 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
-	golang.org/x/crypto v0.38.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
 	gopkg.in/go-jose/go-jose.v2 v2.6.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
