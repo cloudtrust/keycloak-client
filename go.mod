@@ -6,7 +6,7 @@ require (
 	github.com/cloudtrust/common-service/v2 v2.10.0
 	github.com/coreos/go-oidc v2.3.0+incompatible
 	github.com/go-kit/kit v0.13.0
-	github.com/golang-jwt/jwt/v5 v5.2.2
+	github.com/golang-jwt/jwt/v5 v5.2.3
 	github.com/golang/mock v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/pkg/errors v0.9.1
