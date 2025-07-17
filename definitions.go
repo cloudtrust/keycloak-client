@@ -815,3 +815,13 @@ type EmailInfoRepresentation struct {
 type TrustIDAuthTokenRepresentation struct {
 	Token *string `json:"token"`
 }
+
+// LinkedAccountRepresentation struct
+type LinkedAccountRepresentation struct {
+	Connected      *bool   `json:"connected,omitempty"`
+	Social         *bool   `json:"social,omitempty"`
+	ProviderAlias  *string `json:"providerAlias,omitempty"`
+	ProviderName   *string `json:"providerName,omitempty"`
+	DisplayName    *string `json:"displayName,omitempty"`
+	LinkedUsername *string `json:"linkedUsername,omitempty"`
+}
