@@ -33,6 +33,7 @@ func TestGetRealmUserProfile(t *testing.T) {
 		Attributes: []keycloak.ProfileAttrbRepresentation{},
 		Groups:     []keycloak.ProfileGroupRepresentation{},
 	}
+	expectedResult.InitDynamicAttributes()
 
 	t.Run("Token provider fails", func(t *testing.T) {
 		mockTokenProvider.EXPECT().ProvideTokenForRealm(gomock.Any(), realm).Return("", errAny)
@@ -74,6 +75,7 @@ func TestGetRealmUserProfileWithToken(t *testing.T) {
 		Attributes: []keycloak.ProfileAttrbRepresentation{},
 		Groups:     []keycloak.ProfileGroupRepresentation{},
 	}
+	expectedResult.InitDynamicAttributes()
 
 	var mockProfileRetriever = mock.NewProfileRetriever(mockCtrl)
 	var cache = NewUserProfileCache(mockProfileRetriever, nil)

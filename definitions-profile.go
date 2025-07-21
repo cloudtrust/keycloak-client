@@ -2,10 +2,24 @@ package keycloak
 
 import "strings"
 
+const (
+	dynamicAttributeAnnotation = "dynamic"
+)
+
 // UserProfileRepresentation struct
 type UserProfileRepresentation struct {
-	Attributes []ProfileAttrbRepresentation `json:"attributes"`
-	Groups     []ProfileGroupRepresentation `json:"groups"`
+	Attributes           []ProfileAttrbRepresentation `json:"attributes"`
+	Groups               []ProfileGroupRepresentation `json:"groups"`
+	dynamicAttributeKeys map[string]struct{}
+}
+
+func (p *UserProfileRepresentation) InitDynamicAttributes() {
+	p.dynamicAttributeKeys = map[string]struct{}{}
+	for _, attribute := range p.Attributes {
+		if _, ok := attribute.Annotations[dynamicAttributeAnnotation]; ok && attribute.Name != nil {
+			p.dynamicAttributeKeys[*attribute.Name] = struct{}{}
+		}
+	}
 }
 
 // ProfileAttrbRepresentation struct

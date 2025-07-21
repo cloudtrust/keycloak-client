@@ -131,6 +131,35 @@ func TestUserRepresentationAttributes(t *testing.T) {
 		userRep.RemoveAttribute(keyAttrb)
 		assert.Nil(t, userRep.GetAttribute(keyAttrb))
 	})
+
+	t.Run("Dynamic attributes in profile", func(t *testing.T) {
+		customAttribute := "customAttribute"
+		customValue := "customValue"
+		profile := UserProfileRepresentation{
+			Attributes: []ProfileAttrbRepresentation{
+				{
+					Name:        &customAttribute,
+					Annotations: map[string]string{dynamicAttributeAnnotation: "true"},
+				},
+			},
+		}
+		profile.InitDynamicAttributes()
+
+		assert.Len(t, userRep.GetDynamicAttributes(profile), 0)
+		userRep.Attributes.SetDynamicAttributes(map[string]any{customAttribute: customValue}, profile)
+		assert.Len(t, userRep.GetDynamicAttributes(profile), 1)
+		assert.Equal(t, customValue, userRep.GetDynamicAttributes(profile)[customAttribute])
+	})
+
+	t.Run("No dynamic attributes in profile", func(t *testing.T) {
+		customAttribute := "customAttribute"
+		customValue := "customValue"
+		profile := UserProfileRepresentation{}
+
+		assert.Len(t, userRep.GetDynamicAttributes(profile), 0)
+		userRep.Attributes.SetDynamicAttributes(map[string]any{customAttribute: customValue}, profile)
+		assert.Len(t, userRep.GetDynamicAttributes(profile), 0)
+	})
 }
 
 func TestMergeAttributes(t *testing.T) {
