@@ -2,9 +2,12 @@ package toolbox
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/cloudtrust/keycloak-client/v2"
+)
+
+const (
+	dynamicAttributeAnnotation = "dynamic"
 )
 
 // ProfileRetriever interface
@@ -17,7 +20,7 @@ type ProfileRetriever interface {
 type UserProfileCache struct {
 	tokenProvider  OidcTokenProvider
 	retriever      ProfileRetriever
-	cachedProfiles map[string][]byte
+	cachedProfiles map[string]keycloak.UserProfileRepresentation
 }
 
 // NewUserProfileCache creates a UserProfileCache instance
@@ -25,7 +28,7 @@ func NewUserProfileCache(retriever ProfileRetriever, tokenProvider OidcTokenProv
 	return &UserProfileCache{
 		tokenProvider:  tokenProvider,
 		retriever:      retriever,
-		cachedProfiles: map[string][]byte{},
+		cachedProfiles: map[string]keycloak.UserProfileRepresentation{},
 	}
 }
 
@@ -60,21 +63,19 @@ func (upc *UserProfileCache) getRealmUserProfile(provideToken func() (string, er
 	if err != nil {
 		return keycloak.UserProfileRepresentation{}, err
 	}
+
+	profile.InitDynamicAttributes()
+
 	// Write profile in cache then return it
 	upc.setProfile(realmName, profile)
 	return profile, nil
 }
 
 func (upc *UserProfileCache) getProfile(realm string) (keycloak.UserProfileRepresentation, bool) {
-	var res keycloak.UserProfileRepresentation
-	if bytes, ok := upc.cachedProfiles[realm]; ok {
-		json.Unmarshal(bytes, &res)
-		return res, true
-	}
-	return res, false
+	res, ok := upc.cachedProfiles[realm]
+	return res, ok
 }
 
 func (upc *UserProfileCache) setProfile(realm string, profile keycloak.UserProfileRepresentation) {
-	var bytes, _ = json.Marshal(profile)
-	upc.cachedProfiles[realm] = bytes
+	upc.cachedProfiles[realm] = profile
 }

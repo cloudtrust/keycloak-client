@@ -175,6 +175,18 @@ func (a Attributes) Merge(others *Attributes) {
 	}
 }
 
+func (a Attributes) SetDynamicAttributes(dynamicAttributes map[string]any, profile UserProfileRepresentation) {
+	for k, v := range dynamicAttributes {
+		if _, ok := profile.dynamicAttributeKeys[k]; ok {
+			strValue, ok := v.(string)
+			if ok {
+				// Hypothesis : all dynamic attributes are string
+				a.SetString(AttributeKey(k), strValue)
+			}
+		}
+	}
+}
+
 // RemoveAttribute removes an attribute given its key
 func (u *UserRepresentation) RemoveAttribute(key AttributeKey) {
 	if u.Attributes != nil {
@@ -263,6 +275,21 @@ func (u *UserRepresentation) GetAttributeBool(key AttributeKey) (*bool, error) {
 		return u.Attributes.GetBool(key)
 	}
 	return nil, nil
+}
+
+func (u *UserRepresentation) GetDynamicAttributes(profile UserProfileRepresentation) map[string]any {
+	dynamicAttributes := map[string]any{}
+	if u.Attributes != nil {
+		attributes := map[AttributeKey][]string(*u.Attributes)
+		for attributeName := range profile.dynamicAttributeKeys {
+			attributeKey := AttributeKey(attributeName)
+			if _, ok := attributes[attributeKey]; ok && len(attributes[attributeKey]) > 0 {
+				// Hypothesis : all dynamic attributes can be returned as string
+				dynamicAttributes[string(attributeKey)] = attributes[attributeKey][0]
+			}
+		}
+	}
+	return dynamicAttributes
 }
 
 // SetAttributeBool sets an attribute with a single value
