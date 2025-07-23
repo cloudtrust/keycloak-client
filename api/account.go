@@ -10,6 +10,10 @@ import (
 )
 
 const (
+	// API Keycloak out-of-the-box
+	kcAccountLinkedAccountsPath         = "/auth/realms/:realm/account/linked-accounts"
+	kcAccountLinkedAccountsProviderPath = kcAccountLinkedAccountsPath + "/:providerAlias"
+
 	// API keycloak-rest-extensions account
 	ctAccountExtensionAPIPath            = "/auth/realms/master/api/account/realms/:realm"
 	ctAccountExecuteActionsEmail         = ctAccountExtensionAPIPath + "/execute-actions-email"
@@ -116,4 +120,18 @@ func (c *AccountClient) SendEmail(accessToken, realmName, template, subject stri
 	plugins = append(plugins, body.JSON(attributes))
 	_, err := c.client.forRealm(accessToken, realmName).post(accessToken, nil, plugins...)
 	return err
+}
+
+// GetLinkedAccounts returns the list of accounts linked to the user
+func (c *AccountClient) GetLinkedAccounts(accessToken string, realmName string) ([]keycloak.LinkedAccountRepresentation, error) {
+	var resp = []keycloak.LinkedAccountRepresentation{}
+	var err = c.client.forRealm(accessToken, realmName).
+		get(accessToken, &resp, url.Path(kcAccountLinkedAccountsPath), url.Param("realm", realmName), hdrAcceptJSON)
+	return resp, err
+}
+
+// DeleteLinkedAccount removes a linked account from the user
+func (c *AccountClient) DeleteLinkedAccount(accessToken string, realmName string, providerAlias string) error {
+	return c.client.forRealm(accessToken, realmName).
+		delete(accessToken, url.Path(kcAccountLinkedAccountsProviderPath), url.Param("realm", realmName), url.Param("providerAlias", providerAlias), hdrAcceptJSON)
 }
