@@ -4,7 +4,7 @@ go 1.24.1
 
 require (
 	github.com/cloudtrust/common-service/v2 v2.11.2
-	github.com/coreos/go-oidc v2.3.0+incompatible
+	github.com/coreos/go-oidc v2.4.0+incompatible
 	github.com/go-kit/kit v0.13.0
 	github.com/golang-jwt/jwt/v5 v5.2.3
 	github.com/golang/mock v1.6.0
