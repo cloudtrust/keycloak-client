@@ -1,4 +1,4 @@
-# github.com/cloudtrust/common-service/v2 v2.12.2
+# github.com/cloudtrust/common-service/v2 v2.13.0
 ## explicit; go 1.24.1
 github.com/cloudtrust/common-service/v2/errors
 github.com/cloudtrust/common-service/v2/fields
