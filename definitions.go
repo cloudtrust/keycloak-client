@@ -289,20 +289,20 @@ type IdentityProviderMapperRepresentation struct {
 
 // IdentityProviderRepresentation struct
 type IdentityProviderRepresentation struct {
-	AddReadTokenRoleOnCreate  *bool          `json:"addReadTokenRoleOnCreate,omitempty"`
-	Alias                     *string        `json:"alias,omitempty"`
-	AuthenticateByDefault     *bool          `json:"authenticateByDefault,omitempty"`
-	Config                    map[string]any `json:"config,omitempty"`
-	DisplayName               *string        `json:"displayName,omitempty"`
-	Enabled                   *bool          `json:"enabled,omitempty"`
-	FirstBrokerLoginFlowAlias *string        `json:"firstBrokerLoginFlowAlias,omitempty"`
-	HideOnLogin               *bool          `json:"hideOnLogin,omitempty"`
-	InternalID                *string        `json:"internalId,omitempty"`
-	LinkOnly                  *bool          `json:"linkOnly,omitempty"`
-	PostBrokerLoginFlowAlias  *string        `json:"postBrokerLoginFlowAlias,omitempty"`
-	ProviderID                *string        `json:"providerId,omitempty"`
-	StoreToken                *bool          `json:"storeToken,omitempty"`
-	TrustEmail                *bool          `json:"trustEmail,omitempty"`
+	AddReadTokenRoleOnCreate  *bool             `json:"addReadTokenRoleOnCreate,omitempty"`
+	Alias                     *string           `json:"alias,omitempty"`
+	AuthenticateByDefault     *bool             `json:"authenticateByDefault,omitempty"`
+	Config                    map[string]string `json:"config,omitempty"`
+	DisplayName               *string           `json:"displayName,omitempty"`
+	Enabled                   *bool             `json:"enabled,omitempty"`
+	FirstBrokerLoginFlowAlias *string           `json:"firstBrokerLoginFlowAlias,omitempty"`
+	HideOnLogin               *bool             `json:"hideOnLogin,omitempty"`
+	InternalID                *string           `json:"internalId,omitempty"`
+	LinkOnly                  *bool             `json:"linkOnly,omitempty"`
+	PostBrokerLoginFlowAlias  *string           `json:"postBrokerLoginFlowAlias,omitempty"`
+	ProviderID                *string           `json:"providerId,omitempty"`
+	StoreToken                *bool             `json:"storeToken,omitempty"`
+	TrustEmail                *bool             `json:"trustEmail,omitempty"`
 }
 
 // KeysMetadataRepresentation struct
