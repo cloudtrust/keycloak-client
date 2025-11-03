@@ -6,10 +6,6 @@ import (
 	"github.com/cloudtrust/keycloak-client/v2"
 )
 
-const (
-	dynamicAttributeAnnotation = "dynamic"
-)
-
 // ProfileRetriever interface
 type ProfileRetriever interface {
 	GetRealm(accessToken string, realmName string) (keycloak.RealmRepresentation, error)
