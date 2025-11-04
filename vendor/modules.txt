@@ -3,12 +3,17 @@
 github.com/cloudtrust/common-service/v2/errors
 github.com/cloudtrust/common-service/v2/fields
 github.com/cloudtrust/common-service/v2/json
-# github.com/coreos/go-oidc v2.4.0+incompatible
-## explicit
-github.com/coreos/go-oidc
+# github.com/coreos/go-oidc/v3 v3.16.0
+## explicit; go 1.24.0
+github.com/coreos/go-oidc/v3/oidc
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
 github.com/davecgh/go-spew/spew
+# github.com/go-jose/go-jose/v4 v4.1.3
+## explicit; go 1.24.0
+github.com/go-jose/go-jose/v4
+github.com/go-jose/go-jose/v4/cipher
+github.com/go-jose/go-jose/v4/json
 # github.com/go-kit/kit v0.13.0
 ## explicit; go 1.17
 github.com/go-kit/kit/endpoint
@@ -26,8 +31,6 @@ github.com/golang-jwt/jwt/v5
 # github.com/golang/mock v1.6.0
 ## explicit; go 1.11
 github.com/golang/mock/mockgen/model
-# github.com/google/go-cmp v0.7.0
-## explicit; go 1.21
 # github.com/gorilla/mux v1.8.1
 ## explicit; go 1.20
 github.com/gorilla/mux
@@ -38,9 +41,7 @@ github.com/pkg/errors
 ## explicit
 github.com/pmezard/go-difflib/difflib
 # github.com/pquerna/cachecontrol v0.2.0
-## explicit; go 1.16
-github.com/pquerna/cachecontrol
-github.com/pquerna/cachecontrol/cacheobject
+## explicit
 # github.com/spf13/pflag v1.0.10
 ## explicit; go 1.12
 github.com/spf13/pflag
@@ -52,9 +53,7 @@ github.com/stretchr/testify/assert/yaml
 ## explicit; go 1.23.0
 go.uber.org/mock/gomock
 # golang.org/x/crypto v0.42.0
-## explicit; go 1.24.0
-golang.org/x/crypto/ed25519
-golang.org/x/crypto/pbkdf2
+## explicit
 # golang.org/x/net v0.45.0
 ## explicit; go 1.24.0
 golang.org/x/net/publicsuffix
@@ -65,9 +64,6 @@ golang.org/x/oauth2/clientcredentials
 golang.org/x/oauth2/internal
 # gopkg.in/go-jose/go-jose.v2 v2.6.3
 ## explicit
-gopkg.in/go-jose/go-jose.v2
-gopkg.in/go-jose/go-jose.v2/cipher
-gopkg.in/go-jose/go-jose.v2/json
 # gopkg.in/h2non/gentleman.v2 v2.0.5
 ## explicit
 gopkg.in/h2non/gentleman.v2

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/cloudtrust/keycloak-client/v2"
-	oidc "github.com/coreos/go-oidc"
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/pkg/errors"
 )
 
@@ -23,7 +23,8 @@ type OidcVerifier interface {
 }
 
 type verifierCache struct {
-	tokenURL       *url.URL
+	internalURL    *url.URL
+	externalURL    *url.URL
 	verifiers      map[string]cachedVerifier
 	verifiersMutex sync.RWMutex
 }
@@ -31,12 +32,14 @@ type verifierCache struct {
 type cachedVerifier struct {
 	verifier  *oidc.IDTokenVerifier
 	createdAt time.Time
+	ctx       context.Context
 }
 
 // NewVerifierCache create an instance of OIDC verifier cache
-func NewVerifierCache(tokenURL *url.URL) OidcVerifierProvider {
+func NewVerifierCache(internalURL *url.URL, externalURL *url.URL) OidcVerifierProvider {
 	return &verifierCache{
-		tokenURL:       tokenURL,
+		internalURL:    internalURL,
+		externalURL:    externalURL,
 		verifiers:      make(map[string]cachedVerifier),
 		verifiersMutex: sync.RWMutex{},
 	}
@@ -49,11 +52,13 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 	if ok {
 		return &v, nil
 	}
+
+	ctx := ContextWithForwarded(context.Background(), vc.internalURL, vc.externalURL)
 	var oidcProvider *oidc.Provider
 	{
 		var err error
-		var issuer = fmt.Sprintf("%s/auth/realms/%s", vc.tokenURL.String(), realm)
-		oidcProvider, err = oidc.NewProvider(context.Background(), issuer)
+		var issuer = fmt.Sprintf("%s://%s/auth/realms/%s", vc.externalURL.Scheme, vc.externalURL.Host, realm)
+		oidcProvider, err = oidc.NewProvider(ctx, issuer)
 		if err != nil {
 			return nil, errors.Wrap(err, keycloak.MsgErrCannotCreate+"."+keycloak.OIDCProvider)
 		}
@@ -63,6 +68,7 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 	res := cachedVerifier{
 		createdAt: time.Now(),
 		verifier:  ov,
+		ctx:       ctx,
 	}
 	vc.verifiersMutex.Lock()
 	vc.verifiers[realm] = res
@@ -72,6 +78,6 @@ func (vc *verifierCache) GetOidcVerifier(realm string) (OidcVerifier, error) {
 }
 
 func (cv *cachedVerifier) Verify(accessToken string) error {
-	_, err := cv.verifier.Verify(context.Background(), accessToken)
+	_, err := cv.verifier.Verify(cv.ctx, accessToken)
 	return err
 }
