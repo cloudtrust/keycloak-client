@@ -30,13 +30,17 @@ func getProtocolAndDomain(URL string) string {
 
 // NewIssuerManager creates a new URLProvider
 func NewIssuerManager(config keycloak.Config) (IssuerManager, error) {
+	urlInternal, err := url.Parse(config.AddrInternalAPI)
+	if err != nil {
+		return nil, err
+	}
 	var domainToVerifier = make(map[string]OidcVerifierProvider)
 	for _, value := range config.URIProvider.GetAllBaseURIs() {
 		uToken, err := url.Parse(value)
 		if err != nil {
 			return nil, err
 		}
-		verifier := NewVerifierCache(uToken)
+		verifier := NewVerifierCache(urlInternal, uToken)
 		domainToVerifier[getProtocolAndDomain(value)] = verifier
 	}
 	return &issuerManager{

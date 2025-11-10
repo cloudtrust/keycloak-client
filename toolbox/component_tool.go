@@ -8,11 +8,13 @@ import (
 	"github.com/cloudtrust/keycloak-client/v2"
 )
 
+// Errors definition
 var (
 	ErrConfigKeyNotFound   = errors.New("component config key not found")
 	ErrInvalidConfigFormat = errors.New("invalid config encoding")
 )
 
+// ComponentTool interface
 type ComponentTool interface {
 	FindComponent(components []keycloak.ComponentRepresentation) *keycloak.ComponentRepresentation
 	InitializeComponent(realmName string, idpID string, initial any) (keycloak.ComponentRepresentation, error)
@@ -23,18 +25,21 @@ type ComponentTool interface {
 	GetProviderType() string
 }
 
+// ComponentConfig struct
 type ComponentConfig struct {
 	ProviderType string `mapstructure:"provider-type"`
 	ProviderID   string `mapstructure:"provider-id"`
 	ConfigName   string `mapstructure:"config-name"`
 }
 
+// GenericComponentTool struct
 type GenericComponentTool struct {
 	ProviderType string
 	ProviderID   string
 	ConfigName   string
 }
 
+// NewComponentTool creates
 func NewComponentTool(config ComponentConfig) ComponentTool {
 	return &GenericComponentTool{
 		ProviderType: config.ProviderType,
@@ -43,15 +48,18 @@ func NewComponentTool(config ComponentConfig) ComponentTool {
 	}
 }
 
+// ComponentConfigKeyValue struct
 type ComponentConfigKeyValue struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
 }
 
+// GetProviderType returns the provider type
 func (ct *GenericComponentTool) GetProviderType() string {
 	return ct.ProviderType
 }
 
+// FindComponent searches a component
 func (ct *GenericComponentTool) FindComponent(components []keycloak.ComponentRepresentation) *keycloak.ComponentRepresentation {
 	for i := range components {
 		c := &components[i]
@@ -63,6 +71,7 @@ func (ct *GenericComponentTool) FindComponent(components []keycloak.ComponentRep
 	return nil
 }
 
+// InitializeComponent initializes a component
 func (ct *GenericComponentTool) InitializeComponent(parentID string, idpID string, initial any) (keycloak.ComponentRepresentation, error) {
 	valueJSON, err := json.Marshal(initial)
 	if err != nil {
@@ -185,6 +194,7 @@ func (ct *GenericComponentTool) UpdateComponentEntry(comp *keycloak.ComponentRep
 	return ct.updateComponentConfigKeyValue(comp, kv)
 }
 
+// DeleteComponentEntry deletes a component entry
 func (ct *GenericComponentTool) DeleteComponentEntry(comp *keycloak.ComponentRepresentation, key string) (bool, error) {
 	arr, err := ct.loadConfigArray(comp)
 	if err != nil {
