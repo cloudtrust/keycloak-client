@@ -19,6 +19,7 @@ const (
 	kcUserFederationPath = kcUserIDPath + "/federated-identity"
 	kcShadowUser         = kcUserFederationPath + "/:provider"
 	kcProfilePath        = kcUserPath + "/profile"
+	kcUserRolesPath      = kcUserIDPath + "/role-mappings/realm"
 
 	// API keycloak-rest-api-extensions admin
 	ctAdminRootPath                       = "/auth/realms/:realmReq/api/admin"
@@ -247,4 +248,12 @@ func (c *Client) GetUserProfile(accessToken string, realmName string) (keycloak.
 	err := c.forRealm(accessToken, realmName).
 		get(accessToken, &profile, url.Path(kcProfilePath), url.Param("realm", realmName))
 	return profile, err
+}
+
+// GetRolesOfUser gets the roles assigned to a user
+func (c *Client) GetRolesOfUser(accessToken string, realmName string, userID string) ([]keycloak.RoleRepresentation, error) {
+	roles := []keycloak.RoleRepresentation{}
+	err := c.forRealm(accessToken, realmName).
+		get(accessToken, &roles, url.Path(kcUserRolesPath), url.Param("realm", realmName), url.Param("id", userID))
+	return roles, err
 }
