@@ -38,9 +38,6 @@ const (
 	ctCheckSmsConsentCode = ctSendSmsConsentCode + "/:consent"
 	ctSendSMSPath         = ctSmsAPI + "/sendSms"
 
-	// API keycloak-custom-flows Onboarding
-	ctSendReminderEmailPath = "/auth/realms/:realm/ctcustom/sendReminderEmail"
-
 	// API keycloak-custom-flows TrustID auth token
 	ctGenerateTrustIDAuthToken = "/auth/realms/:realmReq/ctcustom/realms/:realm/users/:userId/generate-trustid-auth-token"
 )
@@ -145,20 +142,6 @@ func (c *Client) SendSmsCode(accessToken string, realmName string, userID string
 		post(accessToken, &resp, plugins...)
 
 	return resp, err
-}
-
-// SendReminderEmail sends a reminder email to a user
-func (c *Client) SendReminderEmail(accessToken string, realmName string, userID string, paramKV ...string) error {
-	if len(paramKV)%2 != 0 {
-		return errors.New(keycloak.MsgErrInvalidParam + "." + keycloak.EvenParams)
-	}
-	var newParamKV = append(paramKV, "userid", userID)
-
-	var plugins = append(c.createQueryPlugins(newParamKV...), url.Path(ctSendReminderEmailPath), url.Param("realm", realmName))
-
-	_, err := c.forRealm(accessToken, realmName).
-		post(accessToken, nil, plugins...)
-	return err
 }
 
 // GetFederatedIdentities gets the federated identities of a user in the given realm
