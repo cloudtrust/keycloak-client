@@ -1,6 +1,6 @@
 module github.com/cloudtrust/keycloak-client/v2
 
-go 1.25.3
+go 1.26.1
 
 require (
 	github.com/cloudtrust/common-service/v2 v2.18.0
