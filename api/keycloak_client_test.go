@@ -7,15 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func ptr(value string) *string {
-	return &value
-}
-
 func TestForRealm(t *testing.T) {
 	var kcConfig, err = toolbox.NewConfig(func(target any) error {
 		var config = target.(*toolbox.InternalConfig)
 		config.InternalURI = "http://cloudtrust:8080"
-		config.DefaultKey = ptr("default")
+		config.DefaultKey = new("default")
 		config.RealmPublicURI = map[string]string{
 			"default": "https://my.domain.test",
 			"other":   "https://my.other.domain.test",

@@ -1,6 +1,7 @@
 package keycloak
 
 import (
+	"maps"
 	"strconv"
 	"time"
 
@@ -169,9 +170,7 @@ func (a Attributes) reformatDate(value *string, dateLayouts []string) *string {
 // Merge current attributes with others (Values from others replace those with the same key in current attributes)
 func (a Attributes) Merge(others *Attributes) {
 	if others != nil {
-		for key, attribute := range *others {
-			a[key] = attribute
-		}
+		maps.Copy(a, *others)
 	}
 }
 
