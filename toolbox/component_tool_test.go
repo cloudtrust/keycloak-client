@@ -27,10 +27,6 @@ type hrdSettingModel struct {
 	IPRangesList string `json:"ipRangesList"`
 }
 
-func ptr(value string) *string {
-	return &value
-}
-
 func createComponentTool() ComponentTool {
 	return &GenericComponentTool{
 		ProviderType: compProviderType,
@@ -50,10 +46,10 @@ func testComponent() keycloak.ComponentRepresentation {
 	}
 	return keycloak.ComponentRepresentation{
 		Config:       config,
-		ID:           ptr(compID),
-		ParentID:     ptr(realmName),
-		ProviderID:   ptr(compProviderID),
-		ProviderType: ptr(compProviderType),
+		ID:           new(compID),
+		ParentID:     new(realmName),
+		ProviderID:   new(compProviderID),
+		ProviderType: new(compProviderType),
 	}
 }
 
@@ -68,7 +64,7 @@ func TestFindComponent(t *testing.T) {
 
 	t.Run("No component with this ID", func(t *testing.T) {
 		stsComp := comp
-		stsComp.ProviderID = ptr("STS settings")
+		stsComp.ProviderID = new("STS settings")
 
 		res := tool.FindComponent([]keycloak.ComponentRepresentation{stsComp})
 		assert.Nil(t, res)
