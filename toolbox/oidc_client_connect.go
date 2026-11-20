@@ -21,6 +21,33 @@ type OAuth2Config struct {
 	ClientSecret *string `mapstructure:"client-secret"`
 }
 
+// ConfigLoader func
+type ConfigLoader func(config *OAuth2Config) error
+
+// StringConfigLoader func
+type StringConfigLoader func(key string) string
+
+// NewOAuth2Config creates a new OAuth2Config
+func NewOAuth2Config(loader ConfigLoader, strLoader StringConfigLoader, clientSecretKey string, usernameKey string, passwordKey string) (OAuth2Config, error) {
+	var res OAuth2Config
+	if err := loader(&res); err != nil {
+		return res, err
+	}
+	if res.Username == nil {
+		if envValue := strLoader(clientSecretKey); envValue != "" {
+			res.ClientSecret = &envValue
+		}
+	} else {
+		if envValue := strLoader(usernameKey); envValue != "" {
+			res.Username = &envValue
+		}
+		if envValue := strLoader(passwordKey); envValue != "" {
+			res.Password = &envValue
+		}
+	}
+	return res, nil
+}
+
 // IsClientConfig checks if the config is a client config or a username/password one
 func (oac *OAuth2Config) IsClientConfig() bool {
 	return oac != nil && oac.Realm != nil && oac.ClientID != nil && oac.ClientSecret != nil

@@ -2,6 +2,7 @@ package toolbox
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -45,6 +46,71 @@ func createServiceAccount(realm string, clientID string, clientSecret string) OA
 		ClientID:     &clientID,
 		ClientSecret: &clientSecret,
 	}
+}
+
+func TestNewOAuth2Config(t *testing.T) {
+	var mockCtrl = gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	var (
+		realm           = "the-realm"
+		username        = "the-username"
+		password        = "the-password"
+		clientID        = "the-client-id"
+		clientSecretKey = "key-client-secret"
+		usernameKey     = "key-username"
+		passwordKey     = "key-password"
+		anError         = errors.New("an error")
+
+		strLoader = func(key string) string {
+			return key
+		}
+	)
+
+	t.Run("Failure", func(t *testing.T) {
+		loaderFailure := func(cfg *OAuth2Config) error {
+			return anError
+		}
+
+		_, err := NewOAuth2Config(loaderFailure, strLoader, clientSecretKey, usernameKey, passwordKey)
+		assert.NotNil(t, err)
+	})
+	t.Run("Success with ClientID", func(t *testing.T) {
+		loaderSuccess := func(cfg *OAuth2Config) error {
+			*cfg = OAuth2Config{
+				Realm:    &realm,
+				ClientID: &clientID,
+				Username: &username,
+				Password: &password,
+			}
+			return nil
+		}
+
+		res, err := NewOAuth2Config(loaderSuccess, strLoader, clientSecretKey, usernameKey, passwordKey)
+		assert.Nil(t, err)
+		assert.Equal(t, realm, *res.Realm)
+		assert.Equal(t, usernameKey, *res.Username) // overriden by env variable
+		assert.Equal(t, passwordKey, *res.Password) // overriden by env variable
+		assert.Equal(t, clientID, *res.ClientID)
+		assert.Nil(t, res.ClientSecret)
+	})
+	t.Run("Success with ClientSecret", func(t *testing.T) {
+		loaderSuccess := func(cfg *OAuth2Config) error {
+			*cfg = OAuth2Config{
+				Realm:    &realm,
+				ClientID: &clientID,
+			}
+			return nil
+		}
+
+		res, err := NewOAuth2Config(loaderSuccess, strLoader, clientSecretKey, usernameKey, passwordKey)
+		assert.Nil(t, err)
+		assert.Equal(t, realm, *res.Realm)
+		assert.Nil(t, res.Username)
+		assert.Nil(t, res.Password)
+		assert.Equal(t, clientID, *res.ClientID)
+		assert.Equal(t, clientSecretKey, *res.ClientSecret)
+	})
 }
 
 func TestCreateToken(t *testing.T) {
