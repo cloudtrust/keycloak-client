@@ -95,6 +95,14 @@ type CertificateRepresentation struct {
 	PublicKey   *string `json:"publicKey,omitempty"`
 }
 
+// CircuitBreakerRepresentation struct
+type CircuitBreakerRepresentation struct {
+	Status    *string `json:"status,omitempty"`
+	Trigger   *string `json:"trigger,omitempty"`
+	Since     *string `json:"since,omitempty"`
+	UpdatedBy *string `json:"updatedBy,omitempty"`
+}
+
 // ClientInitialAccessCreatePresentation struct
 type ClientInitialAccessCreatePresentation struct {
 	Count      *int32 `json:"count,omitempty"`
