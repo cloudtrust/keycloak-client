@@ -13,6 +13,7 @@ const (
 	// API Keycloak out-of-the-box
 	kcAccountLinkedAccountsPath         = "/auth/realms/:realm/account/linked-accounts"
 	kcAccountLinkedAccountsProviderPath = kcAccountLinkedAccountsPath + "/:providerAlias"
+	kcAccountSessionsPath               = "/auth/realms/:realm/account/sessions"
 
 	// API keycloak-rest-extensions account
 	ctAccountExtensionAPIPath            = "/auth/realms/master/api/account/realms/:realm"
@@ -134,4 +135,10 @@ func (c *AccountClient) GetLinkedAccounts(accessToken string, realmName string) 
 func (c *AccountClient) DeleteLinkedAccount(accessToken string, realmName string, providerAlias string) error {
 	return c.client.forRealm(accessToken, realmName).
 		delete(accessToken, url.Path(kcAccountLinkedAccountsProviderPath), url.Param("realm", realmName), url.Param("providerAlias", providerAlias), hdrAcceptJSON)
+}
+
+// LogoutOtherSessions logs out all the sessions of the user except the one bound to the given access token
+func (c *AccountClient) LogoutOtherSessions(accessToken string, realmName string) error {
+	return c.client.forRealm(accessToken, realmName).
+		delete(accessToken, url.Path(kcAccountSessionsPath), url.Param("realm", realmName), hdrAcceptJSON)
 }
